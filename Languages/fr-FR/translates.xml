@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>	
+	<resource KEY="-1" CST="false" SST="true">dernier</resource>
+	<resource KEY="2" CST="false" SST="true">2em</resource>
+	<resource KEY="-2" CST="false" SST="true">avant dernier</resource>
+	<resource KEY="3" CST="false" SST="true">3em</resource>
+	<resource KEY="-3" CST="false" SST="true">avant avant dernier</resource>
+	<resource KEY="4" CST="false" SST="true">4em</resource>
+	<resource KEY="5" CST="false" SST="true">5em</resource>
+	<resource KEY="6" CST="false" SST="true">6em</resource>
+	<resource KEY="7" CST="false" SST="true">7em</resource>
+	<resource KEY="8" CST="false" SST="true">8em</resource>
+	<resource KEY="9" CST="false" SST="true">9em</resource>
+	<resource KEY="10" CST="false" SST="true">10em</resource>
+	<resource KEY="11" CST="false" SST="true">11em</resource>
+	<resource KEY="12" CST="false" SST="true">12em</resource>
+	<resource KEY="13" CST="false" SST="true">13em</resource>
+	<resource KEY="14" CST="false" SST="true">14em</resource>
+	<resource KEY="15" CST="false" SST="true">15em</resource>
+	<resource KEY="16" CST="false" SST="true">16em</resource>
+	<resource KEY="17" CST="false" SST="true">17em</resource>
+	<resource KEY="18" CST="false" SST="true">18em</resource>
+	<resource KEY="19" CST="false" SST="true">19em</resource>
+	<resource KEY="20" CST="false" SST="true">20em</resource>
+	<resource KEY="21" CST="false" SST="true">21em</resource>
+	<resource KEY="22" CST="false" SST="true">22em</resource>
+	<resource KEY="23" CST="false" SST="true">23em</resource>
+	<resource KEY="24" CST="false" SST="true">24em</resource>
+	<resource KEY="25" CST="false" SST="true">25em</resource>
+	<resource KEY="26" CST="false" SST="true">26em</resource>
+	<resource KEY="27" CST="false" SST="true">27em</resource>
+	<resource KEY="28" CST="false" SST="true">28em</resource>
+	<resource KEY="29" CST="false" SST="true">29em</resource>
+	<resource KEY="30" CST="false" SST="true">30em</resource>
+	<resource KEY="31" CST="false" SST="true">31em</resource>
+	<resource KEY="ALL" CST="false" SST="true">tous les :</resource>
+	<resource KEY="ALLM" CST="false" SST="true">tous les mois</resource>
+	<resource KEY="AND" CST="false" SST="true"> et </resource>
+	<resource KEY="APR" CST="false" SST="true">avril</resource>
+	<resource KEY="AUG" CST="false" SST="true">août</resource>
+	<resource KEY="DAYS" CST="false" SST="true">jours</resource>
+	<resource KEY="DEC" CST="false" SST="true">décembre</resource>
+	<resource KEY="DBEOM" CST="false" SST="true">jours avant la fin du mois</resource>
+	<resource KEY="FEB" CST="false" SST="true">février</resource>
+	<resource KEY="FRI" CST="false" SST="true">vendredi</resource>
+	<resource KEY="JAN" CST="false" SST="true">janvier</resource>
+	<resource KEY="JUL" CST="false" SST="true">juillet</resource>
+	<resource KEY="JUN" CST="false" SST="true">juin</resource>
+	<resource KEY="MAR" CST="false" SST="true">mars</resource>
+	<resource KEY="MAY" CST="false" SST="true">mai</resource>
+	<resource KEY="MON" CST="false" SST="true">lundi</resource>
+	<resource KEY="MONT" CST="false" SST="true">mois</resource>
+	<resource KEY="NOV" CST="false" SST="true">novembre</resource>
+	<resource KEY="OCT" CST="false" SST="true">octobe</resource>
+	<resource KEY="OFMON" CST="false" SST="true">du mois</resource>
+	<resource KEY="SAT" CST="false" SST="true">samedi</resource>
+	<resource KEY="SEP" CST="false" SST="true">septembre</resource>
+	<resource KEY="SUN" CST="false" SST="true">dimanche</resource>
+	<resource KEY="THU" CST="false" SST="true">jeudi</resource>
+	<resource KEY="TUE" CST="false" SST="true">mardi</resource>
+	<resource KEY="UNITARY_TASK" CST="false" SST="true">action unitaire</resource>
+	<resource KEY="NONE" CST="false" SST="true">aucune</resource>
+	<resource KEY="UDWED" CST="false" SST="true">mercredidi</resource>
+	<resource KEY="1" CST="false" SST="true">fr-FR:HAS_CHANGED_NEED_UPDATE</resource>
+</resources>

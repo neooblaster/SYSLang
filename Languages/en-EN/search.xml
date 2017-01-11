@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="DISABLED" CST="false" SST="true" TIR="true">Désactivé</resource>
+  <resource KEY="TO_DISPLAY" CST="false" SST="true" TIR="true">pour afficher des</resource>
+  <resource KEY="SUBMIT_SEARCH" CST="false" SST="true" TIR="true">Lancer la recherche</resource>
+  <resource KEY="HEADER_EXCEL_EXTRACTION" CST="false" SST="true" TIR="true">Extraction Excel</resource>
+  <resource KEY="HEADER_RESULTS" CST="false" SST="true" TIR="true">Résultats</resource>
+  <resource KEY="HEADER_SEARCH_CRITERIAS" CST="false" SST="true" TIR="true">Critères de recherche</resource>
+  <resource KEY="HEADER_BETWEEN" CST="false" SST="true" TIR="true">entre</resource>
+  <resource KEY="HEADER_FIRST_DATE" CST="false" SST="true" TIR="true">Du</resource>
+  <resource KEY="HEADER_LAST_DATE" CST="false" SST="true" TIR="true">au</resource>
+  <resource KEY="HEADER_AND" CST="false" SST="true" TIR="true">et</resource>
+  <resource KEY="TITLE_ADD_CRITERIA" CST="false" SST="true" TIR="true">Ajouter critère</resource>
+  <resource KEY="TITLE_CRITERIA_APPLICATION" CST="false" SST="true" TIR="true">Critères : Application&#13;Cliquer pour tous les supprimer</resource>
+  <resource KEY="TITLE_CRITERIA_CUSTOMER" CST="false" SST="true" TIR="true">Critères : Client&#13;Cliquer pour tous les supprimer</resource>
+  <resource KEY="TITLE_CRITERIA_DOMAIN" CST="false" SST="true" TIR="true">Critères : Domain'&#13;Cliquer pour tous les supprimer</resource>
+  <resource KEY="TITLE_CRITERIA_ID" CST="false" SST="true" TIR="true">Critères : Identifiant&#13;Cliquer pour tous les supprimer</resource>
+  <resource KEY="TITLE_CRITERIA_TASK_NAME" CST="false" SST="true" TIR="true">Critères : Intitulé e l'action'&#13;Cliquer pour tous les supprimer</resource>
+  <resource KEY="TITLE_PRESET_DOWNLOAD_TEMPLATE" CST="false" SST="true" TIR="true">Télécharger un modèle Excel</resource>
+  <resource KEY="TITLE_PRESET_EXTRACT_ALL" CST="false" SST="true" TIR="true">Preset : Tout extraire</resource>
+  <resource KEY="TITLE_PRESET_EXTRACT_TODAY" CST="false" SST="true" TIR="true">Preset : Extraire aujourd'hui</resource>
+  <resource KEY="TITLE_PRESET_EXTRACT_WEEK" CST="false" SST="true" TIR="true">Preset : Extraire la semaine</resource>
+  <resource KEY="TITLE_PRESET_EXTRACT_MONTH" CST="false" SST="true" TIR="true">Preset : Extraire le mois</resource>
+  <resource KEY="TITLE_PRESET_EXTRACT_SEARCH" CST="false" SST="true" TIR="true">Preset : Extraire avec les critères de recherche définis</resource>
+  <resource KEY="TITLE_PRESET_SHOW_ALL" CST="false" SST="true" TIR="true">Preset : Tout Afficher</resource>
+  <resource KEY="TITLE_PRESET_SHOW_TODAY" CST="false" SST="true" TIR="true">Preset : Afficher aujourdh'ui</resource>
+  <resource KEY="TITLE_PRESET_SHOW_WEEK" CST="false" SST="true" TIR="true">Preset : Afficher la semaine</resource>
+  <resource KEY="TITLE_PRESET_SHOW_MONTH" CST="false" SST="true" TIR="true">Preset : Afficher le mois</resource>
+</resources>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="AMOUNT_ERRORS_FOUND" CST="false" SST="true" TIR="true">Nombre d'erreurs trouvées</resource>
+  <resource KEY="AMOUNT_ROW_FAILED" CST="false" SST="true" TIR="true">Nombre de lignes en erreur</resource>
+  <resource KEY="AMOUNT_WARNINGS_FOUND" CST="false" SST="true" TIR="true">Nombre de warning trouvé</resource>
+  <resource KEY="CHECK_DETAILS" CST="false" SST="true" TIR="true">Détails de l'analyse</resource>
+  <resource KEY="CHECK_OVERVIEW" CST="false" SST="true" TIR="true">Aperçu de l'analyse</resource>
+  <resource KEY="CHECKED_ROW" CST="false" SST="true" TIR="true">Ligne</resource>
+  <resource KEY="ENTRY" CST="false" SST="true" TIR="true">Entrée</resource>
+  <resource KEY="FIELD_NAME" CST="false" SST="true" TIR="true">Nom du champ</resource>
+  <resource KEY="FIELD_REASON" CST="false" SST="true" TIR="true">Raison de l'erreur</resource>
+  <resource KEY="FIELD_STATE" CST="false" SST="true" TIR="true">Alerte</resource>
+  <resource KEY="FIELD_VALUE" CST="false" SST="true" TIR="true">Valeur du champ</resource>
+  <resource KEY="IMPORT_ALLOWED" CST="false" SST="true" TIR="true">Importation autorisée</resource>
+  <resource KEY="INTEGRATION_MESSAGE_KO" CST="false" SST="true" TIR="true">Bien que tout les tests préalable ont approuvés l'importation du fichier, certaines lignes n'ont pas été integrées. Ci-dessous la liste des lignes en erreur</resource>
+  <resource KEY="INTEGRATION_MESSAGE_OK" CST="false" SST="true" TIR="true">L'intégration des données dans la base s'est déroulée avec succès</resource>
+  <resource KEY="NO" CST="false" SST="true" TIR="true">non</resource>
+  <resource KEY="SOME_ERRORS_FOUND" CST="false" SST="true" TIR="true">Le fichiers Excel contient une ou plusieurs erreurs</resource>
+  <resource KEY="NO_ERROR_FOUND" CST="false" SST="true" TIR="true">Le document est valide et est prêt pour l'importation</resource>
+  <resource KEY="REASON_CELL_VOID_BUT_MANDATORY" CST="false" SST="true" TIR="true">La cellule est vide alors que ce champ est obligatoire</resource>
+  <resource KEY="REASON_DATE_AS_STRING_AND_WRONG" CST="false" SST="true" TIR="true">La date est saisie au format chaine de caractère et elle semble invalide</resource>
+  <resource KEY="REASON_ENDTIME_BEFORE_STARTTIME" CST="false" SST="true" TIR="true">L"heure de fin de l'action est antérieur à l'heure de démarrage</resource>
+  <resource KEY="REASON_FIRSTDATE_AFTER_LASTDATE" CST="false" SST="true" TIR="true">La date de première apparition est postérieure à la date de dernière apparition</resource>
+  <resource KEY="REASON_ID_DO_NOT_EXIST" CST="false" SST="true" TIR="true">L'identifiant saisie n'existe pas dans la base de donnée. L'action sera donc créée</resource>
+  <resource KEY="REASON_ID_UNIDENTIFIABLE" CST="false" SST="true" TIR="true">L'identifiant saisie n'est pas identifiable</resource>
+  <resource KEY="REASON_LASTDATE_BEFORE_FIRSTDATE" CST="false" SST="true" TIR="true">La date de dernière apparition est antérieure à la date de première apparition</resource>
+  <resource KEY="REASON_LIST_DATA_NOT_EXIST" CST="false" SST="true" TIR="true">La donnée saisie n'a pas ou plus de référence dans la base de donnée</resource>
+  <resource KEY="REASON_LIST_DATA_NOT_LISTED" CST="false" SST="true" TIR="true">La donnée saisie n'existe pas dans le classeur</resource>
+  <resource KEY="REASON_STARTTIME_AFTER_ENDTIME" CST="false" SST="true" TIR="true">L'heure de démarrage de l'action est postérieure à l'heure de fin</resource>
+  <resource KEY="REASON_TIME_AS_STRING_AND_WRONG" CST="false" SST="true" TIR="true">L'heure est saisie au format chaine de caractère et elle semble invalide</resource>
+  <resource KEY="REASON_WRONG_DATA_TYPE_WILL_CONVERTED_AS_NUMERIC" CST="false" SST="true" TIR="true">Le format de donnée ne correspond pas à l'information attendue. La donnée sera convertie en nombre nnumérique</resource>
+  <resource KEY="REASON_WRONG_DATA_TYPE_WILL_CONVERTED_AS_STRING" CST="false" SST="true" TIR="true">Le format de donnée ne correspond pas à l'information attendue. La donnée sera convertie en chaine de caractère</resource>
+  <resource KEY="ROW" CST="false" SST="true" TIR="true">Ligne</resource>
+  <resource KEY="TASKS_IN_FILE" CST="false" SST="true" TIR="true">Actions dans le fichier</resource>
+  <resource KEY="TASK_TO_CREATE_DUE_TO_ERROR" CST="false" SST="true" TIR="true">Actions à créer du à un ID saisit inexistant</resource>
+  <resource KEY="TOTAL_TASKS_TO_CREATE" CST="false" SST="true" TIR="true">Actions totale à créer</resource>
+  <resource KEY="TOTAL_TASKS_TO_UPDATE" CST="false" SST="true" TIR="true">Actions totale à mettre à jour</resource>
+  <resource KEY="UPLOADED_FILE_INCOMPATIBLE_DATA_STRUCTURE" CST="false" SST="true" TIR="true">Le fichier envoyé n'est pas compatible avec l'application MCOScheduler</resource>
+  <resource KEY="UPLOADED_FILE_NOT_ALLOWED" CST="false" SST="true" TIR="true">Le fichier envoyé n'est pas un fichier Excel valide. Le fichier doit un être un document Excel d'extension .xls ou .xlsx</resource>
+  <resource KEY="UPLOADED_FILE_CONTAINS_ERROR" CST="false" SST="true" TIR="true">Une erreur est survenue lors de l'envoie du fichier ou bien vous n'avez pas spécifié de fichier</resource>
+  <resource KEY="VALUE" CST="false" SST="true" TIR="true">Valeur</resource>
+  <resource KEY="WRONG_FILE" CST="false" SST="true" TIR="true">Fichier invalide</resource>
+  <resource KEY="YES" CST="false" SST="true" TIR="true">oui</resource>
+  <resource KEY="ANALYZE" CST="false" SST="true" TIR="true">Analyser</resource>
+  <resource KEY="IMPORT" CST="true" SST="true" TIR="true">Importer</resource>
+  <resource KEY="IMPORT_FILE" CST="false" SST="true" TIR="true">Importer un fichier</resource>
+  <resource KEY="ANALYSIS_REPORT" CST="false" SST="true" TIR="true">Rapport d'analyse</resource>
+  <resource KEY="SOURCE_FILE" CST="false" SST="true" TIR="true">Fichier Source</resource>
+  <resource KEY="SELECT_FILE" CST="false" SST="true" TIR="true">Choissisez un fichier</resource>
+  <resource KEY="PARAMS_TO_UPDATE" CST="false" SST="true" TIR="true">Paramètres à mettre à jour</resource>
+  <resource KEY="PARAMS_TO_UPDATE_DESC" CST="false" SST="true" TIR="true">Ces paramètres ne concernent que les actions qui seront mise à jour</resource>
+  <resource KEY="TXT_FIRST_DATE_LAST_DATE" CST="false" SST="true" TIR="true">Première Apparition et Dernière Apparition</resource>
+  <resource KEY="TXT_START_TIME_END_TIME" CST="false" SST="true" TIR="true">Début de l'action et Fin de l'action</resource>
+  <resource KEY="TXT_TASK_NAME" CST="false" SST="true" TIR="true">Titre de la tâche</resource>
+  <resource KEY="TXT_APPLICATION" CST="false" SST="true" TIR="true">Environnement</resource>
+  <resource KEY="TXT_CUSTOMER_AND_DOMAIN" CST="false" SST="true" TIR="true">Client et Domaine</resource>
+  <resource KEY="TXT_DETAILS" CST="false" SST="true" TIR="true">Description</resource>
+  <resource KEY="TXT_MON" CST="false" SST="true" TIR="true">Mois</resource>
+  <resource KEY="TXT_ACCEPT_RULES" CST="false" SST="true" TIR="true">Règles d'inclusions</resource>
+  <resource KEY="TXT_REJECT_RULES" CST="false" SST="true" TIR="true">Règles d'exclusions</resource>
+  <resource KEY="CHECK_ALL" CST="false" SST="true" TIR="true">Tout cocher"</resource>
+  <resource KEY="UNCHECK_ALL" CST="false" SST="true" TIR="true">Tout décocher</resource>
+  <resource KEY="SHOW_AS_FIELD" CST="false" SST="true" TIR="true">Afficher en tant que champs</resource>
+  <resource KEY="SHOW_AS_DESC" CST="false" SST="true" TIR="true">Afficher en tant que description</resource>
+  <resource KEY="UPLOAD_IS_IN_PROGRESS" CST="true" SST="false" TIR="true">Envois du fichier en cours</resource>
+  <resource KEY="UPLOAD_CANCELED" CST="true" SST="false" TIR="true">Envois annulé</resource>
+  <resource KEY="TREATMENT_IS_IN_PROGRESS" CST="true" SST="false" TIR="true">Intégration des actions en cours</resource>
+  <resource KEY="TREATMENT_ABORTED" CST="true" SST="false" TIR="true">L\'intégration à été annulée</resource>
+  <resource KEY="TREATMENT_FINISHED" CST="true" SST="false" TIR="true">Intégration terminée</resource>
+  <resource KEY="REPORT_IS_IN_PROGRESS" CST="true" SST="false" TIR="true">Génération du rapport en cours</resource>
+  <resource KEY="ANALYSIS_FINISHED" CST="true" SST="false" TIR="true">Analyse terminée - Cliquez pour renvoyer</resource>
+  <resource KEY="DBOX_WARN_TITLE" CST="true" SST="false" TIR="true">Demande de confirmation</resource>
+  <resource KEY="DBOX_WARN_PART_1" CST="true" SST="false" TIR="true">Vous être sur le point de procéder à l\'importation alors que vous n\'avez selectionné aucun champ de donnée à mettre à jour.</resource>
+  <resource KEY="DBOX_WARN_PART_2" CST="true" SST="false" TIR="true">Seules les nouvelles actions seront insérées dans la base de donnée.</resource>
+  <resource KEY="DBOX_WARN_PART_3" CST="true" SST="false" TIR="true">Dans le cas où il n'y a aucune actions à créer, alors il n\'y aura aucun changement ce qui rend l\'import caduque.</resource>
+  <resource KEY="DBOX_RECAP" CST="true" SST="false" TIR="true">Voici les champs de donnée que vous allez mettre à jour :</resource>
+  <resource KEY="DBOX_ASK_FOR_IMPORT" CST="true" SST="false" TIR="true">Voulez-vous poursuivre l\'importation du fichier Excel ?</resource>
+</resources>

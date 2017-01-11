@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="DEV_SESSION_EXPIRED" CST="false" SST="true" TIR="true">Votre session à expirée</resource>
+  <resource KEY="DEV_SIGN_ERROR_PASSWORD_KO" CST="false" SST="true" TIR="true">Le mot de passe est incorrecte</resource>
+  <resource KEY="DEV_SIGN_ERROR_SIGNIN_OK" CST="false" SST="true" TIR="true">Connexion effectuée avec succès</resource>
+  <resource KEY="DEV_SIGN_ERROR_USER_KO" CST="false" SST="true" TIR="true">Le compte utilisateur spécifié n'existe pas</resource>
+  <resource KEY="DEV_SIGN_ERROR_USER_LOCK" CST="false" SST="true" TIR="true">Le compte est verrouillé</resource>
+  <resource KEY="DEV_SIGN_PANEL_PLACEHOLDER_PASSWORD" CST="false" SST="true" TIR="true">Mot de passe</resource>
+  <resource KEY="DEV_SIGN_PANEL_PLACEHOLDER_USER" CST="false" SST="true" TIR="true">Identifiant</resource>
+  <resource KEY="DEV_TITLE_USER" CST="false" SST="true" TIR="true">Nom de compte</resource>
+  <resource KEY="DEV_TITLE_PASSWORD" CST="false" SST="true" TIR="true">Mot de passe</resource>
+</resources>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="NT_TEXT_DEFAULT_WORKING" CST="false" SST="true" TIR="true">Par défaut, la ou les régles de récurrences spécifiées sont effectives pour tous les mois de l'année.</resource>
+  <resource KEY="NT_BUTTON_ADD_AS_ACCEPT_RULE" CST="false" SST="true" TIR="true">Ajouter la sélection</resource>
+  <resource KEY="NT_BUTTON_ADD_AS_REJECT_RULE" CST="false" SST="true" TIR="true">Exclure de la sélection</resource>
+  <resource KEY="NT_BUTTON_ADD_AS_CONDITION" CST="false" SST="true" TIR="true">Ajouter au panier de conditions</resource>
+  <resource KEY="NT_BUTTON_ADD_RULE" CST="false" SST="true" TIR="true">Ajouter la règle</resource>
+  <resource KEY="NT_BUTTON_CANCEL_AND_CLOSE" CST="true" SST="true" TIR="true">Annuler et fermer</resource>
+  <resource KEY="NT_BUTTON_CHECK_ALL" CST="false" SST="true" TIR="true">Tout cocher</resource>
+  <resource KEY="NT_BUTTON_CREATE_ACTION" CST="false" SST="true" TIR="true">Créer l'action</resource>
+  <resource KEY="NT_BUTTON_CREATE_AS_ACCEPT_RULE" CST="false" SST="true" TIR="true">Ajouter à ma sélection</resource>
+  <resource KEY="NT_BUTTON_CREATE_AS_REJECT_RULE" CST="false" SST="true" TIR="true">Exclure de la sélection</resource>
+  <resource KEY="NT_BUTTON_DELETE" CST="true" SST="true" TIR="true">Supprimer</resource>
+  <resource KEY="NT_BUTTON_EDIT_MONTH" CST="true" SST="true" TIR="true">Modifier les mois concernés</resource>
+  <resource KEY="NT_BUTTON_SAVE_CHANGE" CST="true" SST="true" TIR="true">Sauvegarder les modifications</resource>
+  <resource KEY="NT_BUTTON_SELECT_ALL" CST="true" SST="true" TIR="true">Tout selectionner</resource>
+  <resource KEY="NT_CAPTION_CREATE_RULES" CST="false" SST="true" TIR="true">Panneau de création des régles de présence</resource>
+  <resource KEY="NT_CAPTION_SELECT_MONTHS" CST="false" SST="true" TIR="true">Selection des mois concernés par la récurrence</resource>
+  <resource KEY="NT_H_TITLE_ACCEPT_RULES" CST="false" SST="true" TIR="true">Sélection(s)</resource>
+  <resource KEY="NT_H_TITLE_CONDITIONS_LIST" CST="false" SST="true" TIR="true">Liste des conditions</resource>
+  <resource KEY="NT_H_TITLE_CONFIG_MONTHS" CST="false" SST="true" TIR="true">Sélection des mois</resource>
+  <resource KEY="NT_H_TITLE_MONTHLY_PARAMS" CST="false" SST="true" TIR="true">Paramètres Mensuels</resource>
+  <resource KEY="NT_H_TITLE_REJECT_RULES" CST="false" SST="true" TIR="true">Exclusion(s)</resource>
+  <resource KEY="NT_H_TITLE_WEEKLY_PARAMS" CST="false" SST="true" TIR="true">Paramètres Hebdomadaires</resource>
+  <resource KEY="NT_HEAD_IDENTIFY" CST="false" SST="true" TIR="true">Identification</resource>
+  <resource KEY="NT_HEAD_OCCURENCE" CST="false" SST="true" TIR="true">Occurence</resource>
+  <resource KEY="NT_HEAD_REFERENCE" CST="false" SST="true" TIR="true">Référence</resource>
+  <resource KEY="NT_HEAD_SCHEDULING" CST="false" SST="true" TIR="true">Horodatage</resource>
+  <resource KEY="NT_LABEL_ACTION_DOMAIN" CST="false" SST="true" TIR="true">Domaine d'application</resource>
+  <resource KEY="NT_LABEL_ACTION_END" CST="false" SST="true" TIR="true">Fin de l'action</resource>
+  <resource KEY="NT_LABEL_ACTION_FIRST_RUN" CST="false" SST="true" TIR="true">Première Apparition</resource>
+  <resource KEY="NT_LABEL_ACTION_LAST_RUN" CST="false" SST="true" TIR="true">Dernière Apparition</resource>
+  <resource KEY="NT_LABEL_ACTION_PLAN_DATE" CST="false" SST="true" TIR="true">Date de planification</resource>
+  <resource KEY="NT_LABEL_ACTION_START" CST="false" SST="true" TIR="true">Début de l'action</resource>
+  <resource KEY="NT_LABEL_CUSTOMER" CST="false" SST="true" TIR="true">Client</resource>
+  <resource KEY="NT_LABEL_DAY_0" CST="false" SST="true" TIR="true">Dimanche</resource>
+  <resource KEY="NT_LABEL_DAY_1" CST="false" SST="true" TIR="true">Lundi</resource>
+  <resource KEY="NT_LABEL_DAY_2" CST="false" SST="true" TIR="true">Mardi</resource>
+  <resource KEY="NT_LABEL_DAY_3" CST="false" SST="true" TIR="true">Mercredi</resource>
+  <resource KEY="NT_LABEL_DAY_4" CST="false" SST="true" TIR="true">Jeudi</resource>
+  <resource KEY="NT_LABEL_DAY_5" CST="false" SST="true" TIR="true">Vendredi</resource>
+  <resource KEY="NT_LABEL_DAY_6" CST="false" SST="true" TIR="true">Samedi</resource>
+  <resource KEY="NT_LABEL_ENGINE" CST="false" SST="true" TIR="true">Environnement</resource>
+  <resource KEY="NT_LABEL_MONTH_01" CST="false" SST="true" TIR="true">Janvier</resource>
+  <resource KEY="NT_LABEL_MONTH_02" CST="false" SST="true" TIR="true">Février</resource>
+  <resource KEY="NT_LABEL_MONTH_03" CST="false" SST="true" TIR="true">Mars</resource>
+  <resource KEY="NT_LABEL_MONTH_04" CST="false" SST="true" TIR="true">Avril</resource>
+  <resource KEY="NT_LABEL_MONTH_05" CST="false" SST="true" TIR="true">Mai</resource>
+  <resource KEY="NT_LABEL_MONTH_06" CST="false" SST="true" TIR="true">Juin</resource>
+  <resource KEY="NT_LABEL_MONTH_07" CST="false" SST="true" TIR="true">Juillet</resource>
+  <resource KEY="NT_LABEL_MONTH_08" CST="false" SST="true" TIR="true">Août</resource>
+  <resource KEY="NT_LABEL_MONTH_09" CST="false" SST="true" TIR="true">Septembre</resource>
+  <resource KEY="NT_LABEL_MONTH_10" CST="false" SST="true" TIR="true">Octobre</resource>
+  <resource KEY="NT_LABEL_MONTH_11" CST="false" SST="true" TIR="true">Novembre</resource>
+  <resource KEY="NT_LABEL_MONTH_12" CST="false" SST="true" TIR="true">Décembre</resource>
+  <resource KEY="NT_LABEL_NEW_RULE" CST="false" SST="true" TIR="true">Récurrence</resource>
+  <resource KEY="NT_LABEL_SELECT_ACTION_TYPE" CST="false" SST="true" TIR="true">Sélectionner le type d'action à créer</resource>
+  <resource KEY="NT_LABEL_SELECT_REC_TYPE" CST="false" SST="true" TIR="true">Sélectionner le type de récurrence</resource>
+  <resource KEY="NT_LABEL_TASKNAME" CST="false" SST="true" TIR="true">Intitulé de l'action</resource>
+  <resource KEY="NT_LEGEND_ACTION_DETAILS" CST="false" SST="true" TIR="true">Description de l'action</resource>
+  <resource KEY="NT_LEGEND_ACTION_TYPE" CST="false" SST="true" TIR="true">Type d'action</resource>
+  <resource KEY="NT_LEGEND_ADD_CONDITION" CST="false" SST="true" TIR="true">Ajouter condition(s)</resource>
+  <resource KEY="NT_LEGEND_MAIN_INFO" CST="false" SST="true" TIR="true">Informations Générales</resource>
+  <resource KEY="NT_LEGEND_MY_RULES" CST="false" SST="true" TIR="true">Mes règles</resource>
+  <resource KEY="NT_LEGEND_PLAN_INFO" CST="false" SST="true" TIR="true">Définition de la récurrence</resource>
+  <resource KEY="NT_LEGEND_WHISHED_CONDITION" CST="false" SST="true" TIR="true">Panier de conditions</resource>
+  <resource KEY="NT_OPTGRP_MONTH_END" CST="false" SST="true" TIR="true">Par rapport à la fin du mois</resource>
+  <resource KEY="NT_OPTGRP_MONTH_START" CST="false" SST="true" TIR="true">Par rapport au début du mois</resource>
+  <resource KEY="NT_OPTION_FIFTH" CST="false" SST="true" TIR="true">Cinquième</resource>
+  <resource KEY="NT_OPTION_FIRST" CST="false" SST="true" TIR="true">Premier</resource>
+  <resource KEY="NT_OPTION_FOURTH" CST="false" SST="true" TIR="true">Quatrième</resource>
+  <resource KEY="NT_OPTION_LAST" CST="false" SST="true" TIR="true">Dernier</resource>
+  <resource KEY="NT_OPTION_PENULTIMATE" CST="false" SST="true" TIR="true">Avant-Dernier</resource>
+  <resource KEY="NT_OPTION_REC_WEEKLY" CST="false" SST="true" TIR="true">Récurrence Hebdomadaire</resource>
+  <resource KEY="NT_OPTION_REC_MONTHLY" CST="false" SST="true" TIR="true">Récurrence Personnalisée</resource>
+  <resource KEY="NT_OPTION_REF_DAY_0" CST="false" SST="true" TIR="true">Dimanche du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_1" CST="false" SST="true" TIR="true">Lundi du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_2" CST="false" SST="true" TIR="true">Mardi du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_3" CST="false" SST="true" TIR="true">Mercredi du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_4" CST="false" SST="true" TIR="true">Jeudi du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_5" CST="false" SST="true" TIR="true">Vendredi du mois</resource>
+  <resource KEY="NT_OPTION_REF_DAY_6" CST="false" SST="true" TIR="true">Samedi du mois</resource>
+  <resource KEY="NT_OPTION_REF_MONTH_END" CST="false" SST="true" TIR="true">Avant la fin du mois</resource>
+  <resource KEY="NT_OPTION_REF_MONTH_START" CST="false" SST="true" TIR="true">Par rapport au début du mois</resource>
+  <resource KEY="NT_OPTION_SECOND" CST="false" SST="true" TIR="true">Deuxième</resource>
+  <resource KEY="NT_OPTION_SECOND_PENULTIMATE" CST="false" SST="true" TIR="true">Avant Avant-Dernier</resource>
+  <resource KEY="NT_OPTION_THIRD" CST="false" SST="true" TIR="true">Troisième</resource>
+  <resource KEY="NT_OPTION_TYPE_REC" CST="false" SST="true" TIR="true">Action Récurrente</resource>
+  <resource KEY="NT_OPTION_TYPE_UNI" CST="false" SST="true" TIR="true">Action Unitaire</resource>
+  <resource KEY="NT_PLACEHOLDER_TODAY" CST="false" SST="true" TIR="true">Aujourd'hui</resource>
+  <resource KEY="NT_PLACEHOLDER_UNDEFINED" CST="false" SST="true" TIR="true">Indéfini</resource>
+  <resource KEY="NT_TEXT_BELOW_ACCEPT_RULES" CST="false" SST="true" TIR="true">Voici la liste des règles d'inclusion de l'action à un planning.</resource>
+  <resource KEY="NT_TEXT_BELOW_CONDITIONS" CST="false" SST="true" TIR="true">Voici la liste des conditions qui composerons la règle.</resource>
+  <resource KEY="NT_TEXT_BELOW_REJECT_RULES" CST="false" SST="true" TIR="true">Voici la listes des règles d'exclusion de l'action à un planning.</resource>
+  <resource KEY="NT_TEXT_DEFAULT_WORKING_MONTH" CST="false" SST="true" TIR="true">Par défaut, les règles créées sont applicable toute l'année.</resource>
+  <resource KEY="NT_TEXT_RULE_HOW_TO" CST="false" SST="true" TIR="true">La configuration de récurrence de l'action fonction sur le principe de règle. Si vous avez plusieurs règles, celles-ci se comporte à la manière d'un "OU". Cependant un règle, peut comporter plusieurs conditions qui doivent être remplies pour que l'action soit admisse à une date donnée. Les conditions au sein de la règle se comporte donc à la manière d'un "ET"</resource>
+  <resource KEY="NT_TEXT_RULE_WARNING" CST="false" SST="true" TIR="true">Soyez vigiliant lors de la création des règles, vous pouvez sans le vouloir, créer des règles contradictoires.</resource>
+  <resource KEY="NT_TEXT_MONTHLY_HOW_TO" CST="false" SST="true" TIR="true">Ce panneau de configuration permet de cibler une occurence particulière au courant du mois.</resource>
+  <resource KEY="NT_TEXT_WEEKLY_HOW_TO" CST="false" SST="true" TIR="true">Ce panneau de configuration permet de cibler un ou plusieurs jour de la semaine. Il n'est pas possible d'ajouter plusieurs jour dans une seule règle. En effet, il n'est pas possible d'être un lundi et un mardi en même temps.</resource>
+  <resource KEY="NT_TITLE_SHOW_CALENDAR" CST="false" SST="true" TIR="true">Cliquez pour afficher le calendrier</resource>
+  <resource KEY="STARTTIME_SUP_OR_EQ_ENDTIME" CST="true" SST="false" TIR="true">L'heure de début est postérieure ou identique à l'heure de fin</resource>
+  <resource KEY="NO_DOMAIN_AVAILABLE" CST="true" SST="true" TIR="true">Aucun domaine disponible</resource>
+  <resource KEY="LOADING" CST="true" SST="false" TIR="true">-- Chargement --</resource>
+</resources>

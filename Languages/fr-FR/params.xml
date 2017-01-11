@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<resource KEY="ADD" CST="true" SST="true">Ajouter</resource>
+	<!--<resource KEY="ALREADY_USED" CST="true" SST="false">Ce nom existe déjà</resource>-->
+	<!--<resource KEY="CUSTOMER_IS_EMPTY" CST="false" SST="true">Actuellement, aucun clients n'est enregistrés dans la base de donnée</resource>-->
+	<resource KEY="DELETE" CST="false" SST="true">Supprimer</resource>
+	<!--<resource KEY="DOMAIN_IS_EMPTY" CST="false" SST="true">Actuellement, aucun domaines d'application n'est enregistrés dans la base de donnée</resource>-->
+	<!--<resource KEY="DOMAIN_LABEL" CST="false" SST="true">Nom du domaine</resource>-->
+	<!--<resource KEY="LEGEND_MANAGE_DATAS" CST="false" SST="true">Gérer les données de l'application</resource>-->
+	<resource KEY="LEGEND_MANAGE_USERS" CST="false" SST="true">Gérer les utilisateurs</resource>
+	<resource KEY="MY_MAIL" CST="false" SST="true">Mon adresse mail</resource>
+	<resource KEY="MY_PASSWORD" CST="false" SST="true">Mon mot de passe</resource>
+	<resource KEY="MY_PARAMS" CST="false" SST="true">Mes paramètres</resource>
+	<resource KEY="MY_LANG" CST="false" SST="true">Langue</resource>
+	<resource KEY="NEW_CUSTOMER_NAME" CST="false" SST="true">Nom du nouveau client</resource>
+	<resource KEY="NEW_DOMAIN_NAME" CST="false" SST="true">Nom du nouveau domaine</resource>
+	<resource KEY="NEW_USER_MAIL" CST="false" SST="true">Adresse électronique</resource>
+	<resource KEY="NEW_USER_NAME" CST="false" SST="true">Nom de compte</resource>
+	<resource KEY="NEW_USER_PASSWORD" CST="false" SST="true">Mot de passe</resource>
+	<resource KEY="RANK_LEVEL_0" CST="true" SST="true">Verrouillé</resource>
+	<resource KEY="RANK_LEVEL_1" CST="true" SST="true">Consultation</resource>
+	<resource KEY="RANK_LEVEL_2" CST="true" SST="true">Utilisateur</resource>
+	<resource KEY="RANK_LEVEL_3" CST="true" SST="true">Avancé</resource>
+	<resource KEY="RANK_LEVEL_4" CST="true" SST="true">Administrateur</resource>
+	<resource KEY="RANK_SETTED" CST="false" SST="true">Droits du compte</resource>
+	<resource KEY="RANK_SETTOR" CST="false" SST="true">Définition des droits</resource>
+	<resource KEY="RENAME" CST="false" SST="true">Renommer</resource>
+	<resource KEY="REALLY_SURE_TO_DELETE_THIS_CUSTOMER" CST="true" SST="true">Voulez-vous vraiment supprimer ce client</resource>
+	<resource KEY="REALLY_SURE_TO_DELETE_THIS_DOMAIN" CST="true" SST="true">Voulez-vous vraiment supprimer ce domain</resource>
+	<resource KEY="REALLY_SURE_TO_DELETE_THIS_USER" CST="false" SST="true">Voulez-vous vraiment supprimer cet utilisateur</resource>
+	<resource KEY="TITLE_ADD_USER" CST="false" SST="true">Ajouter un compte utilisateur</resource>
+	<resource KEY="TITLE_CONFIG_RIGHTS" CST="false" SST="true">Configuration des droits</resource>
+	<resource KEY="TITLE_MAIL_ADDRESS" CST="false" SST="true">Modifier mon adresse électronique</resource>
+	<!--<resource KEY="TITLE_MANAGE_CUSTOMERS" CST="false" SST="true">Gérer les liste des clients</resource>-->
+	<!--<resource KEY="TITLE_MANAGE_DOMAINS" CST="false" SST="true">Gérer la liste des domaines d'application</resource>-->
+	<resource KEY="TITLE_MANAGE_RIGHTS" CST="false" SST="true">Gérer les droits utilisateurs</resource>
+	<resource KEY="TITLE_PASSWORD" CST="false" SST="true">Modifier mon mot de passe</resource>
+	<resource KEY="TYPE_MAIL" CST="false" SST="true">Saisir une adresse</resource>
+	<resource KEY="TYPE_OLD_PASSWORD" CST="false" SST="true">Saisir votre mot de passe</resource>
+	<resource KEY="USER_ACCOUNT" CST="false" SST="true">Utilisateur</resource>
+	<resource KEY="USER_ALREADY_EXIST" CST="true" SST="false">Ce compte existe déjà</resource>
+	<resource KEY="USER_IS_EMPTY" CST="false" SST="true">Il n'y à aucune compte utilisateur à gérer</resource>
+	
+	
+	<!-- Common trought portail.content.params.php -->
+	<resource KEY="PASSWORDS_ARE_DIFFERENTS" CST="false" SST="true">Les deux mot de passe ne sont pas identique</resource>
+	
+	<!-- Dédié : params.my_account.tpl.html trought portail.content.params.php -->
+	<resource KEY="MAILS_ARE_DIFFERENTS" CST="false" SST="true">Les deux adresses ne sont pas identiques</resource>
+	<resource KEY="LEGEND_MANAGE_MY_ACCOUNT" CST="false" SST="true">Gérer mon compte</resource>
+	<resource KEY="ADDRESS_RECORDED" CST="false" SST="true">Adresse enregistrée</resource>
+	<resource KEY="AUTOCOMPLETE_TIME_PARAM_TITLE" CST="false" SST="true">Saisie automatique des deux points (:) dans les champs "Heure"</resource>
+	<resource KEY="COMMONS_PARAMS" CST="false" SST="true">Paramètres communs</resource>
+	<resource KEY="CONFIRM_ADDRESS" CST="false" SST="true">Confirmer adresse</resource>
+	<resource KEY="CONFIRM_PASSWORD" CST="false" SST="true">Confirmer le nouveau mot de passe</resource>
+	<resource KEY="NEW_ADDRESS" CST="false" SST="true">Nouvelle adresse</resource>
+	<resource KEY="NEW_PASSWORD" CST="false" SST="true">Le nouveau mot de passe</resource>
+	<resource KEY="OLD_PASSWORD" CST="false" SST="true">Mon ancien mot de passe</resource>
+	<resource KEY="TYPE_NEW_PASSWORD" CST="false" SST="true">Saisir un nouveau mot de passe</resource>
+	<resource KEY="UPDATE_MY_ADDRESS" CST="false" SST="true">Modifier mon adresse</resource>
+	<resource KEY="UPDATE_MY_PASSWORD" CST="false" SST="true">Modifier mon mot de passe</resource>
+	<resource KEY="REPEAT_MAIL" CST="false" SST="true">Répéter l'adresse</resource>
+	<resource KEY="REPEAT_NEW_PASSWORD" CST="false" SST="true">Répéter le nouveau mot de passe</resource>
+	
+	<!-- Dédié : params.customers.tpl.html trought portail.content.params.php -->
+	<resource KEY="CAN_NOT_DELETED" CST="true" SST="true">Ne peut être supprimé</resource>
+	<resource KEY="CAN_NOT_TRANSFERED" CST="true" SST="true">Ne peut être transféré</resource>
+	<resource KEY="ACTIONS_STILL_USING_DOMAIN" CST="true" SST="true">action(s) liée(s) à ce domaine</resource>
+	<resource KEY="ACTIONS_STILL_USING_CUSTOMER" CST="true" SST="true">action(s) liée(s) à ce client</resource>
+	<resource KEY="DOMAINS_STILL_USING_CUSTOMER" CST="true" SST="true">domain(s) liée(s) à ce client</resource>
+	<resource KEY="MANAGE_CUSTOMERS_AND_DOMAINS" CST="false" SST="true">Gérer les clients et les domaines associés</resource>
+	<resource KEY="TITLE_ADD_A_CUSTOMER" CST="false" SST="true">Ajouter un client</resource>
+	<resource KEY="TITLE_ADD_CUSTOMER" CST="false" SST="true">Ajouter le client</resource>
+	<resource KEY="TITLE_ADD_DOMAIN" CST="false" SST="true">Ajouter le domaine</resource>
+	<resource KEY="TITLE_DELETE_CUSTOMER" CST="true" SST="true">Supprimer le client</resource>
+	<resource KEY="TITLE_DELETE_DOMAIN" CST="true" SST="true">Supprimer le domaine</resource>
+	<resource KEY="TITLE_DUPLICATE_CUSTOMER" CST="false" SST="true">Dupliquer le client</resource>
+	<resource KEY="TITLE_DUPLICATE_DOMAIN" CST="false" SST="true">Dupliquer le domaine</resource>
+	<resource KEY="TITLE_RENAME_CUSTOMER" CST="false" SST="true">Renommer le client</resource>
+	<resource KEY="TITLE_RENAME_DOMAIN" CST="true" SST="true">Renommer le domaine</resource>
+	<resource KEY="TITLE_TRANSFER_DOMAIN" CST="true" SST="true">Transférer le domaine</resource>
+	<resource KEY="DOMAIN_NAME" CST="false" SST="true">Nom du domaine</resource>
+	<resource KEY="DOMAIN_EXIST" CST="true" SST="false">Le domaine existe déjà</resource>
+	<resource KEY="CUSTOMER_NAME" CST="false" SST="true">Nom du client</resource>
+	<resource KEY="CUSTOMER_EXIST" CST="true" SST="false">Le client existe déjà</resource>
+	<resource KEY="SWITCH_ON_MANAGEMENT_OPTIONS" CST="false" SST="true">Afficher les options de gestion des clients</resource>
+	<resource KEY="SWITCH_OFF_MANAGEMENT_OPTIONS" CST="false" SST="true">Masquer les options de gestion des clients</resource>
+	<resource KEY="CLICK_TO_CHOOSE_CUSTOMER" CST="true" SST="false">Cliquer sur un client dans le menu pour effectuer le transfert</resource>
+	
+	<!-- Dédié : params.users.tpl.html trought portail.content.params.php -->
+	<resource KEY="ADDUSR_GLOBAL_INFOS" CST="false" SST="true">Information générale</resource>
+	<resource KEY="ADDUSR_SET_RIGHTS" CST="false" SST="true">Définir les droits du compte</resource>
+	<resource KEY="ADDUSR_LABEL" CST="false" SST="true">Ajouter un utilisateur</resource>
+	<resource KEY="ADDUSR_USERNAME" CST="false" SST="true">Nom de l'utilisateur</resource>
+	<resource KEY="ADDUSR_PASSWORD" CST="false" SST="true">Mot de passe</resource>
+	<resource KEY="ADDUSR_REPEAT_PASSWORD" CST="false" SST="true">Confirmer le mot de passe</resource>
+	<resource KEY="ADDUSR_MAIL" CST="false" SST="true">Adresse mail</resource>
+	<resource KEY="ADDUSR_TYPE_USERNAME" CST="false" SST="true">Saisir le trigramme VISEO</resource>
+	<resource KEY="ADDUSR_TYPE_PASSWORD" CST="false" SST="true">Saisir le mot de passe</resource>
+	<resource KEY="ADDUSR_TYPE_REPEAT_PASSWORD" CST="false" SST="true">Répéter le mot de passe</resource>
+	<resource KEY="ADDUSR_TYPE_MAIL" CST="false" SST="true">Saisir l'adressse mail</resource>
+	
+	<!-- Dédié : manage_customers.php trought portail.content.params.php -->
+	<resource KEY="UNAPPROVED_REQUEST" CST="false" SST="true">Opération non approuvée</resource>
+	<resource KEY="SOMETHING_HAPPENS_WRONG" CST="false" SST="true">Une erreur est survenue durant l'opération</resource>
+	<resource KEY="DELETE_DONE_SUCCESSFULLY" CST="false" SST="true">Suppression effectuée avec succès</resource>
+	<resource KEY="UPDATE_DONE_SUCCESSFULLY" CST="false" SST="true">Mise à jour effectuée avec succès</resource>
+	<resource KEY="DOMAIN_ADD_SUCCESSFULLY" CST="false" SST="true">Le domain à bien été ajouté</resource>
+	<resource KEY="CUSTOMER_ADD_SUCCESSFULLY" CST="false" SST="true">Le client à bien été ajouté. Rechargement de la page en cours.</resource>
+	
+	<!-- Dédié : manage_user.php trought param.content.params.php -->
+	<resource KEY="ERR_MESSAGE_GLOBAL_ERROR" CST="false" SST="true">Une erreur est survenue. Aucune modification n'a été effectuée</resource>
+	<resource KEY="ERR_MESSAGE_REFUSED" CST="false" SST="true">Mot de passe incorrecte, vous n'êtes pas autorisé à modifier ces données</resource>
+	<resource KEY="SUC_MESSAGE_DONE" CST="false" SST="true">Modification effectuée avec succès</resource>
+</resources>

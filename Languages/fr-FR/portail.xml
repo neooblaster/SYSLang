@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>	
+	<resource KEY="CONTENT_DUPLICATE_TASK" CST="false" SST="true">Dupliquer une action</resource>
+	<resource KEY="CONTENT_EDIT_TASK" CST="false" SST="true">Editer une action</resource>
+	<resource KEY="CONTENT_EXPORT_TASKS" CST="false" SST="true">Exporter des actions</resource>
+	<resource KEY="CONTENT_IMPORT_TASKS" CST="false" SST="true">Importer des actions</resource>
+	<resource KEY="CONTENT_MANAGE_TASKS" CST="false" SST="true">Gérer les actions</resource>
+	<resource KEY="CONTENT_NEW_TASK" CST="false" SST="true">Nouvelle Action</resource>
+	<resource KEY="CONTENT_PARAMS" CST="false" SST="true">Paramètres</resource>
+	<resource KEY="CONTENT_SEARCH" CST="false" SST="true">Recherche</resource>
+	<resource KEY="CONTENT_SIGN_OFF" CST="false" SST="true">Déconnexion</resource>
+	<resource KEY="CONTENT_TASKS_PLANNED" CST="false" SST="true">Actions Planifiées</resource>
+	<resource KEY="PROMPT_DUPLICATE_TASK" CST="false" SST="true">Veuillez saisir l\'identifiant de l\'action à dupliquer</resource>
+	<resource KEY="PROMPT_EDIT_TASK" CST="false" SST="true">Veuillez saisir l\'identifiant de l\'action à éditer</resource>
+	<resource KEY="RESET" CST="false" SST="true">Re-initialiser</resource>
+	<resource KEY="SAVE" CST="false" SST="true">Sauvegarder</resource>
+	<resource KEY="AND" CST="false" SST="true">et</resource>
+	<resource KEY="TITLE_CANCEL" CST="true" SST="true">Annuler</resource>
+	<resource KEY="TITLE_CLOSE" CST="false" SST="true">Fermer</resource>
+	<resource KEY="TITLE_DELETE" CST="true" SST="true">Supprimer</resource>
+	<resource KEY="TITLE_DUPLICATE" CST="true" SST="true">Dupliquer</resource>
+	<resource KEY="TITLE_EDIT" CST="true" SST="true">Editer</resource>
+	<resource KEY="TITLE_RENAME" CST="true" SST="true">Renommer</resource>
+	<resource KEY="TITLE_SAVE" CST="true" SST="true">Sauvegarder</resource>
+	
+	<!-- Entete des tableau d'actions : tasks-planned & search -->
+	<resource KEY="HEADER_CUSTOMER" CST="false" SST="true">Client</resource>
+	<resource KEY="HEADER_DOMAIN" CST="false" SST="true">Domaine</resource>
+	<resource KEY="HEADER_END_TIME" CST="false" SST="true">Fin</resource>
+	<resource KEY="HEADER_APPLICATION" CST="false" SST="true">Environnement</resource>
+	<resource KEY="HEADER_START_TIME" CST="false" SST="true">Début</resource>
+	<resource KEY="HEADER_TASKNAME" CST="false" SST="true">Intitulé de l'Action</resource>
+	
+	<!-- Attributs Title des tableau d'action : tasks-planned & search -->
+	<resource KEY="TITLE_CHECK_TO_CONFIRM" CST="true" SST="false">Cocher pour validation</resource>
+	<resource KEY="TITLE_HIDE_DESC" CST="true" SST="false">Masquer la description</resource>
+	<resource KEY="TITLE_SHOW_DESC" CST="true" SST="false">Afficher la description</resource>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="CONTENT_DUPLICATE_TASK" CST="false" SST="true" TIR="true">Dupliquer une action</resource>
+  <resource KEY="CONTENT_EDIT_TASK" CST="false" SST="true" TIR="true">Editer une action</resource>
+  <resource KEY="CONTENT_EXPORT_TASKS" CST="false" SST="true" TIR="true">Exporter des actions</resource>
+  <resource KEY="CONTENT_IMPORT_TASKS" CST="false" SST="true" TIR="true">Importer des actions</resource>
+  <resource KEY="CONTENT_MANAGE_TASKS" CST="false" SST="true" TIR="true">Gérer les actions</resource>
+  <resource KEY="CONTENT_NEW_TASK" CST="false" SST="true" TIR="true">Nouvelle Action</resource>
+  <resource KEY="CONTENT_PARAMS" CST="false" SST="true" TIR="true">Paramètres</resource>
+  <resource KEY="CONTENT_SEARCH" CST="false" SST="true" TIR="true">Recherche</resource>
+  <resource KEY="CONTENT_SIGN_OFF" CST="false" SST="true" TIR="true">Déconnexion</resource>
+  <resource KEY="CONTENT_TASKS_PLANNED" CST="false" SST="true" TIR="true">Actions Planifiées</resource>
+  <resource KEY="PROMPT_DUPLICATE_TASK" CST="false" SST="true" TIR="true">Veuillez saisir l\'identifiant de l\'action à dupliquer</resource>
+  <resource KEY="PROMPT_EDIT_TASK" CST="false" SST="true" TIR="true">Veuillez saisir l\'identifiant de l\'action à éditer</resource>
+  <resource KEY="RESET" CST="false" SST="true" TIR="true">Re-initialiser</resource>
+  <resource KEY="SAVE" CST="false" SST="true" TIR="true">Sauvegarder</resource>
+  <resource KEY="AND" CST="false" SST="true" TIR="true">et</resource>
+  <resource KEY="TITLE_CANCEL" CST="true" SST="true" TIR="true">Annuler</resource>
+  <resource KEY="TITLE_CLOSE" CST="false" SST="true" TIR="true">Fermer</resource>
+  <resource KEY="TITLE_DELETE" CST="true" SST="true" TIR="true">Supprimer</resource>
+  <resource KEY="TITLE_DUPLICATE" CST="true" SST="true" TIR="true">Dupliquer</resource>
+  <resource KEY="TITLE_EDIT" CST="true" SST="true" TIR="true">Editer</resource>
+  <resource KEY="TITLE_RENAME" CST="true" SST="true" TIR="true">Renommer</resource>
+  <resource KEY="TITLE_SAVE" CST="true" SST="true" TIR="true">Sauvegarder</resource>
+  <resource KEY="HEADER_CUSTOMER" CST="false" SST="true" TIR="true">Client</resource>
+  <resource KEY="HEADER_DOMAIN" CST="false" SST="true" TIR="true">Domaine</resource>
+  <resource KEY="HEADER_END_TIME" CST="false" SST="true" TIR="true">Fin</resource>
+  <resource KEY="HEADER_APPLICATION" CST="false" SST="true" TIR="true">Environnement</resource>
+  <resource KEY="HEADER_START_TIME" CST="false" SST="true" TIR="true">Début</resource>
+  <resource KEY="HEADER_TASKNAME" CST="false" SST="true" TIR="true">Intitulé de l'Action</resource>
+  <resource KEY="TITLE_CHECK_TO_CONFIRM" CST="true" SST="false" TIR="true">Cocher pour validation</resource>
+  <resource KEY="TITLE_HIDE_DESC" CST="true" SST="false" TIR="true">Masquer la description</resource>
+  <resource KEY="TITLE_SHOW_DESC" CST="true" SST="false" TIR="true">Afficher la description</resource>
+</resources>
