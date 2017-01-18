@@ -8,7 +8,7 @@
 /** ---																																						---
 /** ---		AUTEUR 	: Nicolas DUPRE																												---
 /** ---																																						---
-/** ---		RELEASE	: 05.01.2017																													---
+/** ---		RELEASE	: 18.01.2017																													---
 /** ---																																						---
 /** ---		VERSION	: 0.1																																---
 /** ---																																						---
@@ -17,7 +17,7 @@
 /** --- 															 { C H A N G E L O G } 																---
 /** --- 														-----------------------------															---
 /** ---																																						---
-/** ---		VERSION 0.1 : 05.01.2017																												---
+/** ---		VERSION 0.1 : 18.01.2017																												---
 /** ---		-------------------------																												---
 /** ---			- Première release																													---
 /** ---																																						---
@@ -86,7 +86,8 @@ Sécurisation des clé avec un suffixe (sur tout les engeristremennt de clé)
 /** ----------------------------------------------------------------------------------------------------------------------- **/
 require_once 'SYSLang.class.php';
 
-class SYSLangCompilator extends SYSLang { // extend SYSLang ???
+
+class SYSLangCompilator extends SYSLang {
 /** -----------------------------------------------------------------------------------------------------------------------
 /** -----------------------------------------------------------------------------------------------------------------------
 /** ---																																						---
@@ -94,6 +95,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 /** ---																																						---
 /** -----------------------------------------------------------------------------------------------------------------------
 /** ----------------------------------------------------------------------------------------------------------------------- **/
+	const MD5_FILE_NAME = "languages.md5.xml";
 	
 /** -----------------------------------------------------------------------------------------------------------------------
 /** -----------------------------------------------------------------------------------------------------------------------
@@ -110,7 +112,10 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 	protected $_ini_files_code = null;		// ARRAY					:: Liste des codes correspondant aux fichier xml de lang
 	protected $_ini_keys_code = null;		// ARRAY					:: Liste des codes correspondant aux clé de texts de lang
 	protected $_ini_texts = null;				// ARRAY					:: Liste des textes associé à leur clé codés
-	protected $_run_instance = null;			// STRING				:: L'instanciation de la classe se voit attribué un ID unique 
+	protected $_ini_sxe_resources = null;	// ARRAY					:: Liste des ressources SimpleXMLElement pour un traitement dans un ordre aleatoire
+	protected $_run_instance = null;			// STRING				:: L'instanciation de la classe se voit attribué un ID unique
+	protected $_export_folder_path = null;	// STRING				:: Chemin vers le dossier d'exportation
+	protected $_import_folder_path = null;	// STRING				:: Chemin vers le dossier d'importation
 	
 	
 	
@@ -130,6 +135,8 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 		
 		/** Enregistrement du dossier de travail **/
 		$this->_working_directory = $working_directory;
+		$this->_export_folder_path = $working_directory."/Languages/exports";
+		$this->_import_folder_path = $working_directory."/Languages/imports";
 		
 		/** Initialisation des variables **/
 		$this->_ref_packages_keys = Array();
@@ -137,6 +144,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 		$this->_ini_files_code = Array();
 		$this->_ini_keys_code = Array();
 		$this->_ini_texts = Array();
+		$this->_ini_sxe_resources = Array();
 		
 		/** Génération d'un identifiant d'instance **/
 		$number = rand(0, 999999999);
@@ -213,8 +221,8 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 		$languages = $languages['KEYS']; 
 		
 		/** Ouvrir le fichier languages.xml **/
-		//$xmllanguages = new SimpleXMLElement(file_get_contents($this->_workspace.'/Languages/'.self::XML_CONF_FILE));
-		$xmllanguages = new SimpleXMLElement(file_get_contents($this->_files_repository."/".parent::XML_CONF_FILE));
+		//$xmllanguages = new SimpleXMLElement(file_get_contents($this->_files_repository."/".parent::XML_CONF_FILE));
+		$xmllanguages = self::SXEOverhaul(file_get_contents($this->_files_repository."/".parent::XML_CONF_FILE));
 		
 		
 		/** Parcourir les arguments, les controler, vérifier l'existance **/
@@ -365,17 +373,18 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 				
 				/** #3. Obtenir le rapport MD5 de controle **/
 					// #3.1. Vérifier que le fichier existe, sinon le créer
-					if(!file_exists($this->_files_repository.'/MD5.xml')){
-						file_put_contents($this->_files_repository.'/MD5.xml', '<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL, FILE_APPEND);
-						file_put_contents($this->_files_repository.'/MD5.xml', '<packs>'.PHP_EOL, FILE_APPEND);
-						file_put_contents($this->_files_repository.'/MD5.xml', '</packs>'.PHP_EOL, FILE_APPEND);
+					if(!file_exists($this->_files_repository.'/'.self::MD5_FILE_NAME)){
+						file_put_contents($this->_files_repository.'/'.self::MD5_FILE_NAME, '<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL, FILE_APPEND);
+						file_put_contents($this->_files_repository.'/'.self::MD5_FILE_NAME, '<packs>'.PHP_EOL, FILE_APPEND);
+						file_put_contents($this->_files_repository.'/'.self::MD5_FILE_NAME, '</packs>'.PHP_EOL, FILE_APPEND);
 					}
 					
 					// #3.2. Récupération du rapport MD5
-					$this->_MD5_report = new SimpleXMLElement(file_get_contents($this->_files_repository.'/MD5.xml'));
-				
+					$this->_MD5_report = self::SXEOverhaul(file_get_contents($this->_files_repository.'/'.self::MD5_FILE_NAME));
+					
 					// #3.3. Vérifier qu'un rapport MD5 pour le pack de référence existe
 					$sxe_name = $this->_ref_package;
+					
 					if(!isset($this->_MD5_report->$sxe_name)){
 						$this->_MD5_report->addChild($sxe_name);
 					}
@@ -386,7 +395,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 				$this->resources_builder($packages_to_compile);
 				
 				/** #5. Sauvegarder le rapport MD5 **/
-				parent::save_xml($this->_MD5_report, $this->_files_repository.'/MD5.xml');
+				parent::save_xml($this->_MD5_report, $this->_files_repository.'/'.self::MD5_FILE_NAME);
 				return true;
 			} 
 			else {
@@ -400,14 +409,20 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 		}
 	} // Boolean compile([String $packages=null...])
 	
+	/** ------------------------------------------------------------- **
+	/** --- méthode de controle de l'existance de l'environnement --- **
+	/** ------------------------------------------------------------- **/
+	static function environnement_exists($working_directory){
+		
+	}
+	
 	/** ---------------------------------------------------------------------- **
 	/** --- Méthode d'exportation des textes au format INI pour traduction --- **
-	/** ---------------------------------------------------------------------- **///<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	/** ---------------------------------------------------------------------- **/
 	public function ini_export($lang=array(), $complete=false){
 		/** Récupération des languages disponible **/
 		$languages = $this->get_avail_languages();
 		$languages = $languages['KEYS']; 
-/** >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> **/return true;
 		
 		/** Controler les langues à extraire **/
 		$langs_to_export = Array();
@@ -429,6 +444,8 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 		
 			Si une seule langue >>> Fichier ini
 			Si plusieurs langue >>> Zip
+			
+			>>> lang+keys
 			
 			L'import doit identifier l'extension
 			
@@ -462,44 +479,61 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 				
 		**/
 		/** Executer la lecture des dossier de langues **/
-		foreach($langs_to_export as $xkey => $xvalue){
-			$this->ini_read_folder($xkey);
-		}
-		
-		print_r($this->_ini_files_code);
-		print_r($this->_ini_keys_code);
-		print_r($this->_ini_texts);
-		
 		
 		/** Création du dossier temporaire **/
 		//mkdir($this->_workspace.'/'.$this->_run_instance);
 		
-		/** Ecriture du manifest **/
-		//$manifest_path = $this->_workspace.'/'.$this->_run_instance;
-		$manifest_path = $this->_workspace.'/__MANIFEST__';
-		
-		/** Enregistrement des fichiers **/
-		file_put_contents($manifest_path, '[FILES]'.PHP_EOL);
-		
-		foreach($this->_ini_files_code as $fkey => $fvalue){
-			file_put_contents($manifest_path, sprintf('%03d = %s', $fvalue, $fkey).PHP_EOL, FILE_APPEND);
-		}
-		
-		/** Enregistrement des KEYS **/
-		file_put_contents($manifest_path, PHP_EOL.'[KEYS]', FILE_APPEND);
-		
-		foreach($this->_ini_keys_code as $kkey => $kvalue){
-			file_put_contents($manifest_path, PHP_EOL.sprintf('%05d = %s', $kvalue, $kkey), FILE_APPEND);
-		}
-		
-		/** Ecriture des fichiers INI **/
-		foreach($this->_ini_texts as $lkey => $lvalue){
-			$file_path = $this->_workspace.'/'.$lkey.'.ini';
+		foreach($langs_to_export as $xkey => $xvalue){
+			/** RAZ des variables **/
+			$this->_ini_files_code = Array();
+			$this->_ini_keys_code = Array();
+			$this->_ini_texts = Array();
+			$this->_ini_sxe_resources = Array();
 			
-			file_put_contents($file_path, '[TEXTS]');
+			$this->ini_read_folder($xkey, $complete);
 			
-			foreach($lvalue as $tkey => $tvalue){
-				file_put_contents($file_path, PHP_EOL.$tvalue, FILE_APPEND);
+			//echo "Files Codes :";
+			//print_r($this->_ini_files_code);
+			//echo "Keys Codes :";
+			//print_r($this->_ini_keys_code);
+			//echo "Texts :";
+			//print_r($this->_ini_texts);
+			//exit();
+			
+			/** Ecritures des fichiers INI **/
+			foreach($this->_ini_texts as $lkey => $lvalue){
+				/** Déterminer le chemin vers le fichier de destination "xx-XX.ini" **/
+				$file_path = $this->_export_folder_path."/$lkey.ini";
+				
+				if(!file_exists($this->_export_folder_path)){
+					mkdir($this->_export_folder_path, 0775, true);
+				}
+				
+				/** Enregistrement des entêtes **/
+				file_put_contents($file_path, "[HEADERS]");
+				file_put_contents($file_path, PHP_EOL."lang = $lkey", FILE_APPEND);
+				
+				/** Enregistrement des Codes FILES **/
+				file_put_contents($file_path, PHP_EOL.PHP_EOL.'[FILES]', FILE_APPEND); // Debut section des codes fichiers
+				
+				foreach($this->_ini_files_code as $fkey => $fvalue){
+					file_put_contents($file_path, PHP_EOL.sprintf("%03d = %s", $fvalue, $fkey), FILE_APPEND);
+				}
+				
+				/** Enregistrement des Codes KEYS **/
+				file_put_contents($file_path, PHP_EOL.PHP_EOL.'[KEYS]', FILE_APPEND); // Debut section des codes fichiers
+				
+				foreach($this->_ini_keys_code as $kkey => $kvalue){
+					file_put_contents($file_path, PHP_EOL.sprintf("%05d = %s", $kvalue, $kkey), FILE_APPEND);
+				}
+				
+				/** Ecritures des textes TEXTS **/
+				file_put_contents($file_path, PHP_EOL.PHP_EOL.'[TEXTS]', FILE_APPEND); // Debut section des textes (Sans FILE_APPEND, permet le reset)
+				
+				/** Saisie des textes **/
+				foreach($lvalue as $tkey => $tvalue){
+					file_put_contents($file_path, PHP_EOL.$tvalue, FILE_APPEND);
+				}
 			}
 		}
 	}
@@ -508,14 +542,144 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 	/** --- Méthode d'importation des textes au format INI pour mise à jour des packages --- **
 	/** ------------------------------------------------------------------------------------ **///<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	public function ini_import($finalise=false){
+		// finalise => TIR = false
 		
+		/** Scanner le dossier **/
+		if(file_exists($this->_import_folder_path)){
+			$to_import = scandir($this->_import_folder_path);
+			
+			/** Parcourir les fichiers trouvé **/
+			foreach($to_import as $fkey => $fvalue){
+				/** S'assurer qu'il s'agit bien d'un fichier **/
+				if(is_file($this->_import_folder_path."/".$fvalue)){
+					/** RAZ des variables **/
+					$this->_ini_files_code = Array();
+					$this->_ini_keys_code = Array();
+					$this->_ini_texts = Array();
+					$this->_ini_sxe_resources = Array();
+					
+					/** Ouvrir le fichier **/
+					$ini = fopen($this->_import_folder_path."/".$fvalue, "r");
+					
+					/** Lire le fichier pour temporisé les données **/
+					$balises = Array("HEADERS", "FILES", "TEXTS", "KEYS");
+					$found = array_fill_keys($balises, false);
+					$package = null;	// Package correspondant
+					
+					while($buffer = fgets($ini)){
+						/** Recherche des balise ini SYSLang **/
+						$continue = false;
+						
+						foreach($balises as $bkey => $bname){
+							if(preg_match("#^\[$bname\]$#i", $buffer)){
+								$process = strtolower($bname);
+								$$process = true;
+								$continue = true;
+								$found[$bname] = true;
+								break;
+							}
+						}
+						
+						/** Si Balise trouvée ou si ligne vide alors suivant **/
+						if($continue || preg_match("#^\s*$#i", $buffer)) continue;
+						
+						/** Découper l'entrée **/
+						$buffer = preg_split("#\s*=\s*#i", $buffer, 2);
+						$key = $buffer[0];
+						$value = $buffer[1];
+						$value = preg_replace("#\s*$#i", "", $value);
+						
+						switch($process){
+							/** Traitement de l'entête **/
+							case "headers":
+								// Recherche du package correspondant 
+								if($key === 'lang'){
+									$package = $value;
+								}
+							break;
+							
+							/** Traitement des codes fichiers **/
+							case "files":
+								$this->_ini_files_code[$key] = $value;
+							break;
+							
+							/** Traitements des codes de clé **/
+							case "keys":
+								$this->_ini_keys_code[$key] = $value;
+							break;
+							
+							/** Traitements des texts **/
+							case "texts":
+								$this->_ini_texts[$key] = $value;
+							break;
+							
+							/** Si aucun process et pas une balise, on skip **/
+							default:
+								continue;
+							break;
+						}
+					}
+					
+					
+					/** Mise à jour du package si les données collectées sont consistente **/
+					if(!in_array(false, $found) && $package !== null){
+						/** Parcourir les fichiers et ouvrir avec SXE **/
+						foreach($this->_ini_files_code as $fkey => $file){
+							$this->_ini_sxe_resources[$fkey] = Array(
+								"path" => $this->_files_repository."/$package/$file",
+								"resources" => self::SXEOverhaul(file_get_contents($this->_files_repository."/$package/$file")),
+								"indexs" => Array()
+							);
+							
+							// Indexation des clés
+							$index = 0;
+							foreach($this->_ini_sxe_resources[$fkey]["resources"] as $rkey => $resource){
+								$i_sxe_key = strval($resource->attributes()->KEY);
+								
+								$this->_ini_sxe_resources[$fkey]["indexs"][$i_sxe_key] = $index;
+								$index++;
+							}
+						}
+						
+						/** Parcourir les textes **/
+						foreach($this->_ini_texts as $tkey => $text){
+							/** Découper le code **/
+							$code = preg_split("#\.#i", $tkey);
+							$file_code = $code[0];
+							$key_code = $code[1];
+							
+							/** Déterminer l'index correspondant **/
+							$index = $this->_ini_sxe_resources[$file_code]["indexs"][$this->_ini_keys_code[$key_code]];
+							
+							/** mise à jour **/
+							$this->_ini_sxe_resources[$file_code]["resources"]->resource[$index] = $text;
+							if($finalise) $this->_ini_sxe_resources[$file_code]["resources"]->resource[$index]->attributes()->TIR = "false";
+						}
+						
+						/** Sauvegarder les fichiers **/
+						foreach($this->_ini_sxe_resources as $sxe_key => $sxe){
+							parent::save_xml($sxe["resources"], $sxe["path"]);
+						}
+					} else {
+						// Erreur Warning, N'interrompt pas le traitement des autres fichiers
+						parent::throw_error(sprintf("File '%s' can't be import.", $fvalue), E_USER_WARNING);
+					}
+				}
+			}
+		} else {
+			parent::throw_error("Import folder not exist.", E_USER_ERROR);
+		}
+		// Lire les fichiers ini
+		// Bufferiser les données
+		// Mettre à jour les fichiers
 	}
 	
 	/** ------------------------------------------------------------------------------------------------------- **
 	/** --- Méthode de lecture récursive des fichiers XML pour obtenir les codes et texte pour l'export ini --- **
-	/** ------------------------------------------------------------------------------------------------------- **///<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	/** ------------------------------------------------------------------------------------------------------- **/
 	private function ini_read_folder($active_language, $complete=false, $subfolder=null){
-		$lang_path = $this->_workspace.'/Languages/'.$active_language;
+		//$lang_path = $this->_workspace.'/Languages/'.$active_language;
+		$lang_path = $this->_files_repository.'/'.$active_language;
 		$full_path = ($subfolder !== null) ? ($lang_path.'/'.$subfolder) : ($lang_path);
 		$files = scandir($full_path);
 		
@@ -527,7 +691,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 			if(!preg_match('#^\.#', $fvalue)){
 				/** S'il s'agit d'un dossier, on le scan à son tour **/
 				if(is_dir($full_path.'/'.$fvalue)){
-					$this->ini_read_folder($active_language, $file_path);
+					$this->ini_read_folder($active_language, $complete, $file_path);
 				}
 				/** Sinon, vérifier que c'est un fichier XML **/
 				if(preg_match('#\.xml$#i', $fvalue)){
@@ -538,22 +702,30 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 					$file_code = $this->_ini_files_code[$file_path];
 					
 					/** Ouvrir le fichier XML **/
-					$xml = new SimpleXMLElement(file_get_contents($full_path.'/'.$fvalue));
+					$xml = self::SXEOverhaul(file_get_contents($full_path.'/'.$fvalue));
+					
 					
 					/** Parcourir le fichier **/
 					foreach($xml as $xmlkey => $xmlvalue){
-						$key = strval(html_entity_decode($xmlvalue->attributes()->KEY));
-						$value = strval($xmlvalue);
+						$attr = $xmlvalue->attributes();
+						$tir = strtolower(strval($xmlvalue->attributes()->TIR));
+						$tir = ($tir === 'true' || !isset($attr['TIR'])) ? true : false;
 						
-						/** Vérifier la présence de la clé dans la liste de référence des key **/
-						if(!array_key_exists($key, $this->_ini_keys_code)){
-							$this->_ini_keys_code[$key] = count($this->_ini_keys_code);
+						/** Si complete, tout extraire, sinon seul les TIR true **/
+						if($complete || $tir){
+							$key = strval(html_entity_decode($xmlvalue->attributes()->KEY));
+							$value = strval($xmlvalue);
+							
+							/** Vérifier la présence de la clé dans la liste de référence des key **/
+							if(!array_key_exists($key, $this->_ini_keys_code)){
+								$this->_ini_keys_code[$key] = count($this->_ini_keys_code);
+							}
+							$key_code = $this->_ini_keys_code[$key];
+							
+							$line = sprintf('%03d.%05d = %s', $file_code, $key_code, $value);
+							
+							$this->_ini_texts[$active_language][] = $line;
 						}
-						$key_code = $this->_ini_keys_code[$key];
-						
-						$line = sprintf('[%03d.%05d] = %s', $file_code, $key_code, $value);
-						
-						$this->_ini_texts[$active_language][] = $line;
 					}
 					
 					$xml = null;
@@ -594,7 +766,8 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 					if(preg_match('#\.xml$#i', $file)){
 						/** Controler que le contenu est du contenu XML valide **/
 						try {
-							$resources = new SimpleXMLElement(file_get_contents($full_path.'/'.$file));
+							//$resources = new SimpleXMLElement(file_get_contents($full_path.'/'.$file));
+							$resources = self::SXEOverhaul(file_get_contents($full_path.'/'.$file));
 							/** Lister les clées du pack de référence **/
 							$ref_keys = Array();
 							$ref_keys_values = Array();
@@ -629,8 +802,10 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 							
 							
 							/** Récupérer l'ensemble MD5 correspondant au fichier **/
-							$MD5_file_name = preg_replace('#\/#', '-', $full_path.'/'.$file);
-							$MD5_file_name = 'file-'.$MD5_file_name;
+							//$MD5_file_name = preg_replace('#\/#', '-', $full_path.'/'.$file);
+							$MD5_file_name = preg_replace('#\/#', '-', $folder_path.'/'.$file);
+							$MD5_file_name = 'file'.$MD5_file_name;
+							
 							if(!isset($this->_MD5_package_report->$MD5_file_name)){
 								$this->_MD5_package_report->addChild($MD5_file_name);
 							}
@@ -693,7 +868,8 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 								
 								
 								/** Ouvrir le fichier **/
-								$target_resources = new SimpleXMLElement(file_get_contents($target_package_path.'/'.$file));
+								//$target_resources = new SimpleXMLElement(file_get_contents($target_package_path.'/'.$file));
+								$target_resources = self::SXEOverhaul(file_get_contents($target_package_path.'/'.$file));
 								$target_keys = Array();
 								$target_keys_values = Array();
 								$index = 0;
@@ -726,7 +902,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 											$clone_node->addAttribute(strval($akey), strval($avalue));
 										}
 										
-										//$clone_node->addAttribute('TIR', 'true');
+										$clone_node->addAttribute('TIR', 'true'); // Translate Is Required
 										
 										// Ne fonctionne pas pour SimpleXMLElement
 										//$target_resources->resource[] = $ref_keys_values[$nkey];
@@ -747,6 +923,7 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 										
 										$target_resources->resource[$target_index]->attributes()->CST = $new_cst;
 										$target_resources->resource[$target_index]->attributes()->SST = $new_sst;
+										$target_resources->resource[$target_index]->attributes()->TIR = "true";
 										$target_resources->resource[$target_index] = $new_value;
 									}
 										
@@ -820,5 +997,23 @@ class SYSLangCompilator extends SYSLang { // extend SYSLang ???
 			}
 		} // END_FOREACH_READ_FOLDER
 	} // Boolean resources_buildes(Array target_packages [,String $folder_path=null])
+	
+	/** ----------------------------------------------------------------------------------------------- **
+	/** --- Méthode de transcription des balise CDATA pour une gestion totale sous SimpleXMLElement --- **
+	/** ----------------------------------------------------------------------------------------------- **/
+	static function SXEOverhaul($xml_str){
+		// Convertir les balises CDATA en [[ ]]
+		$xml_str = preg_replace("#<!\[CDATA\[\s*(.*)\s*\]\]>#m", parent::CDATA_STR_START."$1".parent::CDATA_STR_END, $xml_str);
+		
+		// Remplacer toutes les balise HTML qui se trouve dans une balise CDATA
+		$xml_str = preg_replace_callback("#(?<=\[\[).*(?=\]\])#mi", function($matches){
+			$return = $matches[0];
+			$return = str_replace("<", "&lt;", $return);
+			$return = str_replace(">", "&gt;", $return);
+			return $return;
+		}, $xml_str);
+		
+		return new SimpleXMLElement($xml_str);
+	}
 }
 ?>

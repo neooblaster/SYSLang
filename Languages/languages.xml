@@ -2,7 +2,4 @@
 <languages default="fr-FR">
   <language LANG-BASE="fr" LANG-EXT="FR" LANG="fr-FR">Français</language>
   <language LANG-BASE="en" LANG-EXT="EN" LANG="en-EN">English</language>
-  <language LANG-BASE="de" LANG-EXT="DE" LANG="de-DE">Deutsh</language>
-  <language LANG-BASE="es" LANG-EXT="ES" LANG="es-ES">Espanol</language>
-  <language LANG-BASE="jp" LANG-EXT="JP" LANG="jp-JP">日本の</language>
 </languages>

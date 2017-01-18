@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packs>
+  <fr-FR>
+    <file-generic.xml>
+      <hash KEY="K_DISABLED">922cb256f82dc8d394bc365c6367577e</hash>
+      <hash KEY="K_SECTION_DUPLICATE_TASK">1f22faae11f0c88933fba64a56369a67</hash>
+      <hash KEY="K_SECTION_EDIT_TASK">e595b46571cb1ee9bd976912e9047830</hash>
+      <hash KEY="K_SECTION_IMPORT-TASKS">655f879282555c8353da5165fbfa79b8</hash>
+      <hash KEY="K_SECTION_MANAGE_TASKS">1f18247110f9e9aa1dcffc56a35a514a</hash>
+      <hash KEY="K_SECTION_NEW_TASK">63cbebbafbf363aa9752314317259704</hash>
+      <hash KEY="K_SECTION_PARAMS">b6234feeae4ff7c3d9982243590369fd</hash>
+      <hash KEY="K_SECTION_SEARCH">e259248ab1769d85415761a2516aca44</hash>
+      <hash KEY="K_SECTION_STATISTICS">80e5b3f7fb350e7ec6a9545a902a3956</hash>
+      <hash KEY="K_SECTION_SIGN_OFF">e7fae59065d7bc8a39e4985374ed9eb5</hash>
+      <hash KEY="K_SECTION_TASKS-PLANNED">608934881ba77c3ea75cdac4130b70aa</hash>
+      <hash KEY="K_PROMPT_DUPLICATE_TASK">a0517b7d95a5553980e79cad09d2f370</hash>
+      <hash KEY="K_PROMPT_EDIT_TASK">ef4b75f372023d38a38a1ff8b340a46e</hash>
+      <hash KEY="K_RESET">0d45f4d9c6f099c5268afc5fd2a4778b</hash>
+      <hash KEY="K_SAVE">4d5c4d09196fed7604b0a6cae426d990</hash>
+      <hash KEY="K_AND">d26608ee2757854213b29f647f983715</hash>
+      <hash KEY="K_TITLE_CANCEL">e0db76be6cfbab8fa8af7786a104715b</hash>
+      <hash KEY="K_TITLE_CLOSE">369d5840d0d8c0bb12a79878bdf8a387</hash>
+      <hash KEY="K_TITLE_DELETE">9b3a87702037ab747953cd4dac6257f0</hash>
+      <hash KEY="K_TITLE_DUPLICATE">b595a6705d85067edf295b2f033f7204</hash>
+      <hash KEY="K_TITLE_EDIT">0b169db1fd434eb9df25eac836a0809f</hash>
+      <hash KEY="K_TITLE_RENAME">cce3fae6eedf1d7949ba04f825a1211d</hash>
+      <hash KEY="K_TITLE_SAVE">f7acc59eaab1626f4efabccfa805157d</hash>
+      <hash KEY="K_HEADER_BETWEEN">063bd420ceaea94f40fd77c3c8ccb3c9</hash>
+      <hash KEY="K_HEADER_FIRST_DATE">968403998529493e024b972ffeb0f54a</hash>
+      <hash KEY="K_HEADER_LAST_DATE">727bbd07a9115b1c365adff242d9d18b</hash>
+      <hash KEY="K_HEADER_AND">d26608ee2757854213b29f647f983715</hash>
+      <hash KEY="K_HEADER_DONE">346affef53e1c4ce3e8ec2458011801e</hash>
+      <hash KEY="K_HEADER_CUSTOMER">37cc955087b34d8ae6c15e79660bc8f3</hash>
+      <hash KEY="K_HEADER_DOMAIN">50534c15e4b76d7800f7effa981066e5</hash>
+      <hash KEY="K_HEADER_END_TIME">635807f0571cdaa9d5616c5366de3b0c</hash>
+      <hash KEY="K_HEADER_APPLICATION">e915b2bca592d1cefedd22af2e130a8c</hash>
+      <hash KEY="K_HEADER_START_TIME">ed5690f10b4ce845036f2500a83e09a9</hash>
+      <hash KEY="K_HEADER_TASKNAME">6b08ed36f015ca09f9b22467021246bc</hash>
+      <hash KEY="K_HEADER_VALIDATOR">0235116b8d46a0ea19e2a8386580ea61</hash>
+      <hash KEY="K_TITLE_CHECK_TO_CONFIRM">bdaa20a8ebf800279ce452117c54615d</hash>
+      <hash KEY="K_TITLE_HIDE_DESC">e8fade204fcad522da54515c21b1af89</hash>
+      <hash KEY="K_TITLE_SHOW_DESC">bdf974d396a59d1b02df82c23d37d0c9</hash>
+      <hash KEY="K_NEW_KEY_TO_ADD_01">00e90f961c429372630a921b1d01fb47</hash>
+    </file-generic.xml>
+  </fr-FR>
+</packs>

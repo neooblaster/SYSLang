@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources>	
+	<resource KEY="DISABLED" CST="false" SST="true">Désactivé</resource>
 	<resource KEY="SECTION_DUPLICATE_TASK" CST="false" SST="true">Dupliquer une action</resource>
 	<resource KEY="SECTION_EDIT_TASK" CST="false" SST="true">Editer une action</resource>
 	<resource KEY="SECTION_IMPORT-TASKS" CST="false" SST="true">Importer des actions</resource>
@@ -41,7 +42,4 @@
 	<resource KEY="TITLE_CHECK_TO_CONFIRM" CST="true" SST="false">Cocher pour validation</resource>
 	<resource KEY="TITLE_HIDE_DESC" CST="true" SST="false">Masquer la description</resource>
 	<resource KEY="TITLE_SHOW_DESC" CST="true" SST="false">Afficher la description</resource>
-	
-	<resource KEY="NEW_KEY_TO_ADD_01" CST="true" SST="false">Nouvelle clé à ajouté</resource>
-	<resource KEY="DISABLED" CST="false" SST="true">Clé modifier a retraduire 2</resource>
 </resources>

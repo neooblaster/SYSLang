@@ -108,6 +108,10 @@ class SYSLang {
 /** -----------------------------------------------------------------------------------------------------------------------
 /** ----------------------------------------------------------------------------------------------------------------------- **/
 	const XML_CONF_FILE = 'languages.xml';
+	const CDATA_STR_START = "[[";
+	const CDATA_REG_START = "\[\[";
+	const CDATA_STR_END = "]]";
+	const CDATA_REG_END = "\]\]";
 	
 	
 	
@@ -453,6 +457,8 @@ class SYSLang {
 		} else {
 			file_put_contents($file, $dom->saveXML());
 		}
+		
+		file_put_contents($file, preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", file_get_contents($file)));
 		
 		return true;
 	} // Boolean save_xml(SimpleXMLElement $sxe, String $file [, Integer $flag=null])
