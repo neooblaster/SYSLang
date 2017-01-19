@@ -8,7 +8,7 @@
 /** ---																																						---
 /** ---		AUTEUR 	: Nicolas DUPRE																												---
 /** ---																																						---
-/** ---		RELEASE	: 18.01.2017																													---
+/** ---		RELEASE	: 19.01.2017																													---
 /** ---																																						---
 /** ---		VERSION	: 0.1																																---
 /** ---																																						---
@@ -17,9 +17,13 @@
 /** --- 															 { C H A N G E L O G } 																---
 /** --- 														-----------------------------															---
 /** ---																																						---
-/** ---		VERSION 0.1 : 18.01.2017																												---
+/** ---																																						---
+/** ---		VERSION 0.1 : 19.01.2017																												---
 /** ---		-------------------------																												---
-/** ---			- Première release																													---
+/** ---			-  Première release : 																												---
+/** ---				>  Faire un programme de génération des textes non traduit au format ini (differentiel / complet)		---
+/** ---				>  Faire un programme de mise à jour des textes depuis l'ini vers l'XML											---
+/** ---																																						---
 /** ---																																						---
 /** --- 										-----------------------------------------------------											---
 /** --- 											{ L I S T E      D E S      M E T H O D E S } 												---
@@ -28,17 +32,19 @@
 /** ---		GETTERS :																																	---
 /** ---	    ---------																																	---
 /** ---																																						---
-/** ---			- [Pub] xxxx																															---
+/** ---			- [---] NONE																															---
 /** ---																																						---
 /** ---		SETTERS :																																	---
 /** ---	    ---------																																	---
 /** ---																																						---
 /** ---			- [Pub] set_ref_language																											---
+/** ---			- [Pub] set_export_repository																										---
+/** ---			- [Pub] set_import_repository																										---
 /** ---																																						---
 /** ---		OUTPUTTERS :																																---
 /** ---	    ------------																																---
 /** ---																																						---
-/** ---			- [Pub] xxxx																															---
+/** ---			- [---] NONE																															---
 /** ---																																						---
 /** ---		WORKERS :																																	---
 /** ---	    ---------																																	---
@@ -46,42 +52,20 @@
 /** ---			- [Pub] add_languages																												---
 /** ---			- [Sta] build_environnement																										---
 /** ---			- [Pub] compile																														---
+/** ---			- [Pub] ini_export																													---
+/** ---			- [Pub] ini_import																													---
+/** ---			- [Pri] ini_read_folder																												---
 /** ---			- [Pri] resources_builder																											---
+/** ---			- [Sta] SXEOverhaul																													---
 /** ---																																						---
 /** ---																																						---
 /** -----------------------------------------------------------------------------------------------------------------------
 /** -----------------------------------------------------------------------------------------------------------------------
 
 -> Ajouter un attribut LANG dans resources pour identifier tout de suite la langue du fichier xml visualiser
-
--> faire un programme de génération des textes non traduit au format ini (differentiel / complet)
--> faire un programme de mise à jour des texte depuis l'ini vers l'XML
-
-
--> doit permettre de manager le fichier languages.xml
-
 -> idealement, doit permettre de fournir un portail d'utilisation
-
-
-ini_export($lang) /Export par language, un manifest de gestion, un fichier de texte uniquement
-ini_import()
-
-
-__MANIFEST_ --> permet de pas traduire les clé
-[ file.xml [num_file]]
-num_key=key
-
-[SYS::num_file::num_key]\ttext
-
-
-L'intéret de l'import/export et compilation est d'avoir toujours les packages fonctionnel (meme si les texte ne sont pas traduit il sont la en fr)
-
-Ajouter un system de backup en cas d'erreur de l'utilisateur
-
-Sécurisation des clé avec un suffixe (sur tout les engeristremennt de clé)
-
-
-
+-> Ajouter un system de backup en cas d'erreur de l'utilisateur
+-> Utiliser le "default-language" comme package de reférence pour compile
 
 /** -----------------------------------------------------------------------------------------------------------------------
 /** ----------------------------------------------------------------------------------------------------------------------- **/
@@ -150,7 +134,7 @@ class SYSLangCompilator extends SYSLang {
 		/** Génération d'un identifiant d'instance **/
 		$number = rand(0, 999999999);
 		$this->_run_instance = sha1(time().'.'.$number);
-	}
+	} // SYSLangCompilator __construct(String $working_directory)
 	
 	/** ------------------------------------------------------------- **
 	/** --- Méthode de déstruction - Execution à la fin du script --- **
@@ -187,21 +171,25 @@ class SYSLangCompilator extends SYSLang {
 		$this->_ref_package = $matches[0];
 		
 		return true;
-	}
+	} // Boolean set_ref_language(String $package)
 	
 	/** ------------------------------------------------------------------ **
 	/** --- Méthode de définition du dossier d'export des fichiers INI --- **
 	/** ------------------------------------------------------------------ **/
 	public function set_export_repository($repository){
 		$this->_export_folder_path = $repository;
-	}
+		
+		return true;
+	} // Boolean set_export_repository(String $repository)
 	
 	/** ----------------------------------------------------------------------- **
 	/** --- Méthode de définition du dossier d'importation des fichiers INI --- **
 	/** ----------------------------------------------------------------------- **/
 	public function set_import_repository($repository){
 		$this->_import_folder_path = $repository;
-	}
+		
+		return true;
+	} // Boolean set_import_repository(String $repository)
 	
 	
 	
@@ -437,7 +425,7 @@ class SYSLangCompilator extends SYSLang {
 	
 	/** ------------------------------------------------------------- **
 	/** --- méthode de controle de l'existance de l'environnement --- **
-	/** ------------------------------------------------------------- **/
+	/** ------------------------------------------------------------- **////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	static function environnement_exists($working_directory){
 		
 	}
@@ -699,7 +687,7 @@ class SYSLangCompilator extends SYSLang {
 			parent::throw_error(sprintf("Import folder '%s' not exist.", $this->_import_folder_path), E_USER_ERROR);
 			return false;
 		}
-	} // Boolean ini_import([$finalise=false])
+	} // Boolean ini_import([Boolean $finalise=false])
 	
 	/** ------------------------------------------------------------------------------------------------------- **
 	/** --- Méthode de lecture récursive des fichiers XML pour obtenir les codes et texte pour l'export ini --- **
@@ -759,7 +747,7 @@ class SYSLangCompilator extends SYSLang {
 				}
 			}
 		}
-	}
+	} // Void ini_read_folder(String $active_language [,Boolean $complete=false [,String $subfolder=null]])
 	
 	/** ----------------------------------------------------- **
 	/** --- Méthode de suppression d'un package de langue --- **
@@ -1048,6 +1036,6 @@ class SYSLangCompilator extends SYSLang {
 		}, $xml_str);
 		
 		return new SimpleXMLElement($xml_str);
-	}
+	} // SimpleXMLElement SXEOverhaul(String $xml_string)
 }
 ?>

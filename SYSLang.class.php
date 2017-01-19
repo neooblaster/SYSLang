@@ -8,14 +8,19 @@
 /** ---																																						---
 /** ---		AUTEUR 	: Nicolas DUPRE																												---
 /** ---																																						---
-/** ---		RELEASE	: 05.01.2017																													---
+/** ---		RELEASE	: 12.01.2017																													---
 /** ---																																						---
-/** ---		VERSION	: 1.3																																---
+/** ---		VERSION	: 1.4																																---
 /** ---																																						---
 /** ---																																						---
 /** --- 														-----------------------------															---
 /** --- 															 { C H A N G E L O G } 																---
 /** --- 														-----------------------------															---
+/** ---																																						---
+/** ---		VERSION 1.4 : 12.01.2017																												---
+/** ---		-------------------------																												---
+/** ---			-  Ajout de constante pour traiter les balise XML CDATA + traitement associé										---
+/** ---																																						---
 /** ---																																						---
 /** ---		VERSION 1.3 : 06.05.2016																												---
 /** ---		-------------------------																												---
@@ -73,27 +78,6 @@
 /** ---																																						---
 /** -----------------------------------------------------------------------------------------------------------------------
 /** -----------------------------------------------------------------------------------------------------------------------
-
-	implémenter a la classe les programme de compilation pour les autre langue genre méthode d'update
-	
-		Regarde les dossier existant
-			met a jour le dossier en cours par rapport au dossier de référence (FR)
-				Si fichier inexistant créer
-				Si fichier existant parcourir chaque ligne ressource
-					Si ligne existante, controler la présence d'un indicateur
-						Si indicateur, pas de modif
-						Si pas indicateur, ligne modifiée : remplacer celle du fichier en cours de lecture
-						
-						Mettre les ligne modifié à la fin pr facilité le travail du translateur
-						
-						
-		Indicateur doit se trouver dans le text afin que le développeur n'ai pas a supprimer un attribut en cas de modification
-		Partir sur \u0020 en début ou fin de text
-						
-	
-		//Créer une méthode de finalisation de fichier de langue, valable pr le translateur afin de ne pas devoir lui même mettre l'indicateur
-		//Cependant, 
-
 
 
 
