@@ -52,6 +52,7 @@
 /** -----------------------------------------------------------------------------------------------------------------------
 /** -----------------------------------------------------------------------------------------------------------------------
 
+-> Ajouter un attribut LANG dans resources pour identifier tout de suite la langue du fichier xml visualiser
 
 -> faire un programme de génération des textes non traduit au format ini (differentiel / complet)
 -> faire un programme de mise à jour des texte depuis l'ini vers l'XML
@@ -135,8 +136,8 @@ class SYSLangCompilator extends SYSLang {
 		
 		/** Enregistrement du dossier de travail **/
 		$this->_working_directory = $working_directory;
-		$this->_export_folder_path = $working_directory."/Languages/exports";
-		$this->_import_folder_path = $working_directory."/Languages/imports";
+		$this->_export_folder_path = $this->_files_repository."/exports";
+		$this->_import_folder_path = $this->_files_repository."/imports";
 		
 		/** Initialisation des variables **/
 		$this->_ref_packages_keys = Array();
@@ -186,6 +187,20 @@ class SYSLangCompilator extends SYSLang {
 		$this->_ref_package = $matches[0];
 		
 		return true;
+	}
+	
+	/** ------------------------------------------------------------------ **
+	/** --- Méthode de définition du dossier d'export des fichiers INI --- **
+	/** ------------------------------------------------------------------ **/
+	public function set_export_repository($repository){
+		$this->_export_folder_path = $repository;
+	}
+	
+	/** ----------------------------------------------------------------------- **
+	/** --- Méthode de définition du dossier d'importation des fichiers INI --- **
+	/** ----------------------------------------------------------------------- **/
+	public function set_import_repository($repository){
+		$this->_import_folder_path = $repository;
 	}
 	
 	
@@ -256,10 +271,12 @@ class SYSLangCompilator extends SYSLang {
 				}
 				else {
 					parent::throw_error(sprintf('Language "%s" with lang code "%s" already exist in "%s".', $lang_name, $code, parent::XML_CONF_FILE), E_USER_WARNING);
+					return false;
 				}
 			} 
 			else {
 				parent::throw_error(sprintf('Argument supplied "%s" not valide. It must be like this lang-LANG:Lang_name. SYSLangCompilator::add_languages skip this argument.', $value), E_USER_WARNING);
+				return false;
 			}
 		}
 		
@@ -268,6 +285,8 @@ class SYSLangCompilator extends SYSLang {
 		
 		/** Mettre à jour la liste des langues disponible **/
 		parent::list_languages();
+		
+		return true;
 	} // Boolean add_languages([String $lang...])
 	
 	/** ------------------------------------------------------------------------------ **
@@ -362,8 +381,8 @@ class SYSLangCompilator extends SYSLang {
 					$packages = func_get_args();
 					
 					foreach($packages as $key => $value){
-						if(in_array($value, $avail_languages)){
-							$packages_to_compile[] = $value;
+						if(array_key_exists($value, $avail_languages)){
+							$packages_to_compile[$value] = $avail_languages[$value];
 						}
 					}
 				} 
@@ -392,6 +411,13 @@ class SYSLangCompilator extends SYSLang {
 					$this->_MD5_package_report = $this->_MD5_report->$sxe_name;
 				
 				/** #4. Lancer la compilation **/
+				// RAZ pour execution multiple de compile par la meme instance
+				$this->_ref_packages_keys = Array();
+				$this->_ini_files_code = Array();
+				$this->_ini_keys_code = Array();
+				$this->_ini_texts = Array();
+				$this->_ini_sxe_resources = Array();
+				
 				$this->resources_builder($packages_to_compile);
 				
 				/** #5. Sauvegarder le rapport MD5 **/
@@ -499,6 +525,7 @@ class SYSLangCompilator extends SYSLang {
 			//echo "Texts :";
 			//print_r($this->_ini_texts);
 			//exit();
+			// Meme si pas de text, genere le fichier, que les balise
 			
 			/** Ecritures des fichiers INI **/
 			foreach($this->_ini_texts as $lkey => $lvalue){
@@ -536,14 +563,14 @@ class SYSLangCompilator extends SYSLang {
 				}
 			}
 		}
-	}
+		
+		return true;
+	} // Boolean ini_export([Array $lang=Array() [,Boolean $complete=false]])
 	
 	/** ------------------------------------------------------------------------------------ **
 	/** --- Méthode d'importation des textes au format INI pour mise à jour des packages --- **
-	/** ------------------------------------------------------------------------------------ **///<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	/** ------------------------------------------------------------------------------------ **/
 	public function ini_import($finalise=false){
-		// finalise => TIR = false
-		
 		/** Scanner le dossier **/
 		if(file_exists($this->_import_folder_path)){
 			$to_import = scandir($this->_import_folder_path);
@@ -564,7 +591,7 @@ class SYSLangCompilator extends SYSLang {
 					/** Lire le fichier pour temporisé les données **/
 					$balises = Array("HEADERS", "FILES", "TEXTS", "KEYS");
 					$found = array_fill_keys($balises, false);
-					$package = null;	// Package correspondant
+					$package = null; // Package correspondant
 					
 					while($buffer = fgets($ini)){
 						/** Recherche des balise ini SYSLang **/
@@ -666,13 +693,13 @@ class SYSLangCompilator extends SYSLang {
 					}
 				}
 			}
+			
+			return true;
 		} else {
-			parent::throw_error("Import folder not exist.", E_USER_ERROR);
+			parent::throw_error(sprintf("Import folder '%s' not exist.", $this->_import_folder_path), E_USER_ERROR);
+			return false;
 		}
-		// Lire les fichiers ini
-		// Bufferiser les données
-		// Mettre à jour les fichiers
-	}
+	} // Boolean ini_import([$finalise=false])
 	
 	/** ------------------------------------------------------------------------------------------------------- **
 	/** --- Méthode de lecture récursive des fichiers XML pour obtenir les codes et texte pour l'export ini --- **
@@ -766,7 +793,6 @@ class SYSLangCompilator extends SYSLang {
 					if(preg_match('#\.xml$#i', $file)){
 						/** Controler que le contenu est du contenu XML valide **/
 						try {
-							//$resources = new SimpleXMLElement(file_get_contents($full_path.'/'.$file));
 							$resources = self::SXEOverhaul(file_get_contents($full_path.'/'.$file));
 							/** Lister les clées du pack de référence **/
 							$ref_keys = Array();
@@ -800,9 +826,7 @@ class SYSLangCompilator extends SYSLang {
 								$index++;
 							}
 							
-							
 							/** Récupérer l'ensemble MD5 correspondant au fichier **/
-							//$MD5_file_name = preg_replace('#\/#', '-', $full_path.'/'.$file);
 							$MD5_file_name = preg_replace('#\/#', '-', $folder_path.'/'.$file);
 							$MD5_file_name = 'file'.$MD5_file_name;
 							
@@ -842,10 +866,10 @@ class SYSLangCompilator extends SYSLang {
 								}
 							}
 							
-							//print_r($ref_keys);
-							//print_r($rep_keys);
-							//print_r($keys_to_control);
-							//print_r($keys_to_update);
+							//echo "REF KEYS :: "; print_r($ref_keys);
+							//echo "MD5 KEYS :: "; print_r($rep_keys);
+							//echo "INTERSECT KEY(REF,MD5) :: "; print_r($keys_to_control);
+							//echo "!= MD5 KEYS :: "; print_r($keys_to_update);
 							
 							/** Parcourir les packages à construire **/
 							foreach($target_packages as $pkey => $pvalue){
@@ -871,7 +895,7 @@ class SYSLangCompilator extends SYSLang {
 								//$target_resources = new SimpleXMLElement(file_get_contents($target_package_path.'/'.$file));
 								$target_resources = self::SXEOverhaul(file_get_contents($target_package_path.'/'.$file));
 								$target_keys = Array();
-								$target_keys_values = Array();
+								//$target_keys_values = Array();
 								$index = 0;
 								
 								/** Lister les clées du pack cible **/
@@ -880,10 +904,12 @@ class SYSLangCompilator extends SYSLang {
 									$s_tkey = 'K_'.$tkey;
 									
 									$target_keys[$s_tkey] = $index;
-									$target_keys_values[$s_tkey] = $tres_value; 
+									//$target_keys_values[$s_tkey] = $tres_value; 
 									
 									$index++;
 								}
+								
+								//echo "TARGET KEYS :: "; print_r($target_keys);
 								
 								/** Procéder au traitement **/
 									// #1.1. Chercher les nouvelles clées
@@ -902,19 +928,27 @@ class SYSLangCompilator extends SYSLang {
 											$clone_node->addAttribute(strval($akey), strval($avalue));
 										}
 										
-										$clone_node->addAttribute('TIR', 'true'); // Translate Is Required
+										/** Translate Is Required**/
+										$attr = $clone_node->attributes();
 										
-										// Ne fonctionne pas pour SimpleXMLElement
-										//$target_resources->resource[] = $ref_keys_values[$nkey];
+										if(isset($attr["TIR"])){
+											$clone_node->attributes()->TIR = "true";
+										} else {
+											$clone_node->addAttribute('TIR', 'true'); 
+										}
 									}
 									
-									// #2.2. Chercher les clés inconnues
-									$unknow_keys = array_intersect_key($ref_keys, $target_keys);
-									$unknow_keys = array_diff_key($unknow_keys, $keys_to_control);
-									$target_keys_to_update = array_merge($unknow_keys, $keys_to_update);
-									
+									// #2.2.1 Chercher les clés inconnues -> ???
+										//$unknow_keys = array_intersect_key($ref_keys, $target_keys); echo "INTERSECT REF,TARGET :: "; print_r($unknow_keys);
+										//$unknow_keys = array_diff_key($unknow_keys, $keys_to_control); echo "DIFF UNKNOW,(REF,MD5)"; print_r($unknow_keys);
+										//$unknow_keys = array_diff_key($unknow_keys, $keys_to_control); echo "DIFF UNKNOW,(REF,MD5)"; print_r($unknow_keys);
+										//$target_keys_to_update = array_merge($unknow_keys, $keys_to_update);
+										
+									// #2.2.2. Chercher les clés disparues :: Impossible de mettre à jour une clé modifié si dans la cible elle n'existe pas. (supprimée accidentellement)
+										$target_keys_to_update = array_intersect_key($target_keys, $keys_to_update);//echo "TARGET KEY TO UPDATE :: ";print_r($target_keys_to_update);
+										
 									// #2.3. Parcourir les clées à mettre à jour pour maintenir le fichier 
-									foreach($target_keys_to_update as $ukey => $uvalue){
+									foreach($target_keys_to_update as $ukey => $uvalue){//si cle update mais n"existe pas ....
 										$target_index = $target_keys[$ukey];
 										
 										$new_value = strval($ref_keys_values[$ukey]);

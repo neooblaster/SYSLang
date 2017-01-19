@@ -171,16 +171,17 @@
 
 
 	/** Extension **/
-	$compilator = new SYSLangCompilator(".");
+	//$compilator = new SYSLangCompilator(".");
 	//$compilator->add_languages("en-EN:English");
 
 	/** Compilatior **/
-	$compilator->set_ref_language("fr-FR");
-	$compilator->compile();
+	//$compilator->set_ref_language("fr-FR");
+	//$compilator->compile();
 
 	/** Exportation **/
-	$compilator->ini_export(Array("en-EN"));
+	//$compilator->ini_export(Array("en-EN"));
 	//$compilator->ini_import(true);
+
 
 ?>
 
