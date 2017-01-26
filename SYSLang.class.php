@@ -8,14 +8,20 @@
 /** ---																																						---
 /** ---		AUTEUR 	: Nicolas DUPRE																												---
 /** ---																																						---
-/** ---		RELEASE	: 12.01.2017																													---
+/** ---		RELEASE	: 26.01.2017																													---
 /** ---																																						---
-/** ---		VERSION	: 1.4																																---
+/** ---		VERSION	: 1.4.1																															---
 /** ---																																						---
 /** ---																																						---
 /** --- 														-----------------------------															---
 /** --- 															 { C H A N G E L O G } 																---
 /** --- 														-----------------------------															---
+/** ---																																						---
+/** ---		VERSION 1.4.1 : 26.01.2017																												---
+/** ---		---------------------------																											---
+/** ---			-  Correction de la methode resources_builder dont le return était mal placé mettant fin prématurément	---
+/** ---			-  Correction de la méthode get_user_language qui générait des erreur E_NOTICE									---
+/** ---																																						---
 /** ---																																						---
 /** ---		VERSION 1.4 : 12.01.2017																												---
 /** ---		-------------------------																												---
@@ -182,8 +188,11 @@ class SYSLang {
 		
 		/** Déclaration des variables **/
 			$accepted_languages;	// Language admis par le navigateur 
-			$user_language;		// Language utilisateur determiné
+			$user_languages;		// Language utilisateur determiné
 			$matches;				// Résultat des occurences trouvées
+		
+		/** Initialisation **/
+			$user_languages = Array();
 		
 		/** Traitement des languages admis **/
 			// CHROME : Array ( [0] => fr-FR [1] => fr;q=0.8 [2] => en-US;q=0.6 [3] => en;q=0.4 ) 
@@ -193,14 +202,15 @@ class SYSLang {
 			// IE     : Array ( [0] => fr-FR )
 			//
 			// Pattern de recherche [a-z]{2}-[A-Z]{2}
-		
-			$accepted_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-			$user_languages = Array();
-			foreach($accepted_languages as $key => $value){
-				if(preg_match('#^[a-z]{2}-[A-Z]{2}#', $value)){
-					preg_match_all('#^[a-z]{2}-[A-Z]{2}#', $value, $matches);
-					if(!array_key_exists($matches[0][0], $user_languages)){
-						$user_languages[] = $matches[0][0];
+			if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+				$accepted_languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+				$user_languages = Array();
+				foreach($accepted_languages as $key => $value){
+					if(preg_match('#^[a-z]{2}-[A-Z]{2}#', $value)){
+						preg_match_all('#^[a-z]{2}-[A-Z]{2}#', $value, $matches);
+						if(!array_key_exists($matches[0][0], $user_languages)){
+							$user_languages[] = $matches[0][0];
+						}
 					}
 				}
 			}

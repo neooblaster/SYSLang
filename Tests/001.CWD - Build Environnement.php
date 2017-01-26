@@ -1,5 +1,5 @@
 <?php
-	// Test Numéro 001 :: Création de l'environnement - Même dossier d'execution
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 	
 	if(SYSLangCompilator::build_environnement(".", "fr-FR:Français")){

@@ -1,5 +1,5 @@
 <?php
-	// Test Numéro 101 :: Création de l'environnement - Autre Dossier
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 	
 	if(SYSLangCompilator::build_environnement("..", "fr-FR:Français")){

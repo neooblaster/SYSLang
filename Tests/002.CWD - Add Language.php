@@ -1,5 +1,5 @@
 <?php
-	// Test Numéro 002 :: Ajouter une nouvelle langue - Autre Dossier
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 	$c = new SYSLangCompilator(".");
 	

@@ -1,5 +1,5 @@
 <?php
-	// Test Numéro 103 :: Compiler un package précis - Autre Dossier
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 	$c = new SYSLangCompilator("..");
 	$c->set_ref_language("fr-FR");

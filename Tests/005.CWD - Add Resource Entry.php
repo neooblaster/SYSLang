@@ -1,5 +1,5 @@
 <?php
-	// Test Numéro 005 :: Ajouter une clé
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 
 	$sxe = SYSLangCompilator::SXEOverhaul(file_get_contents("Languages/fr-FR/generic.xml"));

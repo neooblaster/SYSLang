@@ -1,5 +1,5 @@
 <?php
-	// Modification d'une clé
+	error_reporting(E_ALL);
 	require_once '../SYSLangCompilator.class.php';
 
 	// Ajouter une clé PRECISE
