@@ -1002,8 +1002,6 @@ class SYSLangCompilator extends SYSLang {
 									$hash_index = $rep_keys[$hdkey];
 									unset($MD5_file_report->hash[$hash_index]);
 								}
-							
-							return true;
 						}
 						/** Le fichier XML n'est pas valide et on ne peux pas le traiter **/
 						catch (Exception $e) {
@@ -1018,6 +1016,8 @@ class SYSLangCompilator extends SYSLang {
 				}
 			}
 		} // END_FOREACH_READ_FOLDER
+		
+		return true;
 	} // Boolean resources_buildes(Array target_packages [,String $folder_path=null])
 	
 	/** ----------------------------------------------------------------------------------------------- **
