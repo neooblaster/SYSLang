@@ -1042,7 +1042,7 @@ class SYSLangCompilator extends SYSLang {
 		}, $xml_str);
 		
 		// Remplacer toutes les entités de caractère numérique
-		$xml_str = preg_replace("#&(\#?)([a-zA-Z0-9]+);#m", "::$1::", $xml_str);
+		$xml_str = preg_replace("#&(\#?)([a-zA-Z0-9]+);#m", "::$1$2::", $xml_str);
 		
 		return new SimpleXMLElement($xml_str);
 	} // SimpleXMLElement SXEOverhaul(String $xml_string)

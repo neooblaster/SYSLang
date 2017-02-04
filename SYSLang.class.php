@@ -462,7 +462,7 @@ class SYSLang {
 		$str = preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", $str);
 		
 		// Resitution des entités texts et numériques
-		$str = preg_replace("#::(\#?)([a-zA-Z0-9]+)::#", "&#$1;", $str);
+		$str = preg_replace("#::(\#?)([a-zA-Z0-9]+)::#", "&$1$2;", $str);
 		
 		// Finalisation
 		file_put_contents($file, $str);
