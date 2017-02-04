@@ -452,7 +452,18 @@ class SYSLang {
 			file_put_contents($file, $dom->saveXML());
 		}
 		
-		file_put_contents($file, preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", file_get_contents($file)));
+		
+		$str = file_get_contents($file);
+		
+		// Restitution des balises CDATA
+		$str = preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", $str);
+		
+		// Resitution des entité numérique
+		$str = preg_replace("#::([a-zA-Z0-9]+)::#", "&#$1;", $str);
+		
+		file_put_contents($file, $str);
+		
+		//file_put_contents($file, preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", file_get_contents($file)));
 		
 		return true;
 	} // Boolean save_xml(SimpleXMLElement $sxe, String $file [, Integer $flag=null])

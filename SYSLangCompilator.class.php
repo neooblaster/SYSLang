@@ -8,7 +8,7 @@
 /** ---																																						---
 /** ---		AUTEUR 	: Nicolas DUPRE																												---
 /** ---																																						---
-/** ---		RELEASE	: 19.01.2017																													---
+/** ---		RELEASE	: 04.02.2017																													---
 /** ---																																						---
 /** ---		VERSION	: 0.1																																---
 /** ---																																						---
@@ -18,7 +18,13 @@
 /** --- 														-----------------------------															---
 /** ---																																						---
 /** ---																																						---
-/** ---		VERSION 0.1 : 19.01.2017																												---
+/** ---		VERSION 1.1 : 04.02.2017																												---
+/** ---		-------------------------																												---
+/** ---			-  Sécurisation des entités textes et numérique : 																			---
+/** ---				> &#13; est exporté en tant que ::13:: dans le fichier INI															---
+/** ---																																						---
+/** ---																																						---
+/** ---		VERSION 1.0 : 19.01.2017																												---
 /** ---		-------------------------																												---
 /** ---			-  Première release : 																												---
 /** ---				>  Faire un programme de génération des textes non traduit au format ini (differentiel / complet)		---
@@ -1034,6 +1040,9 @@ class SYSLangCompilator extends SYSLang {
 			$return = str_replace(">", "&gt;", $return);
 			return $return;
 		}, $xml_str);
+		
+		// Remplacer toutes les entités de caractère numérique
+		$xml_str = preg_replace("#&\#([a-zA-Z0-9]+);#m", "::$1::", $xml_str);
 		
 		return new SimpleXMLElement($xml_str);
 	} // SimpleXMLElement SXEOverhaul(String $xml_string)
