@@ -10,23 +10,26 @@
 /** ---																																						---
 /** ---		RELEASE	: 26.01.2017																													---
 /** ---																																						---
-/** ---		VERSION	: 1.4.1																															---
+/** ---		VERSION	: 1.5																																---
 /** ---																																						---
 /** ---																																						---
 /** --- 														-----------------------------															---
 /** --- 															 { C H A N G E L O G } 																---
 /** --- 														-----------------------------															---
 /** ---																																						---
+/** ---		VERSION 1.5 : 04.02.2017																												---
+/** ---		------------------------																												---
+/** ---			-  Sécurisation des entités textes et numérique : 																			---
+/** ---				> ::13:: est importé en tant que &#13; dans le fichier INI															---
+/** ---																																						---
 /** ---		VERSION 1.4.1 : 26.01.2017																												---
 /** ---		---------------------------																											---
 /** ---			-  Correction de la methode resources_builder dont le return était mal placé mettant fin prématurément	---
 /** ---			-  Correction de la méthode get_user_language qui générait des erreur E_NOTICE									---
 /** ---																																						---
-/** ---																																						---
 /** ---		VERSION 1.4 : 12.01.2017																												---
 /** ---		-------------------------																												---
 /** ---			-  Ajout de constante pour traiter les balise XML CDATA + traitement associé										---
-/** ---																																						---
 /** ---																																						---
 /** ---		VERSION 1.3 : 06.05.2016																												---
 /** ---		-------------------------																												---
@@ -452,18 +455,17 @@ class SYSLang {
 			file_put_contents($file, $dom->saveXML());
 		}
 		
-		
+		// Récupération du fichier XML en tant que chaine
 		$str = file_get_contents($file);
 		
 		// Restitution des balises CDATA
 		$str = preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", $str);
 		
-		// Resitution des entité numérique
-		$str = preg_replace("#::([a-zA-Z0-9]+)::#", "&#$1;", $str);
+		// Resitution des entités texts et numériques
+		$str = preg_replace("#::(\#?)([a-zA-Z0-9]+)::#", "&#$1;", $str);
 		
+		// Finalisation
 		file_put_contents($file, $str);
-		
-		//file_put_contents($file, preg_replace("#".self::CDATA_REG_START."\s*(.*)\s*".self::CDATA_REG_END."#m", "<![CDATA[$1]]>", file_get_contents($file)));
 		
 		return true;
 	} // Boolean save_xml(SimpleXMLElement $sxe, String $file [, Integer $flag=null])
