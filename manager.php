@@ -1,1 +1,0 @@
-interface par défaut
