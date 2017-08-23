@@ -215,11 +215,8 @@ class SYSLang {
 		
 		trigger_error("<b>MESSAGE ::</b>\n • ERROR ::</b> <b style='color: red;'>$message</b>", $error_level);
 		echo "</pre>";
-	} // Void throw_error([String $message='' [, Integer $error_level=E_USER_NOTICE]])
-	
-	/** ------------------------------------------------------- **
-	/** --- Méthode d'extraction des textes des fichier xml --- **
-	/** ------------------------------------------------------- **/
+	}
+
     /**
      * Récupére l'ensemble des textes d'une langue depuis les fichiers XML
      * @param string $lang_files Nom du fichier à extraite (autant d'argument que désirée)
