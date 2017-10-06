@@ -1,0 +1,28 @@
+image: php:5.6
+
+
+stages:
+  - test
+
+
+before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq wget
+
+
+Tests:
+  stage: test
+  tags:
+    - php
+    - vps
+  script:
+    # Installation des outils pour les tests automatiques
+    - wget https://phar.phpunit.de/phpunit-5.7.phar
+    - chmod +x phpunit-5.7.phar
+    - mv phpunit-5.7.phar /usr/local/bin/phpunit
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+    # Execution des tests unitaire (Colored Coverage)
+    - phpunit > coverage/.coverage && cat coverage/.coverage
+    # Retourner le Code Coverage pour GitLab (Delete Output Colors)
+    - grep 'Lines' coverage/.coverage | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"

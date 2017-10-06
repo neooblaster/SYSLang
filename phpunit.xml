@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Source : https://phpunit.de/manual/6.1/en/appendixes.configuration.html -->
+<phpunit colors="true" verbose="true">
+    <testsuites>
+        <testsuite name="Engine">
+            <directory suffix=".php">./tests/Engine</directory>
+        </testsuite>
+        <testsuite name="Compilator">
+            <directory suffix=".php">./tests/Compilator</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <!-- Tags : whitelist, blacklist with children directory, file, exclude -->
+        <!--<whitelist addUncoveredFilesFromWhitelist="false" processUncoveredFilesFromWhitelist="false">-->
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+        <log type="coverage-html" target="./coverage/"/>
+    </logging>
+</phpunit>

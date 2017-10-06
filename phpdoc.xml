@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Sources : https://www.phpdoc.org/docs/latest/references/configuration.html -->
+<!-- Paths are relative from current working directory (CWD) where phpdoc is executed -->
+<phpdoc>
+    <title>SYSLang API Documentation</title>
+
+    <parser>
+        <target>./docs/cache</target>
+        <extensions>
+            <!-- Tags : extension -->
+            <extension>php</extension>
+        </extensions>
+    </parser>
+
+    <transformer>
+        <target>./docs</target>
+    </transformer>
+
+    <files>
+        <!-- Tags : directory, file, ignore -->
+        <directory>./src/SYSLang</directory>
+    </files>
+</phpdoc>
