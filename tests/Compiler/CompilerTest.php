@@ -6,27 +6,27 @@
  * Time: 15:29
  */
 
-use SYSLang\Compilator;
+use SYSLang\Compiler;
 
-require_once "src/SYSLang/Compilator.php";
+require_once "src/SYSLang/Compiler.php";
 
 
-class CompilatorTest extends \PHPUnit_Framework_TestCase
+class CompilerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Compilator $compilator Instance pour les tests
+     * @var Compiler $compiler Instance pour les tests
      */
-    protected static $compilator = null;
+    protected static $compiler = null;
 
     /**
      * @var array $cleanseExcluded Fichier à ne pas supprimer lors du nettoyage.
      */
-    protected static $cleanseExcluded = ['.', '..', 3 => 'CompilatorWithManualInstallTest.php', 'Install'];
+    protected static $cleanseExcluded = ['.', '..', 3 => 'CompilerWithManualInstallTest.php', 'Install'];
 
     /**
      * @var string $testWorkingDir Emplacement de travail pour dérouler les tests
      */
-    protected static $testWorkingDir = 'tests/Compilator';
+    protected static $testWorkingDir = 'tests/Compiler';
 
 
     /**
@@ -96,9 +96,9 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testShowWorkingDir()
     {
-        self::$compilator = new Compilator(self::$testWorkingDir);
+        self::$compiler = new Compiler(self::$testWorkingDir);
 
-        $this->assertEquals(self::$cleanseExcluded, self::$compilator->showWorkingDir());
+        $this->assertEquals(self::$cleanseExcluded, self::$compiler->showWorkingDir());
     }
 
     /**
@@ -109,8 +109,8 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
     public function testIsInstalled()
     {
         /** Vérification de l'installation */
-        $this->assertEquals(false, self::$compilator->isInstalled());
-        self::$compilator->isInstalled(true);
+        $this->assertEquals(false, self::$compiler->isInstalled());
+        self::$compiler->isInstalled(true);
     }
 
     /**
@@ -120,18 +120,18 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
     public function testInstall()
     {
         /** Installation */
-        $this->assertEquals(true, self::$compilator->install());
+        $this->assertEquals(true, self::$compiler->install());
 
         /** Contrôler la présence du fichier language.xml */
         $this->assertEquals(true,
-            in_array(Compilator::XML_CONFIG_FILE, scandir(self::$testWorkingDir))
+            in_array(Compiler::XML_CONFIG_FILE, scandir(self::$testWorkingDir))
         );
 
         /** Opération similaire de contrôle */
-        $this->assertEquals(true, self::$compilator->isInstalled());
+        $this->assertEquals(true, self::$compiler->isInstalled());
 
         /** Seconde installation ne fais rien (false) */
-        $this->assertEquals(false, self::$compilator->install());
+        $this->assertEquals(false, self::$compiler->install());
     }
 
     /**
@@ -139,9 +139,9 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddLanguage()
     {
-        $this->assertEquals(true, self::$compilator->addLanguage('fr-FR:Français'));
-        $this->assertEquals(true, self::$compilator->addLanguage('en-EN:English'));
-        $this->assertEquals(true, self::$compilator->addLanguage('de-DE:Deutch', 'it-IT:Italian'));
+        $this->assertEquals(true, self::$compiler->addLanguage('fr-FR:Français'));
+        $this->assertEquals(true, self::$compiler->addLanguage('en-EN:English'));
+        $this->assertEquals(true, self::$compiler->addLanguage('de-DE:Deutch', 'it-IT:Italian'));
     }
 
     /**
@@ -151,7 +151,7 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddLanguageExceptions($langCode)
     {
-        self::$compilator->addLanguage($langCode);
+        self::$compiler->addLanguage($langCode);
     }
 
     /**
@@ -173,7 +173,7 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
                 ['LANG_KEY' => 'de-DE', 'LANG_NAME' => 'Deutch'],
                 ['LANG_KEY' => 'it-IT', 'LANG_NAME' => 'Italian']
             ]
-        ], self::$compilator->getRegLanguages());
+        ], self::$compiler->getRegLanguages());
     }
 
     /**
@@ -182,21 +182,21 @@ class CompilatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetDefaultLang()
     {
-        $this->assertEquals(true, self::$compilator->setDefaultLanguage('fr-FR'));
-        $this->assertEquals(true, self::$compilator->setDefaultLanguage('en-EN'));
-        self::$compilator->setDefaultLanguage('jp-JP');
+        $this->assertEquals(true, self::$compiler->setDefaultLanguage('fr-FR'));
+        $this->assertEquals(true, self::$compiler->setDefaultLanguage('en-EN'));
+        self::$compiler->setDefaultLanguage('jp-JP');
     }
 
 
 
     public function testInstallInSubDir()
     {
-        $compilator = new Compilator(self::$testWorkingDir . '/auto-created');
+        $compilator = new Compiler(self::$testWorkingDir . '/auto-created');
         $compilator->install();
     }
 
     public function testDestruct()
     {
-        self::$compilator = null;
+        self::$compiler = null;
     }
 }

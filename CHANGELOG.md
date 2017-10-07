@@ -1,8 +1,14 @@
 # Release de la classe SYSLang
 
-Objet de la version ``2.0.0`` : Concevoir un coeur du moteur, une interface pour le développement PHP et des méthode dédiée et une inteface en ligne de commande.
+Objet de la version ``2.0.0`` : Concevoir un coeur du moteur, une interface pour le développement PHP avec des méthodes dédiées et une inteface en ligne de commande.
 
-L'objectif également est de transformer le moteur en respectant les **standards PSR**.
+L'objectif est aussi de transformer le moteur en respectant les **standards PSR**.
+
+
+## 2.0.x-alpha2 (2017-10-07)
+
+- [CHANGED] ``Compilator`` devient ``Compiler``.
+
 
 ## 2.0.x-alpha1 (2017-10-06)
 

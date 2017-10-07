@@ -5,8 +5,8 @@
         <testsuite name="Engine">
             <directory suffix=".php">./tests/Engine</directory>
         </testsuite>
-        <testsuite name="Compilator">
-            <directory suffix=".php">./tests/Compilator</directory>
+        <testsuite name="Compiler">
+            <directory suffix=".php">./tests/Compiler</directory>
         </testsuite>
     </testsuites>
 

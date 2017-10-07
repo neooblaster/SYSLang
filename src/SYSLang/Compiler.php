@@ -1,6 +1,6 @@
 <?php
 /**
- * File :: Compilator.php
+ * File :: Compiler.php
  *
  * %DESC BLOCK%
  *
@@ -13,7 +13,7 @@
 namespace SYSLang;
 
 
-class Compilator
+class Compiler
 {
     /**
      * Modèle de remplacement de la balise ouvrante CDATA pour la portabilité.
@@ -112,7 +112,7 @@ class Compilator
 
 
     /**
-     * Compilator constructor.
+     * Compiler constructor.
      * @param string $workingDirectory Dossier de travail pour le compilateur.
      */
     function __construct($workingDirectory = ".")
@@ -133,7 +133,7 @@ class Compilator
     }
 
     /**
-     * Compilator descrutor.
+     * Compiler descrutor.
      */
     function __destruct()
     {
