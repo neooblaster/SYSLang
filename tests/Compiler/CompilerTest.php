@@ -29,6 +29,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     protected static $testWorkingDir = 'tests/Compiler';
 
 
+
     /**
      * Les dataProviders
      */
@@ -38,15 +39,46 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      * @author Neoblaster
      * @return array
      */
-    public function badLanguageCodes()
+    public function badLanguageCodesToAdd()
     {
         return [
-            /** Donnée déja enregistée  */
+            # Donnée déja enregistée
             ['fr-FR:Français'],
+            # Code incorrecte
+            ['fra-FRA']
+        ];
+    }
+
+    /**
+     * Liste d'arguments invalide pour la methode removeLanguages().
+     * @author Neoblaster
+     * @return array
+     */
+    public function badLanguageCodesToRemove()
+    {
+        return [
+            /** Donnée inexistante  */
+            ['aa-AA'],
             /** Code incorrecte */
             ['fra-FRA']
         ];
     }
+
+    /**
+     * Liste d'argument invalide pour la métode setRefLanguage.
+     * @author Neoblaster
+     * @return array
+     */
+    public function badLanugageCodesAsCompileRef()
+    {
+        return [
+            # Exception - Code invalide
+            ['fra-FRA', 'The language code "fra-FRA" provided is not valid. It must be like xx-XX.'],
+            # Exception - Code inexistant
+            ['zz-ZZ', 'The requested language code "zz-ZZ" is not registered.']
+        ];
+    }
+
 
 
     /**
@@ -89,6 +121,11 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         self::cleanseDir(self::$testWorkingDir);
     }
+
+
+    /**
+     * Batterie de tests
+     */
 
     /**
      * Controle du bon emplacement des tests.
@@ -135,23 +172,36 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Controle le bon fonctionnement de l'enregistrement de langue
+     *
+     * @expectedException \Exception
+     *
      * @author Neoblaster
      */
     public function testAddLanguage()
     {
-        $this->assertEquals(true, self::$compiler->addLanguage('fr-FR:Français'));
-        $this->assertEquals(true, self::$compiler->addLanguage('en-EN:English'));
-        $this->assertEquals(true, self::$compiler->addLanguage('de-DE:Deutch', 'it-IT:Italian'));
+        # Doit ajouter la langue fr-FR + par défaut + dossier nommé avec un fichier generic.xml
+        $this->assertEquals(true, self::$compiler->addLanguages('fr-FR:Français'));
+
+        # Doit enregistrer les trois langue : en-EN, de-DE et jp-JP
+        $this->assertEquals(true, self::$compiler->addLanguages('en-EN:English'));
+        $this->assertEquals(true, self::$compiler->addLanguages('de-DE:Deutch', 'it-IT:Italian'));
+
+        # Doit emettre une exception (ne peut etre dataProvidé)
+        $this->expectExceptionMessage("At least one language name with code must be provided. " .
+            "It must be like this : xx-XX:Name");
+        self::$compiler->addLanguages();
     }
 
     /**
+     * Test des exception émis par la méthode AddLanguages.
      * @author Neoblaster
-     * @dataProvider badLanguageCodes
+     * @dataProvider badLanguageCodesToAdd
      * @expectedException \Exception
      */
-    public function testAddLanguageExceptions($langCode)
+    public function testAddLanguagesExceptions($langCode)
     {
-        self::$compiler->addLanguage($langCode);
+        self::$compiler->addLanguages($langCode);
     }
 
     /**
@@ -187,16 +237,110 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         self::$compiler->setDefaultLanguage('jp-JP');
     }
 
+    /**
+     * Vérifie la bonne suppression d'une langue dans le registre.
+     *  Avec conservation des fichiers
+     *  @TODO: Avec suppression des fichiers
+     * @author Neoblaster
+     */
+    public function testRemoveLanguages()
+    {
+        $this->assertEquals(true, self::$compiler->removeLanguages(true, 'it-IT'));
+        $this->assertEquals([
+            'KEYS' => [
+                'fr-FR' => 'Français',
+                'en-EN' => 'English',
+                'de-DE' => 'Deutch'
+            ],
+            'LIST' => [
+                ['LANG_KEY' => 'fr-FR', 'LANG_NAME' => 'Français'],
+                ['LANG_KEY' => 'en-EN', 'LANG_NAME' => 'English'],
+                ['LANG_KEY' => 'de-DE', 'LANG_NAME' => 'Deutch']
+            ]
+        ], self::$compiler->getRegLanguages());
+    }
+
+    /**
+     * @dataProvider badLanguageCodesToRemove
+     * @expectedException \Exception
+     * @author neoblaster
+     */
+    public function testRemoveLanguagesExceptions($langCode)
+    {
+        self::$compiler->removeLanguages(true, $langCode);
+    }
+
+    /**
+     * Test le bon fonctionnement des exceptions
+     * @dataProvider badLanugageCodesAsCompileRef
+     * @expectedException \Exception
+     * @author Neoblaster
+     */
+    public function testSetRefLanguageExceptions($argument, $exceptionMessage)
+    {
+        $this->expectExceptionMessage($exceptionMessage);
+        self::$compiler->setRefLanguage($argument);
+    }
+
+    /**
+     * Vérifie que la selection du paquet de référence fonctionne correctement.
+     * @author Neoblaster
+     */
+    public function testSetRefLanguage()
+    {
+        $this->assertEquals(true, self::$compiler->setRefLanguage('fr-FR'));
+        $this->assertEquals('fr-FR', self::$compiler->getRefLanguage());
+    }
 
 
-    public function testInstallInSubDir()
+
+
+    /**
+     * Contrôle du comportement du compiler sur un dossier déjà configuré.
+     * @author Neoblaster
+     */
+    public function testInstanciationOnInstalledDir()
+    {
+        $compiler = new Compiler(self::$testWorkingDir);
+        $this->assertEquals(true, $compiler->isInstalled());
+    }
+
+    /**
+     * Contrôle de la bonne création récursive de l'arborescence d'installation
+     * @author Neoblaster
+     */
+    public function testInstallInUnexistingSubDir()
     {
         $compilator = new Compiler(self::$testWorkingDir . '/auto-created');
         $compilator->install();
     }
 
-    public function testDestruct()
+    /**
+     * Vérifie que la méthode de récupération de la langue par défaut échoue lorsqu'une configuration
+     * manuelle a eu lieu et que la langue définie n'existe pas (Erreur).
+     */
+    public function testGetDefaultLanguageWithManualEditFile()
+    {
+        //@TODO : faire le tests testGetDefaultLanguageWithManualEditFile
+    }
+
+    /**
+     * Destruction de l'instance Compiler
+     * @author Neoblaster
+     */
+    public function testEndByDestruct()
     {
         self::$compiler = null;
     }
+
+
+
+    /**
+     * Execution à la fin des tests
+     */
+    static function tearDownAfterClass()
+    {
+        //echo PHP_EOL . file_get_contents(self::$testWorkingDir . '/' . Compiler::XML_CONFIG_FILE);
+    }
+
 }

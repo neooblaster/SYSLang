@@ -23,6 +23,6 @@ Tests:
     - pecl install xdebug
     - docker-php-ext-enable xdebug
     # Execution des tests unitaire (Colored Coverage)
-    - phpunit > coverage/.coverage && cat coverage/.coverage
+    - phpunit | tee coverage/.coverage
     # Retourner le Code Coverage pour GitLab (Delete Output Colors)
     - grep 'Lines' coverage/.coverage | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"

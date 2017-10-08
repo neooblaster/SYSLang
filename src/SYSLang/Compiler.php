@@ -36,9 +36,26 @@ class Compiler
     const CDATA_REG_END = "\]\]";
 
     /**
+     * Modèle représentant un code de langue : ll-CC
+     * ll = Lang Code ISO 639-1
+     * CC = Country Code ISO 3166-1
+     */
+    const LANG_CODE_PATTERN = '#^[a-z]{2}-[A-Z]{2}#';
+
+    /**
+     * Fichier de contrôle d'intégrité des clés de textes.
+     */
+    const MD5_FILE_NAME = "languages.md5.xml";
+
+    /**
      * Fichier de configuration du moteur de langue
      */
     const XML_CONFIG_FILE = 'languages.xml';
+
+    /**
+     * Entete XML - Commune à tous les fichiers XML.
+     */
+    const XML_HEADER = '<?xml version="1.0" encoding="utf-8"?>';
 
 
     /**
@@ -79,6 +96,11 @@ class Compiler
     protected $iniSXEResources = [];
 
     /**
+     * @var \SimpleXMLElement $MD5Report Instannce du rappor de contrpole MD5.
+     */
+    protected $MD5Report = null;
+
+    /**
      * @var array $refPackageKeys Sauvegarde de toutes les clés existantes dans le package pour avertir
      * le user en cas de doublon.
      */
@@ -91,6 +113,16 @@ class Compiler
         'KEYS' => [],
         'LIST' => []
     ];
+
+    /**
+     * @var string $refLanguage Langue de référence utilisé pour la compilation (MaJ) des autres langues.
+     */
+    protected $refLanguage = null;
+
+    /**
+     * @var \SimpleXMLElement $refLanguageMD5Report Le rapport MD5 de la langue de référence pour effectuer les deltas.
+     */
+    protected $refLanguageMD5Report = null;
 
     /**
      * @var string $runInstance L'instanciation de la classe se voit attribué un ID unique.
@@ -149,13 +181,16 @@ class Compiler
      *
      * @return bool
      */
-    public function addLanguage()
+    public function addLanguages()
     {
         $this->isInstalled(true);
 
         /** Récupération de langue enregistrées */
-        $languages = $this->registredLanguages['KEYS'];
         $firstLangue = null;
+
+        if (func_num_args() === 0) throw new \Exception(
+          "At least one language name with code must be provided. It must be like this : xx-XX:Name"
+        );
 
         /** Lecture du fichier */
         $xml = self::SXEOverhaul(
@@ -165,14 +200,14 @@ class Compiler
         /** Parcourir les arguments, les contrôler et vérifier l'existance */
         foreach (func_get_args() as $key => $value) {
             /** Contole */
-            if (preg_match("#^[a-z]{2}-[A-Z]{2}#", $value)) {
+            if ($this->checkCode($value)) {
                 /** Découpage */
                 list($code,$name) = explode(":", $value);
 
                 if (is_null($firstLangue)) $firstLangue = $code;
                 if (is_null($name)) $name = $code;
 
-                if (!array_key_exists($code, $languages)) {
+                if (!array_key_exists($code, $this->registredLanguages['KEYS'])) {
                     list($lang,$country) = explode("-", $code);
 
                     $new_lang = $xml->addChild("language", $name);
@@ -201,15 +236,68 @@ class Compiler
         /** Sauvegarder les modfications */
         self::saveXml($xml, $this->workingDirectory . '/' . self::XML_CONFIG_FILE);
 
-        /** Mettre à jour la liste des lang enregistrée */
+        /** Mise à jour la liste des langues enregistrées */
         $this->listRegLanguages();
 
         /** Si pas de langue par défaut, alors l'utiliser comme langue par défaut */
         if (is_null($this->defaultLanguage) && !is_null($firstLangue)) {
             $this->setDefaultLanguage($code);
+
+            /** Création du premier pack de langue : Dossier + Fichier */
+            if (
+                !file_exists($this->workingDirectory . '/' . $code)
+                || !is_dir($this->workingDirectory . '/' . $code)
+            ) mkdir($this->workingDirectory . '/' . $code);
+            
+            if (
+                !file_exists($this->workingDirectory . '/' . $code . '/generic.xml')
+                || !is_file($this->workingDirectory . '/' . $code . '/generic.xml')
+            ) {
+                $header = self::XML_HEADER . PHP_EOL;
+                $openner = '<resources>' . PHP_EOL;
+                $entry = "\t" . '<resource ' .
+                    'KEY="your_key_name_here" ' .
+                    'CST="false"' .
+                    'SST="true">your_coresponding_text_here</resource>' . PHP_EOL;
+                $closer = '</resources>';
+
+                file_put_contents(
+                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $header, FILE_APPEND
+                );
+                file_put_contents(
+                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $openner, FILE_APPEND
+                );
+                file_put_contents(
+                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $entry, FILE_APPEND
+                );
+                file_put_contents(
+                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $closer, FILE_APPEND
+                );
+            }
         }
 
         return true;
+    }
+
+    /**
+     * Vérifie que le code de langue fournit est valide.
+     * @param string $argument Argument à contrôler
+     * @return bool
+     */
+    protected function checkCode($argument)
+    {
+        return preg_match(
+            self::LANG_CODE_PATTERN, $argument
+        );
+    }
+
+    public function deploy()
+    {
+
     }
 
     /**
@@ -219,6 +307,16 @@ class Compiler
     public function getRegLanguages()
     {
         return $this->registredLanguages;
+    }
+
+    /**
+     * Renvoie la langue définie en tant que référence lors de la compilation.
+     *
+     * @return string
+     */
+    public function getRefLanguage()
+    {
+        return $this->refLanguage;
     }
 
     /**
@@ -289,7 +387,7 @@ class Compiler
 
         /** Creation du fichier de configuration des langues */
         if (!file_exists($this->workingDirectory . '/' . self::XML_CONFIG_FILE)) {
-            $header = '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL;
+            $header = self::XML_HEADER . PHP_EOL;
             $openner = '<languages>' . PHP_EOL;
             $closer = '</languages>' . PHP_EOL;
 
@@ -365,8 +463,67 @@ class Compiler
         ];
     }
 
-    public function removeLanguage()
+    /**
+     * Supprimer la ou les langues spécifiées du registre avec possibilité de concerver les fichiers.
+     *
+     * @param bool $preserveFiles Si vrai, conserve les fichiers correspondant à/aux langue(s) supprimée(s).
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function removeLanguages($preserveFiles)
     {
+        /** Contrôles préalables */
+        $this->isInstalled(true);
+
+        if (func_num_args() < 2) throw new \Exception(
+            "At least one language code must be provided after argument &amp;preserveFiles."
+        );
+
+        $xml = self::SXEOverhaul(
+            file_get_contents($this->workingDirectory . '/' . self::XML_CONFIG_FILE)
+        );
+
+        $langCodes = func_get_args();
+        array_shift($langCodes);
+
+        foreach ($langCodes as $key => $code) {
+            if ($this->checkCode($code)) {
+                if (array_key_exists($code, $this->registredLanguages['KEYS'])) {
+                    for ($i = 0; $i < count($xml->language); $i++) {
+                        if (strval($xml->language[$i]->attributes()->LANG) === $code) {
+                            unset($xml->language[$i]);
+                            break;
+                        }
+                    }
+                } else {
+                    throw new \Exception(
+                        sprintf(
+                            'The language code "%1$s" is not registered in "%2$s"',
+                            $code, self::XML_CONFIG_FILE
+                        )
+                    );
+                }
+            } else {
+                throw new \Exception(
+                    sprintf(
+                        'Argument supplied "%1$s" is not valide.' .
+                        'It must be like this xx-XX.' .
+                        'Argument "%1$s" is skipped.',
+                        $code
+                    )
+                );
+            }
+        }
+
+        /** Sauvegarder les modifications */
+        self::saveXml($xml, $this->workingDirectory . '/' . self::XML_CONFIG_FILE);
+
+        /** Mise à jour de la liste des langues enretistrées */
+        $this->listRegLanguages();
+
+        return true;
     }
 
     /**
@@ -455,6 +612,36 @@ class Compiler
     }
 
     /**
+     * Définie la langue de référence utilisée pour la compilation.
+     *
+     * @param string $langCode Code de langue de référence au format xx-XX.
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function setRefLanguage($langCode)
+    {
+        if (!$this->checkCode($langCode)) throw  new \Exception(
+            sprintf(
+                'The language code "%s" provided is not valid. It must be like xx-XX.',
+                $langCode
+            )
+        );
+
+        if (!array_key_exists($langCode, $this->registredLanguages['KEYS'])) throw new \Exception(
+            sprintf(
+                'The requested language code "%s" is not registered.',
+                $langCode
+            )
+        );
+
+        $this->refLanguage = $langCode;
+
+        return true;
+    }
+
+    /**
      * Défini le dossier source d'importation des fichiers INI.
      * @param string $directory Dossier source pour les importations de fichiers.
      * @return bool
@@ -496,4 +683,5 @@ class Compiler
 
         return new \SimpleXMLElement($xml_str);
     }
+
 }
