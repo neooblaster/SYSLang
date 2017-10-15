@@ -22,7 +22,12 @@ Tests:
     - mv phpunit-5.7.phar /usr/local/bin/phpunit
     - pecl install xdebug
     - docker-php-ext-enable xdebug
+
     # Execution des tests unitaire (Colored Coverage)
-    - phpunit | tee coverage/.coverage
-    # Retourner le Code Coverage pour GitLab (Delete Output Colors)
-    - grep 'Lines' coverage/.coverage | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+    # Ajout d'un titre pout la suite de l'affichage
+    # Traite le flux affiché à l'aide de tee en simultanné
+    # Supprime la colorisation et l'affiche pour le code coverage GitLab
+    # Fonctionne même si les tests échouent.
+    - >
+      (phpunit; echo; echo ;echo "STDOUT For GitLab RegExp :"; echo)
+      | tee >(grep 'Lines' | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g")

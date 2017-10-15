@@ -174,14 +174,14 @@ class Compiler
     /**
      * Enregistre une nouvelle ou plusieurs langue suivant le modèle suivant xx-XX:LangueName.
      *
-     * @param  string $lang Autant d'argument respectant le modèle suivant : xx-XX:LangueName
+     * @param string $lang Autant d'argument respectant le modèle suivant : xx-XX:LangueName
      * ou xx est le lang code ISO 639-1 et XX le country code ISO 3166-1.
      *
      * @throws \Exception
      *
      * @return bool
      */
-    public function addLanguages()
+    public function addLanguages($lang = null)
     {
         $this->isInstalled(true);
 
@@ -207,7 +207,7 @@ class Compiler
                 if (is_null($firstLangue)) $firstLangue = $code;
                 if (is_null($name)) $name = $code;
 
-                if (!array_key_exists($code, $this->registredLanguages['KEYS'])) {
+                if (!$this->isRegistred($code)) {
                     list($lang,$country) = explode("-", $code);
 
                     $new_lang = $xml->addChild("language", $name);
@@ -257,7 +257,7 @@ class Compiler
                 $openner = '<resources>' . PHP_EOL;
                 $entry = "\t" . '<resource ' .
                     'KEY="your_key_name_here" ' .
-                    'CST="false"' .
+                    'CST="false" ' .
                     'SST="true">your_coresponding_text_here</resource>' . PHP_EOL;
                 $closer = '</resources>';
 
@@ -338,7 +338,7 @@ class Compiler
             /** Vérifier que la pack existe (en cas de modification manuelle du fichier) */
             $lang = strval($languages->attributes()->default);
 
-            if (array_key_exists($lang, $this->registredLanguages['KEYS'])) {
+            if ($this->isRegistred($lang)) {
                 $this->defaultLanguage = $lang;
 
                 return true;
@@ -354,7 +354,7 @@ class Compiler
             }
         } else {
             /** Choisir l'anglais par défaut : en-EN , Sinon prendre la première disponible */
-            if (array_key_exists('en-EN', $this->registredLanguages['KEYS'])) {
+            if ($this->isRegistred('en-EN')) {
                 $this->defaultLanguage = 'en-EN';
             } else {
                 foreach ($this->registredLanguages['KEYS'] as $key => $value) {
@@ -362,6 +362,7 @@ class Compiler
                     break;
                 }
             }
+            return true;
         }
     }
 
@@ -421,6 +422,28 @@ class Compiler
     }
 
     /**
+     * Controle l'existance de la langue dans le registre.
+     *
+     * @param string $language  Code de langue à contrôler au format xx-XX.
+     * @param bool $throw       Doit-il renvoyer une exeption
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function isRegistred($language, $throw = false)
+    {
+        if (!array_key_exists($language, $this->registredLanguages['KEYS'])) {
+            if ($throw) throw new \Exception(
+                sprintf('The language "%s" is not registred', $language)
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Liste les langues enregistrées.
      *
      * @throws \Exception
@@ -461,6 +484,8 @@ class Compiler
             "KEYS" => $keys,
             "LIST" => $list
         ];
+
+        return true;
     }
 
     /**
@@ -490,7 +515,7 @@ class Compiler
 
         foreach ($langCodes as $key => $code) {
             if ($this->checkCode($code)) {
-                if (array_key_exists($code, $this->registredLanguages['KEYS'])) {
+                if ($this->isRegistred($code)) {
                     for ($i = 0; $i < count($xml->language); $i++) {
                         if (strval($xml->language[$i]->attributes()->LANG) === $code) {
                             unset($xml->language[$i]);
@@ -577,7 +602,7 @@ class Compiler
     {
         $this->isInstalled(true);
 
-        if (!array_key_exists($language, $this->registredLanguages['KEYS'])) {
+        if (!$this->isRegistred($language)) {
             throw new \Exception(
                 "The language '$language' is not registered in the list. Nothing done."
             );
@@ -629,7 +654,7 @@ class Compiler
             )
         );
 
-        if (!array_key_exists($langCode, $this->registredLanguages['KEYS'])) throw new \Exception(
+        if (!$this->isRegistred($langCode)) throw new \Exception(
             sprintf(
                 'The requested language code "%s" is not registered.',
                 $langCode
