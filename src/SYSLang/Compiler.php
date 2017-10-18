@@ -186,7 +186,7 @@ class Compiler
         $this->isInstalled(true);
 
         /** Récupération de langue enregistrées */
-        $firstLangue = null;
+        $firstLang = null;
 
         if (func_num_args() === 0) throw new \Exception(
           "At least one language name with code must be provided. It must be like this : xx-XX:Name"
@@ -204,7 +204,7 @@ class Compiler
                 /** Découpage */
                 list($code,$name) = explode(":", $value);
 
-                if (is_null($firstLangue)) $firstLangue = $code;
+                if (is_null($firstLang)) $firstLang = $code;
                 if (is_null($name)) $name = $code;
 
                 if (!$this->isRegistred($code)) {
@@ -217,7 +217,7 @@ class Compiler
                 } else {
                     throw new \Exception(
                         sprintf(
-                            'The language "%s" with code "%" already registered in "%s"',
+                            'The language "%s" with code "%s" already registered in "%s"',
                             $name, $code, self::XML_CONFIG_FILE
                         )
                     );
@@ -240,18 +240,18 @@ class Compiler
         $this->listRegLanguages();
 
         /** Si pas de langue par défaut, alors l'utiliser comme langue par défaut */
-        if (is_null($this->defaultLanguage) && !is_null($firstLangue)) {
-            $this->setDefaultLanguage($code);
+        if (is_null($this->defaultLanguage) && !is_null($firstLang)) {
+            $this->setDefaultLanguage($firstLang);
 
             /** Création du premier pack de langue : Dossier + Fichier */
             if (
-                !file_exists($this->workingDirectory . '/' . $code)
-                || !is_dir($this->workingDirectory . '/' . $code)
-            ) mkdir($this->workingDirectory . '/' . $code);
+                !file_exists($this->workingDirectory . '/' . $firstLang)
+                || !is_dir($this->workingDirectory . '/' . $firstLang)
+            ) mkdir($this->workingDirectory . '/' . $firstLang);
             
             if (
-                !file_exists($this->workingDirectory . '/' . $code . '/generic.xml')
-                || !is_file($this->workingDirectory . '/' . $code . '/generic.xml')
+                !file_exists($this->workingDirectory . '/' . $firstLang . '/generic.xml')
+                || !is_file($this->workingDirectory . '/' . $firstLang . '/generic.xml')
             ) {
                 $header = self::XML_HEADER . PHP_EOL;
                 $openner = '<resources>' . PHP_EOL;
@@ -262,19 +262,19 @@ class Compiler
                 $closer = '</resources>';
 
                 file_put_contents(
-                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $this->workingDirectory . '/' . $firstLang . '/generic.xml',
                     $header, FILE_APPEND
                 );
                 file_put_contents(
-                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $this->workingDirectory . '/' . $firstLang . '/generic.xml',
                     $openner, FILE_APPEND
                 );
                 file_put_contents(
-                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $this->workingDirectory . '/' . $firstLang . '/generic.xml',
                     $entry, FILE_APPEND
                 );
                 file_put_contents(
-                    $this->workingDirectory . '/' . $code . '/generic.xml',
+                    $this->workingDirectory . '/' . $firstLang . '/generic.xml',
                     $closer, FILE_APPEND
                 );
             }
