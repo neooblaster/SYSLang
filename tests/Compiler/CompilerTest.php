@@ -57,10 +57,10 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function badLanguageCodesToRemove()
     {
         return [
-            /** Donnée inexistante  */
-            ['aa-AA'],
-            /** Code incorrecte */
-            ['fra-FRA']
+            // Donnée inexistante
+            ['The language code "aa-AA" is not registered in "languages.xml"', true, 'aa-AA'],
+            // Code incorrecte
+            ['Argument supplied "fra-FRA" is not valide. It must be like this xx-XX. Argument "fra-FRA" is skipped.', true, 'fra-FRA']
         ];
     }
 
@@ -121,6 +121,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         self::cleanseDir(self::$testWorkingDir);
     }
+
 
 
     /**
@@ -245,6 +246,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveLanguages()
     {
+        // Supprimer une langue lambda
         $this->assertEquals(true, self::$compiler->removeLanguages(true, 'it-IT'));
         $this->assertEquals([
             'KEYS' => [
@@ -258,6 +260,13 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
                 ['LANG_KEY' => 'de-DE', 'LANG_NAME' => 'Deutch']
             ]
         ], self::$compiler->getRegLanguages());
+
+        // Supprtimer la langue par défaut
+        $this->assertEquals(true, self::$compiler->removeLanguages(true, 'en-EN'));
+
+        // La ré-enregistrée et redéfinir par défaut
+        $this->assertEquals(true, self::$compiler->addLanguages('en-EN:English'));
+        $this->assertEquals(true, self::$compiler->setDefaultLanguage('en-EN'));
     }
 
     /**
@@ -265,9 +274,20 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      * @expectedException \Exception
      * @author neoblaster
      */
-    public function testRemoveLanguagesExceptions($langCode)
+    public function testRemoveLanguagesExceptions($message, $preserve, $langCode)
     {
-        self::$compiler->removeLanguages(true, $langCode);
+        $this->expectExceptionMessage($message);
+        self::$compiler->removeLanguages($preserve, $langCode);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @author neoblaster
+     */
+    public function testRemoveLanguagesExceptionsForArgNumber()
+    {
+        $this->expectExceptionMessage('At least one language code must be provided after argument $preserveFiles.');
+        self::$compiler->removeLanguages(true);
     }
 
     /**

@@ -503,7 +503,7 @@ class Compiler
         $this->isInstalled(true);
 
         if (func_num_args() < 2) throw new \Exception(
-            "At least one language code must be provided after argument &amp;preserveFiles."
+            'At least one language code must be provided after argument $preserveFiles.'
         );
 
         $xml = self::SXEOverhaul(
@@ -511,12 +511,20 @@ class Compiler
         );
 
         $langCodes = func_get_args();
+        $updateDefaultLang = false;
         array_shift($langCodes);
 
         foreach ($langCodes as $key => $code) {
             if ($this->checkCode($code)) {
                 if ($this->isRegistred($code)) {
                     for ($i = 0; $i < count($xml->language); $i++) {
+                        // Si c'est la lang par défaut, demander une mise à jour de la langue par defaut.
+                        if ($code === $this->defaultLanguage) $updateDefaultLang = true;
+
+                        // Supprimer la langue du registre mémorisé.
+                        unset($this->registredLanguages['KEYS'][$code]);
+
+                        // Supprimer la langue dans la ressource SXE.
                         if (strval($xml->language[$i]->attributes()->LANG) === $code) {
                             unset($xml->language[$i]);
                             break;
@@ -533,13 +541,31 @@ class Compiler
             } else {
                 throw new \Exception(
                     sprintf(
-                        'Argument supplied "%1$s" is not valide.' .
-                        'It must be like this xx-XX.' .
+                        'Argument supplied "%1$s" is not valide. ' .
+                        'It must be like this xx-XX. ' .
                         'Argument "%1$s" is skipped.',
                         $code
                     )
                 );
             }
+        }
+
+        /** Si la langue par défaut est supprimée, en mettre une autre */
+        if ($updateDefaultLang) {
+            /**
+             * Définir la nouvelle langue à null. Si aucune langue n'est enregistrée, alors on ne met rien
+             * pour ne pas bloquer le système.
+             * S'il reste des langues enregistrées, alors prendre la première
+             */
+            $newDefautLang = null;
+
+            foreach ($this->registredLanguages['KEYS'] as $lang => $name) {
+                $newDefautLang = $lang;
+                break;
+            }
+
+            // Mise à jour
+            $xml->attributes()->default = $newDefautLang;
         }
 
         /** Sauvegarder les modifications */
