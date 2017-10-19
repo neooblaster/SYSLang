@@ -15,6 +15,9 @@
         <!--<whitelist addUncoveredFilesFromWhitelist="false" processUncoveredFilesFromWhitelist="false">-->
         <whitelist>
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>src/command_index.php</file>
+            </exclude>
         </whitelist>
     </filter>
 
