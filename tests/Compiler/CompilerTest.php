@@ -8,11 +8,11 @@
 
 use SYSLang\Compiler;
 
-require_once "src/SYSLang/Compiler.php";
-
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {
+    use initializer;
+
     /**
      * @var Compiler $compiler Instance pour les tests
      */
@@ -21,7 +21,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array $cleanseExcluded Fichier à ne pas supprimer lors du nettoyage.
      */
-    protected static $cleanseExcluded = ['.', '..', 3 => 'CompilerWithManualInstallTest.php', 'Install'];
+    protected static $cleanseExcluded = ['.', '..', 3 => 'Install'];
 
     /**
      * @var string $testWorkingDir Emplacement de travail pour dérouler les tests
@@ -86,27 +86,6 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
 
     /**
-     * Nettoie le dossier spécifié de manière recursive.
-     * @param string $path Chemin vers le dossier à parcourir et nettoyer.
-     */
-    protected static function cleanseDir($path)
-    {
-        $dir = scandir($path);
-
-        foreach ($dir as $key => $file) {
-            if (!in_array($file, self::$cleanseExcluded)) {
-                $full_path = $path . '/' . $file;
-                if (is_dir($full_path)) {
-                    self::cleanseDir($full_path);
-                    rmdir($full_path);
-                } else {
-                    unlink($full_path);
-                }
-            }
-        }
-    }
-
-    /**
      * Initialisation de la batterie de tests (Execution une seule fois).
      */
     static function setUpBeforeClass()
@@ -119,7 +98,20 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
          */
 
 
-        self::cleanseDir(self::$testWorkingDir);
+        self::cleanseDir(self::$testWorkingDir, self::$cleanseExcluded);
+    }
+
+    static function simulateExistingInstallation()
+    {
+        // Nettoyer le dossier Install
+        self::cleanseDir(self::$testWorkingDir . '/Install', ['.', '..', '.required']);
+
+        // Instanciation et création d'un environnement
+        $envMaker = new Compiler(self::$testWorkingDir . '/Install');
+        $envMaker->install();
+        $envMaker->addLanguages('fr-FR:Français', 'en-EN:English');
+
+        return $envMaker;
     }
 
 
@@ -179,7 +171,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      *
      * @author Neoblaster
      */
-    public function testAddLanguage()
+    public function testAddLanguages()
     {
         # Doit ajouter la langue fr-FR + par défaut + dossier nommé avec un fichier generic.xml
         $this->assertEquals(true, self::$compiler->addLanguages('fr-FR:Français'));
@@ -203,6 +195,19 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     public function testAddLanguagesExceptions($langCode)
     {
         self::$compiler->addLanguages($langCode);
+    }
+
+    /**
+     * Contrôle le bon fonctionnement de la méthode isRegistered
+     */
+    public function testIsRegistered()
+    {
+        $this->assertEquals(true, self::$compiler->isRegistered('fr-FR'));
+        $this->assertEquals(false, self::$compiler->isRegistered('aa-AA'));
+
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('The language "aa-AA" is not registred');
+        $this->assertEquals(false, self::$compiler->isRegistered('aa-AA', true));
     }
 
     /**
@@ -312,17 +317,144 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('fr-FR', self::$compiler->getRefLanguage());
     }
 
+    /**
+     * DUMMY
+     * @author Neoblaster
+     */
+    public function testDeploy()
+    {
+        self::$compiler->deploy();
+    }
 
+    /**
+     * DUMMY
+     * @author Neoblaster
+     */
+    public function testSetExportDir()
+    {
+        self::$compiler->setExportDirectory('');
+    }
+
+    /**
+     * DUMMY
+     * @author Neoblaster
+     */
+    public function testSetImportDir()
+    {
+        self::$compiler->setImportDirectory('');
+    }
+
+    /**
+     * Controle le bon fonctionnement de la méthode SXEOverhaul lorsqu'elle contient des balises CDATA.
+     * @author Neoblaster
+     */
+    public function testCDATAParsing()
+    {
+        $xml = Compiler::XML_HEADER . PHP_EOL;
+        $xml .= "<root>" . PHP_EOL;
+        $xml .= "\t<element><![CDATA[<h1>Code HTML dans XML</h1>]]></element>" . PHP_EOL;
+        $xml .= "</root>" . PHP_EOL;
+
+        $sxeo = Compiler::SXEOverhaul($xml);
+
+        // <![CDATA ==> [[
+        // ]]>      ==> ]]
+        $this->assertEquals("[[::lt::h1::gt::Code HTML dans XML::lt::/h1::gt::]]", strval($sxeo->element[0]));
+    }
 
 
     /**
-     * Contrôle du comportement du compiler sur un dossier déjà configuré.
+     * Test avancées simulant des manipulations humaine sur le fichier languages.xml
+     */
+
+    /**
+     * Test d'instanciation dans une installation existante où il n'y à pas de valeur
+     * pour la langue par défaut
      * @author Neoblaster
      */
-    public function testInstanciationOnInstalledDir()
+    public function testInstanciationOnInstalledDirWithNoDefaultLang()
     {
-        $compiler = new Compiler(self::$testWorkingDir);
-        $this->assertEquals(true, $compiler->isInstalled());
+        self::simulateExistingInstallation();
+
+        // Supprimer la valeur par défaut
+        $sxe = new \SimpleXMLElement(file_get_contents(
+            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+        ));
+
+        $sxe->attributes()->default = null;
+
+        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+
+        $this->expectException("Exception");
+        $this->expectExceptionMessage("The default language '' is not registred.'fr-FR' use instead.");
+        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+    }
+
+    /**
+     * Test d'instanciation dans une installation existante où l'attribut default n'existe pas
+     * et va définir en-En comme langue par défaut puisque définie.
+     * @author Neoblaster
+     */
+    public function testInstanciationOnInstalledDirWithNoDefaultLangAttribut_enEN()
+    {
+        self::simulateExistingInstallation();
+
+        // Supprimer la valeur par défaut
+        $sxe = new \SimpleXMLElement(file_get_contents(
+            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+        ));
+
+        unset($sxe->attributes()->default);
+
+        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+
+        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+    }
+
+    /**
+     * Test d'instanciation dans une installation existante où l'attribut default n'existe pas
+     * et va définir une autre langue que en-EN car celle-ci n'existe pas.
+     * @author Neoblaster
+     */
+    public function testInstanciationOnInstalledDirWithNoDefaultLangAttribut_frFR()
+    {
+        $maker = self::simulateExistingInstallation();
+        $maker->removeLanguages(true, 'en-EN');
+        $maker = null;
+
+        // Supprimer la valeur par défaut
+        $sxe = new \SimpleXMLElement(file_get_contents(
+            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+        ));
+
+        unset($sxe->attributes()->default);
+
+        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+
+        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+    }
+
+    /**
+     * Vérifie que le programme ne traite pas de ligne 'language' lorsque celle-ci ne dispose
+     * pas de l'attribut LANG
+     * @author Neoblaster
+     */
+    public function testListRegLanguageWithLanguageHaveMissingAttributLANG()
+    {
+        self::simulateExistingInstallation();
+
+        // Supprimer la valeur par défaut
+        $sxe = new \SimpleXMLElement(file_get_contents(
+            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+        ));
+
+        unset($sxe->language[0]->attributes()->LANG);
+
+        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+
+        $this->expectException("Exception");
+        $this->expectExceptionMessage('Key "LANG" is missing for "Français". This language is skipped.');
+        $compiler = new Compiler(self::$testWorkingDir . '/Install');
     }
 
     /**

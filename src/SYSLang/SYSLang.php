@@ -1,15 +1,15 @@
 <?php
 /**
- * File :: SYSLangg.php
+ * File :: SYSLang.php
  *
- * %DESC BLOCK%
+ * Interface d'utilisation de SYSLang pour PHP.
  *
  * @author    Nicolas DUPRE
- * @release   02/10/2017
- * @version   1.0.0
+ * @release   18/10/2017
+ * @version   2.0.0-beta1
  * @package   Index
  *
- * @TODO : Faire les méthodes pour ajouter et supprimer les targets.
+ * @TODO : Faire les méthodes pour ajouter et supprimer les targets possible.
  */
 
 namespace SYSLang;
@@ -17,7 +17,6 @@ namespace SYSLang;
 
 class SYSLang extends Compiler
 {
-
     /**
      * @var string $useLanguage Langue définie qui sera utilisée par le système.
      */
@@ -39,12 +38,6 @@ class SYSLang extends Compiler
     ];
 
 
-
-
-
-
-
-
     /**
      * SYSLang constructor.
      * @param string $language          Langue à utiliser.
@@ -58,7 +51,7 @@ class SYSLang extends Compiler
          * SI    $language est valide et définie, vérifier sa disponibilité.
          * SINON Définir la langue selon le système utilisateur (ou par défaut si disponible).
          */
-        if (!is_null($language) && $this->checkCode($language) && $this->isRegistred($language)) {
+        if (!is_null($language) && $this->checkCode($language) && $this->isRegistered($language)) {
             $this->setLanguage($language);
         } else {
             $this->getUserLanguages();
@@ -106,11 +99,14 @@ class SYSLang extends Compiler
         return true;
     }
 
-
+    /**
+     * Extrait les textes associés à leur clé et les ranges dans le tableau fournir en argument.
+     *
+     * @param string $source Emplacement vers la/les source(s) xml.
+     * @param array  $output Tableau receuillant les ressources, rangé par target.
+     */
     protected function extract($source, array &$output)
     {
-        // @TODO : --- HERE ---
-        $basename = basename($source);
         $dirname = dirname($source);
 
         // Traitement spécifique aux dossiers.
@@ -127,32 +123,35 @@ class SYSLang extends Compiler
         }
         // Traitement spécifique aux fichiers.
         if (is_file($source)) {
-            $sxeResource = new \SimpleXMLElement(file_get_contents($source));
+            try {
+                $sxeResource = new \SimpleXMLElement(file_get_contents($source));
 
-            // Parcourir la ressource XML
-            for ($i = 0; $i < count($sxeResource->resource); $i++) {
-                // Traitement des elements commun :
-                $resource = $sxeResource->resource[$i];
+                // Parcourir la ressource XML
+                for ($i = 0; $i < count($sxeResource->resource); $i++) {
+                    // Traitement des elements commun :
+                    $resource = $sxeResource->resource[$i];
 
-                $key = strval($resource->attributes()->KEY);
-                $value = strval($resource);
+                    $key = strval($resource->attributes()->KEY);
+                    $value = strval($resource);
 
-                // Traitements des différentes sorties possibles
-                foreach ($this->targets as $attribut => $instructions) {
-                    if(is_null($resource->attributes()->$attribut)) continue;
-                    if(strtolower(strval($resource->attributes()->$attribut)) === 'false') continue;
+                    // Traitements des différentes sorties possibles
+                    foreach ($this->targets as $attribut => $instructions) {
+                        if(is_null($resource->attributes()->$attribut)) continue;
+                        if(strtolower(strval($resource->attributes()->$attribut)) === 'false') continue;
 
-                    $targetName = $instructions['name'];
-                    $callback = $instructions['callback'];
+                        $targetName = $instructions['name'];
+                        $callback = $instructions['callback'];
 
-                    if(!isset($output[$targetName])) $output[$targetName] = [];
+                        if(!isset($output[$targetName])) $output[$targetName] = [];
 
-                    call_user_func_array($callback, [$key, $value, &$output[$targetName]]);
+                        call_user_func_array($callback, [$key, $value, &$output[$targetName]]);
+                    }
                 }
+            } catch (\Exception $e) {
+                // Ne pas emettre d'erreur
             }
         }
     }
-
 
     /**
      * Renvoie la langue utilisée.
@@ -164,6 +163,15 @@ class SYSLang extends Compiler
         return $this->useLanguage;
     }
 
+    /**
+     * Récupère l'ensemble des textes associé à leur clé, ordonné en fonction de leur cible à l'aide des attributs.
+     *
+     * @param null|string $langFile Autant d'emplacement (Fichier ou Dossier) dont il faut traiter.
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
     public function getTexts($langFile = null)
     {
         $sources = [];
@@ -238,7 +246,7 @@ class SYSLang extends Compiler
             $useDefault = true;
 
             foreach ($userLanguages as $key => $language) {
-                if ($this->isRegistred($language)) {
+                if ($this->isRegistered($language)) {
                     $this->setLanguage($language);
                     $useDefault = false;
                     break;
@@ -258,7 +266,7 @@ class SYSLang extends Compiler
      */
     public function setLanguage($lang = null)
     {
-        if (is_null($lang) || !$this->isRegistred($lang)) {
+        if (is_null($lang) || !$this->isRegistered($lang)) {
             $this->getUserLanguages();
         } else {
             $this->useLanguage = $lang;
@@ -267,4 +275,5 @@ class SYSLang extends Compiler
 
         return true;
     }
+
 }

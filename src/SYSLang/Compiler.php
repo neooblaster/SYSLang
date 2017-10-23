@@ -2,12 +2,15 @@
 /**
  * File :: Compiler.php
  *
- * %DESC BLOCK%
+ * Noyaux principale du moteur SYSLang.
  *
  * @author    Nicolas DUPRE
- * @release   02/10/2017
- * @version   2.0.x-alpha1
+ * @release   18/10/2017
+ * @version   2.0.0-beta1
  * @package   Index
+ *
+ * @TODO : [P1] Reconstituer le système d'Import / Export.
+ * @TODO : [P2] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
  */
 
 namespace SYSLang;
@@ -135,14 +138,6 @@ class Compiler
     protected $workingDirectory = null;
 
 
-
-
-
-
-
-
-
-
     /**
      * Compiler constructor.
      * @param string $workingDirectory Dossier de travail pour le compilateur.
@@ -202,12 +197,12 @@ class Compiler
             /** Contole */
             if ($this->checkCode($value)) {
                 /** Découpage */
-                list($code,$name) = explode(":", $value);
+                @list($code,$name) = explode(":", $value);
 
                 if (is_null($firstLang)) $firstLang = $code;
                 if (is_null($name)) $name = $code;
 
-                if (!$this->isRegistred($code)) {
+                if (!$this->isRegistered($code)) {
                     list($lang,$country) = explode("-", $code);
 
                     $new_lang = $xml->addChild("language", $name);
@@ -338,7 +333,7 @@ class Compiler
             /** Vérifier que la pack existe (en cas de modification manuelle du fichier) */
             $lang = strval($languages->attributes()->default);
 
-            if ($this->isRegistred($lang)) {
+            if ($this->isRegistered($lang)) {
                 $this->defaultLanguage = $lang;
 
                 return true;
@@ -354,7 +349,7 @@ class Compiler
             }
         } else {
             /** Choisir l'anglais par défaut : en-EN , Sinon prendre la première disponible */
-            if ($this->isRegistred('en-EN')) {
+            if ($this->isRegistered('en-EN')) {
                 $this->defaultLanguage = 'en-EN';
             } else {
                 foreach ($this->registredLanguages['KEYS'] as $key => $value) {
@@ -431,7 +426,7 @@ class Compiler
      *
      * @return bool
      */
-    public function isRegistred($language, $throw = false)
+    public function isRegistered($language, $throw = false)
     {
         if (!array_key_exists($language, $this->registredLanguages['KEYS'])) {
             if ($throw) throw new \Exception(
@@ -516,7 +511,7 @@ class Compiler
 
         foreach ($langCodes as $key => $code) {
             if ($this->checkCode($code)) {
-                if ($this->isRegistred($code)) {
+                if ($this->isRegistered($code)) {
                     for ($i = 0; $i < count($xml->language); $i++) {
                         // Si c'est la lang par défaut, demander une mise à jour de la langue par defaut.
                         if ($code === $this->defaultLanguage) $updateDefaultLang = true;
@@ -628,7 +623,7 @@ class Compiler
     {
         $this->isInstalled(true);
 
-        if (!$this->isRegistred($language)) {
+        if (!$this->isRegistered($language)) {
             throw new \Exception(
                 "The language '$language' is not registered in the list. Nothing done."
             );
@@ -680,7 +675,7 @@ class Compiler
             )
         );
 
-        if (!$this->isRegistred($langCode)) throw new \Exception(
+        if (!$this->isRegistered($langCode)) throw new \Exception(
             sprintf(
                 'The requested language code "%s" is not registered.',
                 $langCode
