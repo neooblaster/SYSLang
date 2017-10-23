@@ -8,6 +8,7 @@
 
 use SYSLang\Compiler;
 
+require_once "src/SYSLang/Autoloader.php";
 
 class CompilerTest extends \PHPUnit_Framework_TestCase
 {

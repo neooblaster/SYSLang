@@ -8,9 +8,7 @@
 
 use SYSLang\SYSLang;
 
-require_once "src/SYSLang/Compiler.php";
-require_once "src/SYSLang/SYSLang.php";
-
+require_once "src/SYSLang/Autoloader.php";
 
 class SYSLangTest extends \PHPUnit_Framework_TestCase
 {
