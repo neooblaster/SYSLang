@@ -1,0 +1,38 @@
+        
+Usage : SYSLang [OPTIONS]
+
+Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
+
+
+0. Options transverses :
+
+ --dir, --directory     Spécifie l'emplacement de travail.
+    -h, --help          Affiche la présente aide.
+        --silent        Masque les messages d'informations.
+
+1. Options d'installation :
+
+        --install       Installe le fichier de configuration languages.xml
+                        dans le dossier de travail défini.
+                        Defaut : ./
+
+2. Options de configurations :
+
+        --add-languages     Ajoute la/les langue(s) spécifiée(s) au registre.
+                            Format : xx-XX:Name
+                            Séparateur : virgule (,)
+
+        --default           Fait en sorte que la langue en cours d'ajout
+                            devienne également la langue par defaut.
+                            Si plusieurs valeur, alors c'est la première qui est
+                            retenue.
+
+        --remove-languages  Supprime la/les langue(s) spécifiée(s) du registre
+        --remove-langs      et supprime les fichiers associé
+                            Format : xx-XX
+                            Séparateur : virgule (,)
+
+        --preserve-files    Demande la concervation des fichiers lors d'une
+                            suppresion de langue.
+
+        --set-default-lang  Définit la langue par défaut.

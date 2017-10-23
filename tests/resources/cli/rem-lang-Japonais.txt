@@ -1,0 +1,1 @@
+[ [38;5;196mERROR[0m ] :: Argument supplied "Japonais" is not valide. It must be like this xx-XX. Argument "Japonais" is skipped.

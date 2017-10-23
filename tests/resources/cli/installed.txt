@@ -1,0 +1,1 @@
+[ [38;5;208mWARNING[0m ] :: Le système de langue est déjà installé dans [38;5;220mtests/Command[0m

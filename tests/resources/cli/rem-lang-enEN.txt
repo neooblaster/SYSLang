@@ -1,0 +1,1 @@
+[ INFO ] :: Suppression de langue [38;5;220men-EN[0m effectué avec succès.

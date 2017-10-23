@@ -11,6 +11,9 @@
         <testsuite name="SYSLang">
             <directory suffix=".php">./tests/SYSLang</directory>
         </testsuite>
+        <testsuite name="CommandLine">
+            <directory suffix=".php">./tests/Command</directory>
+        </testsuite>
     </testsuites>
 
     <filter>

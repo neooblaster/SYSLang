@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * File :: Command.php
+ *
+ * Processeur CLI pour le moteur SYSLang.
+ *
+ * @author    Nicolas DUPRE with the contribution of marvin255
+ * @release   18/10/2017
+ * @version   2.0.0-beta1
+ * @package   Index
+ *
+ * @TODO : [P1] Reconstituer le système d'Import / Export.
+ * @TODO : [P2] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
+ */
+
 namespace SYSLang;
 
 use Exception;
@@ -11,15 +25,22 @@ use InvalidArgumentException;
 class Command
 {
     /**
-     * @var string
+     * @var string $workdir Dossier de travail
      */
     protected $workdir = null;
+
     /**
-     * @var array
+     * @var string $cmdName Nom de la commande
+     */
+    protected $cmdName = null;
+
+    /**
+     * @var array $argv
      */
     protected $argv = null;
+
     /**
-     * @var array
+     * @var array $options
      */
     protected $options = [
         'colors' => [
@@ -29,8 +50,23 @@ class Command
             'color_war' => '208',
             'color_txt' => '221',
         ],
-        'optionSeparator' => ',',
+        'separator' => ',',
     ];
+
+    /**
+     * @var bool|resource $psdtout Pointeur vers la ressource de sortie standard.
+     */
+    protected $psdtout = STDOUT;
+
+    /**
+     * @var bool|resource $pstderr Pointeur vers la ressource de sortie des erreurs.
+     */
+    protected $pstderr = STDERR;
+
+    /**
+     * @var bool $noDie Flag pour ne pas jouer les evenements die.
+     */
+    protected $noDie = false;
 
     /**
      * Constructor function.
@@ -40,42 +76,51 @@ class Command
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($workdir, array $argv)
+    public function __construct($workdir, array $argv, $cmdName)
     {
         $workdir = trim($workdir);
         if (empty($workdir)) {
-            throw new InvalidArgumentException("workdir parameter in constructor can't be empty");
+            throw new InvalidArgumentException("workdir parameter in constructor can't be empty.");
         }
         if (!is_dir($workdir)) {
-            throw new InvalidArgumentException("workdir `{$workdir}` doesn't exisr");
+            throw new InvalidArgumentException("workdir `{$workdir}` doesn't exist.");
         }
         $this->workdir = $workdir;
         $this->argv = $argv;
+        $this->cmdName = $cmdName;
+
     }
 
     /**
-     * Executions du script.
+     * Execution du script.
      */
     public function run()
     {
         $options = $this->argv;
 
         // Création du compilateur
-        $directory = @($options["dir"]) ?: (@$options["directory"]) ?: ".";
+        $directory = @($options["dir"]) ?: (@$options["directory"]) ?: $this->workdir;
         $compiler = new Compiler($directory);
 
-        // Afficher l'aide si demandé et s'arrêté la
-        if (isset($options["h"]) || isset($options["help"])) $this->help();
+        // Afficher l'aide si demandé et s'arrêté la$
+        if (
+            array_key_exists("h", $options)
+        ||  array_key_exists("help", $options)
+        ) $this->help();
 
         // Processus d'installation
-        if (isset($options["install"])) {
-            $compiler->install();
-            $this->stdout('Installation effectuée avec succès dans %s', [__DIR__ . '/' . $directory]);
+        if (array_key_exists("install", $options)) {
+            if (!$compiler->isInstalled()) {
+                $compiler->install();
+                $this->stdout('Installation effectuée avec succès dans %s', [ $directory]);
+            } else {
+               $this->stderr("Le système de langue est déjà installé dans %s", [$directory], 0);
+            }
         }
 
         // Processus d'enregistrement d'une langue au registre
-        if (isset($options["add-languages"])) {
-            $languages = explode($optionSeparator, $options["add-languages"]);
+        if (array_key_exists("add-languages", $options)) {
+            $languages = explode($this->options['separator'], $options["add-languages"]);
             $languages = array_map(function($el){
                 return trim($el);
             }, $languages);
@@ -88,8 +133,9 @@ class Command
                     $this->stdout("Enregistrement de langue %s effectué avec succès.", [$el]);
                 }, $languages);
 
-                if (isset($options["default"])) {
-                    $compiler->setDefaultLanguage($languages[0]);
+                if (array_key_exists("default", $options)) {
+                    list($code, $name) = explode(":", $languages[0]);
+                    $compiler->setDefaultLanguage($code);
                     $this->stdout("La langue par défaut est définie à %s.", [$languages[0]]);
                 }
             } catch (\Exception $e) {
@@ -98,10 +144,13 @@ class Command
         }
 
         // Processus de suppression de langue du registre
-        if (isset($options["remove-languages"]) || isset($options["remove-langs"])) {
+        if (
+            array_key_exists("remove-languages", $options)
+        ||  array_key_exists("remove-langs", $options)
+        ) {
             // Options à valeur obligatoire, null ne doit jamais se produire.
             $languages = @($options["remove-languages"]) ?: @($options["remove-langs"]) ?: null;
-            $languages = explode($optionSeparator, $languages);
+            $languages = explode($this->options['separator'], $languages);
             $languages = array_map(function($el) {
                 return trim($el);
             }, $languages);
@@ -119,7 +168,7 @@ class Command
         }
 
         // Configuration du pack de langue par défaut
-        if (isset($options["set-default-lang"])) {
+        if (array_key_exists("set-default-lang", $options)) {
             try {
                 $compiler->setDefaultLanguage($options["set-default-lang"]);
                 $this->stdout("La langue par défaut est définie à %s.", [$options["set-default-lang"]]);
@@ -138,11 +187,11 @@ class Command
      */
     protected function help($level = 0)
     {
-        $optionSeparator = $this->options['optionSeparator'];
-        $name = basename(__FILE__);
+        $separator = $this->options['separator'];
+        $name = $this->cmdName;
 
-        echo <<<HELP
-
+        $man = <<<HELP
+        
 Usage : $name [OPTIONS]
 
 Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
@@ -164,7 +213,7 @@ Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
 
         --add-languages     Ajoute la/les langue(s) spécifiée(s) au registre.
                             Format : xx-XX:Name
-                            Séparateur : virgule ($optionSeparator)
+                            Séparateur : virgule ($separator)
 
         --default           Fait en sorte que la langue en cours d'ajout
                             devienne également la langue par defaut.
@@ -174,15 +223,15 @@ Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
         --remove-languages  Supprime la/les langue(s) spécifiée(s) du registre
         --remove-langs      et supprime les fichiers associé
                             Format : xx-XX
-                            Séparateur : virgule ($optionSeparator)
+                            Séparateur : virgule ($separator)
 
         --preserve-files    Demande la concervation des fichiers lors d'une
                             suppresion de langue.
 
         --set-default-lang  Définit la langue par défaut.
 HELP;
-        echo PHP_EOL;
-        die($level);
+        fwrite($this->psdtout, $man . PHP_EOL);
+        if ($level) die($level);
     }
 
     /**
@@ -226,10 +275,10 @@ HELP;
 
         // Mise en evidence des saisie utilisateur
         $message = $this->highlight($message);
-        $message = "[ \e[38;5;{$color}m$level_str\e[0m ] :: $message".PHP_EOL;
+        $message = "[ \e[38;5;{$color}m$level_str\e[0m ] :: $message" . PHP_EOL;
 
-        fwrite(STDERR, vsprintf($message, $args));
-        if ($level) die($level);
+        fwrite($this->pstderr, vsprintf($message, $args));
+        if ($level && !$this->noDie) die($level);
     }
 
     /**
@@ -245,7 +294,38 @@ HELP;
         if (!isset($options["silent"])) {
             $message = $this->highlight($message);
             $message = "[ INFO ] :: $message".PHP_EOL;
-            fwrite(STDOUT, vsprintf($message, $args));
+            fwrite($this->psdtout, vsprintf($message, $args));
         }
     }
+
+    /**
+     * Définie la ressource de sortie standard.
+     *
+     * @param bool|resource $stdout Pointeur vers une ressource ayant un accès en écriture.
+     */
+    public function setStdout($stdout = STDOUT)
+    {
+        $this->psdtout = $stdout;
+    }
+
+    /**
+     * Définie la ressource de sortie des erreurs.
+     *
+     * @param bool|resource $stderr Pointeur vers une ressource ayant un accès en écriture.
+     */
+    public function setStderr($stderr = STDERR)
+    {
+        $this->pstderr = $stderr;
+    }
+
+    /**
+     * Définie le comportement des fonctions die.
+     *
+     * @param bool $nodie
+     */
+    public function setNoDie($nodie = false)
+    {
+        $this->noDie = $nodie;
+    }
+
 }

@@ -1,0 +1,1 @@
+[ INFO ] :: La langue par défaut est définie à [38;5;220mfr-FR[0m.

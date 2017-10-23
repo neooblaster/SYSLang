@@ -1,0 +1,2 @@
+[ INFO ] :: Enregistrement de langue [38;5;220men-EN:English[0m effectué avec succès.
+[ INFO ] :: La langue par défaut est définie à [38;5;220men-EN:English[0m.

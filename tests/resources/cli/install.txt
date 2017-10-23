@@ -1,0 +1,1 @@
+[ INFO ] :: Installation effectuée avec succès dans [38;5;220mtests/Command[0m
