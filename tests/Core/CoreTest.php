@@ -6,16 +6,16 @@
  * Time: 15:29
  */
 
-use SYSLang\Compiler;
+use SYSLang\Core;
 
 require_once "src/SYSLang/Autoloader.php";
 
-class CompilerTest extends \PHPUnit_Framework_TestCase
+class CoreTest extends \PHPUnit_Framework_TestCase
 {
     use initializer;
 
     /**
-     * @var Compiler $compiler Instance pour les tests
+     * @var Core $compiler Instance pour les tests
      */
     protected static $compiler = null;
 
@@ -27,7 +27,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string $testWorkingDir Emplacement de travail pour dérouler les tests
      */
-    protected static $testWorkingDir = 'tests/Compiler';
+    protected static $testWorkingDir = 'tests/Core';
 
 
 
@@ -108,7 +108,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
         self::cleanseDir(self::$testWorkingDir . '/Install', ['.', '..', '.required']);
 
         // Instanciation et création d'un environnement
-        $envMaker = new Compiler(self::$testWorkingDir . '/Install');
+        $envMaker = new Core(self::$testWorkingDir . '/Install');
         $envMaker->install();
         $envMaker->addLanguages('fr-FR:Français', 'en-EN:English');
 
@@ -127,7 +127,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testShowWorkingDir()
     {
-        self::$compiler = new Compiler(self::$testWorkingDir);
+        self::$compiler = new Core(self::$testWorkingDir);
 
         $this->assertEquals(self::$cleanseExcluded, self::$compiler->showWorkingDir());
     }
@@ -155,7 +155,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         /** Contrôler la présence du fichier language.xml */
         $this->assertEquals(true,
-            in_array(Compiler::XML_CONFIG_FILE, scandir(self::$testWorkingDir))
+            in_array(Core::XML_CONFIG_FILE, scandir(self::$testWorkingDir))
         );
 
         /** Opération similaire de contrôle */
@@ -351,12 +351,12 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCDATAParsing()
     {
-        $xml = Compiler::XML_HEADER . PHP_EOL;
+        $xml = Core::XML_HEADER . PHP_EOL;
         $xml .= "<root>" . PHP_EOL;
         $xml .= "\t<element><![CDATA[<h1>Code HTML dans XML</h1>]]></element>" . PHP_EOL;
         $xml .= "</root>" . PHP_EOL;
 
-        $sxeo = Compiler::SXEOverhaul($xml);
+        $sxeo = Core::SXEOverhaul($xml);
 
         // <![CDATA ==> [[
         // ]]>      ==> ]]
@@ -379,16 +379,16 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         // Supprimer la valeur par défaut
         $sxe = new \SimpleXMLElement(file_get_contents(
-            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+            self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE
         ));
 
         $sxe->attributes()->default = null;
 
-        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+        Core::saveXml($sxe, self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE);
 
         $this->expectException("Exception");
         $this->expectExceptionMessage("The default language '' is not registred.'fr-FR' use instead.");
-        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+        $compiler = new Core(self::$testWorkingDir . '/Install');
     }
 
     /**
@@ -402,14 +402,14 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         // Supprimer la valeur par défaut
         $sxe = new \SimpleXMLElement(file_get_contents(
-            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+            self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE
         ));
 
         unset($sxe->attributes()->default);
 
-        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+        Core::saveXml($sxe, self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE);
 
-        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+        $compiler = new Core(self::$testWorkingDir . '/Install');
     }
 
     /**
@@ -425,14 +425,14 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         // Supprimer la valeur par défaut
         $sxe = new \SimpleXMLElement(file_get_contents(
-            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+            self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE
         ));
 
         unset($sxe->attributes()->default);
 
-        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+        Core::saveXml($sxe, self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE);
 
-        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+        $compiler = new Core(self::$testWorkingDir . '/Install');
     }
 
     /**
@@ -446,16 +446,16 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
         // Supprimer la valeur par défaut
         $sxe = new \SimpleXMLElement(file_get_contents(
-            self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE
+            self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE
         ));
 
         unset($sxe->language[0]->attributes()->LANG);
 
-        Compiler::saveXml($sxe, self::$testWorkingDir . '/Install/' . Compiler::XML_CONFIG_FILE);
+        Core::saveXml($sxe, self::$testWorkingDir . '/Install/' . Core::XML_CONFIG_FILE);
 
         $this->expectException("Exception");
         $this->expectExceptionMessage('Key "LANG" is missing for "Français". This language is skipped.');
-        $compiler = new Compiler(self::$testWorkingDir . '/Install');
+        $compiler = new Core(self::$testWorkingDir . '/Install');
     }
 
     /**
@@ -464,7 +464,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstallInUnexistingSubDir()
     {
-        $compilator = new Compiler(self::$testWorkingDir . '/auto-created');
+        $compilator = new Core(self::$testWorkingDir . '/auto-created');
         $compilator->install();
     }
 
@@ -478,7 +478,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Destruction de l'instance Compiler
+     * Destruction de l'instance Core
      * @author Neoblaster
      */
     public function testEndByDestruct()
@@ -493,7 +493,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
      */
     static function tearDownAfterClass()
     {
-        //echo PHP_EOL . file_get_contents(self::$testWorkingDir . '/' . Compiler::XML_CONFIG_FILE);
+        //echo PHP_EOL . file_get_contents(self::$testWorkingDir . '/' . Core::XML_CONFIG_FILE);
     }
 
 }

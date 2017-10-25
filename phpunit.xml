@@ -6,7 +6,7 @@
             <directory suffix=".php">./tests/Autoload</directory>
         </testsuite>
         <testsuite name="Core">
-            <directory suffix=".php">./tests/Compiler</directory>
+            <directory suffix=".php">./tests/Core</directory>
         </testsuite>
         <testsuite name="SYSLang">
             <directory suffix=".php">./tests/SYSLang</directory>

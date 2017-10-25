@@ -100,7 +100,7 @@ class Command
 
         // Création du compilateur
         $directory = @($options["dir"]) ?: (@$options["directory"]) ?: $this->workdir;
-        $compiler = new Compiler($directory);
+        $compiler = new Core($directory);
 
         // Afficher l'aide si demandé et s'arrêté la$
         if (

@@ -64,9 +64,9 @@ Ce dossier est l'environnement de tests de la classe ``SYSLang\Command``.
 
 
 
-#### Sous-dossier ``Compiler``
+#### Sous-dossier ``Core``
 
-Ce dossier est l'environnement de tests de la classe ``SYSLang\Compiler``.
+Ce dossier est l'environnement de tests de la classe ``SYSLang\Core``.
 
 
 

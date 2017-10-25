@@ -1,0 +1,15 @@
+# Exclusiondes fichier PhpStorm
+# Users : Nicolas DUPRE
+.idea/
+
+# Exclusions des ressources locales à l'exeption des fichiers servant
+# à leur initialisation chez les contributeurs.
+
+# Rapport de couverture
+coverage/*
+!coverage/.required
+
+# Documentation de l'API
+docs/*
+!docs/README.md
+!docs/cache/.required

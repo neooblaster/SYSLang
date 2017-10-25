@@ -154,15 +154,15 @@ deux méthodes. Les résultats étant évidemment le même en terme d'utilisatio
 * Instanciation dans l'espace de nom `SYSLang\Compiler`:
 
     ```php
-    use SYSLang\Compiler;
+    use SYSLang\Core;
 
-    $compiler = new Compilater();
+    $core = new Core();
     ```
 
 * Instanciation dans l'espace de nom `global`:
 
     ```php
-    $compiler = new \SYSLang\Compiler();
+    $core = new \SYSLang\Core();
     ```
 
 
@@ -172,7 +172,7 @@ Pour rendre le dossier de travil courant comme étant un système de langue **SY
 il suffit d'exécuter l'instruction suivante :
 
 ```php
-$compiler->install(); 
+$core->install(); 
 ```
 
 
@@ -199,10 +199,10 @@ Exemples :
 La méthode ``addLanguages`` admet autant d'arguments `xx-XX:NomDeLaLangue` que vous voulez.
 
 ```php
-$compiler->addLanguages('fr-FR:Français');
+$core->addLanguages('fr-FR:Français');
 
 # Ou encore ainsi si vous souhaitez ajouter plusieurs langue à la fois.
-$compiler->addLanguages('en-EN:English', 'jp-JP:日本の');
+$core->addLanguages('en-EN:English', 'jp-JP:日本の');
 ```
 
 
@@ -219,10 +219,10 @@ les fichiers de langue dans le dossier courant (``$preverveFiles``).
 La méthode admet autant d'arguments ``xx-XX`` que vous voulez.
 
 ```php
-$compiler->removeLanguages(true, 'en-EN');
+$core->removeLanguages(true, 'en-EN');
 
 # Ou encore ainsi si vous souhaitez supprimer plusieurs langue à la fois.
-$compiler->removeLanguages(true, 'en-EN', 'jp-JP');
+$core->removeLanguages(true, 'en-EN', 'jp-JP');
 ```
 
 **Important** : Lorsque la langue par défaut est supprimée du registre, une nouvelle est 
@@ -238,7 +238,7 @@ de la méthode ``setDefaultLanguage``.
 Elle accepte comme valeur, le code de langue au format `xx-XX`.
 
 ```php
-$compiler->setDefaultLanguage('fr-FR');
+$core->setDefaultLanguage('fr-FR');
 ```
 
 Il est impossible de définir une langue non enregistrée comme langue par défaut.

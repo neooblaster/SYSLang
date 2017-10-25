@@ -27,7 +27,7 @@ class AutoloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testAutoloadLoadOK()
     {
-        Autoloader::load("SYSLang\Compiler");
+        Autoloader::load("SYSLang\Core");
     }
 
     /**
@@ -35,6 +35,6 @@ class AutoloadTest extends \PHPUnit_Framework_TestCase
      */
     public function testAutoloadLoadKO()
     {
-        Autoloader::load("Compiler");
+        Autoloader::load("Core");
     }
 }

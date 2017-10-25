@@ -1,6 +1,6 @@
 <?php
 /**
- * File :: Compiler.php
+ * File :: Core.php
  *
  * Noyaux principale du moteur SYSLang.
  *
@@ -16,7 +16,7 @@
 namespace SYSLang;
 
 
-class Compiler
+class Core
 {
     /**
      * Modèle de remplacement de la balise ouvrante CDATA pour la portabilité.

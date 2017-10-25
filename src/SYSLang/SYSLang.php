@@ -15,7 +15,7 @@
 namespace SYSLang;
 
 
-class SYSLang extends Compiler
+class SYSLang extends Core
 {
     /**
      * @var string $useLanguage Langue définie qui sera utilisée par le système.

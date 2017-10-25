@@ -8,9 +8,9 @@
 
 > Environnement de test pour lancer des commandes manuellement.
 
-### Dossier ``Compiler`` :
+### Dossier ``Core`` :
 
-> Environnement de test pour la classe ``Compiler``.
+> Environnement de test pour la classe ``Core``.
 
 ### Dossier ``dev`` :
 

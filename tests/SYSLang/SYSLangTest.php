@@ -55,8 +55,8 @@ class SYSLangTest extends \PHPUnit_Framework_TestCase
         self::cleanseDir(self::$testWorkingDir, self::$cleanseExcluded);
 
         /** Récupération de l'installation issue des tests du noyaux */
-        self::recursiveCopy('tests/Compiler/languages.xml', self::$testWorkingDir);
-        self::recursiveCopy('tests/Compiler/fr-FR', self::$testWorkingDir);
+        self::recursiveCopy('tests/Core/languages.xml', self::$testWorkingDir);
+        self::recursiveCopy('tests/Core/fr-FR', self::$testWorkingDir);
         self::recursiveCopy('tests/resources/*', self::$testWorkingDir . '/fr-FR');
     }
 
@@ -193,7 +193,7 @@ class SYSLangTest extends \PHPUnit_Framework_TestCase
      */
     static function tearDownAfterClass()
     {
-        //echo PHP_EOL . file_get_contents(self::$testWorkingDir . '/' . Compiler::XML_CONFIG_FILE);
+        //echo PHP_EOL . file_get_contents(self::$testWorkingDir . '/' . Core::XML_CONFIG_FILE);
     }
 
 }
