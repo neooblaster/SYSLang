@@ -195,7 +195,7 @@ class Core
         /** Parcourir les arguments, les contrôler et vérifier l'existance */
         foreach (func_get_args() as $key => $value) {
             /** Contole */
-            if ($this->checkCode($value)) {
+            if (self::checkCode($value)) {
                 /** Découpage */
                 @list($code,$name) = explode(":", $value);
 
@@ -283,7 +283,7 @@ class Core
      * @param string $argument Argument à contrôler
      * @return bool
      */
-    protected function checkCode($argument)
+    static function checkCode($argument)
     {
         return preg_match(
             self::LANG_CODE_PATTERN, $argument
@@ -510,7 +510,7 @@ class Core
         array_shift($langCodes);
 
         foreach ($langCodes as $key => $code) {
-            if ($this->checkCode($code)) {
+            if (self::checkCode($code)) {
                 if ($this->isRegistered($code)) {
                     for ($i = 0; $i < count($xml->language); $i++) {
                         // Si c'est la lang par défaut, demander une mise à jour de la langue par defaut.
@@ -668,7 +668,7 @@ class Core
      */
     public function setRefLanguage($langCode)
     {
-        if (!$this->checkCode($langCode)) throw  new \Exception(
+        if (!self::checkCode($langCode)) throw  new \Exception(
             sprintf(
                 'The language code "%s" provided is not valid. It must be like xx-XX.',
                 $langCode

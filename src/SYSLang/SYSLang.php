@@ -51,7 +51,7 @@ class SYSLang extends Core
          * SI    $language est valide et définie, vérifier sa disponibilité.
          * SINON Définir la langue selon le système utilisateur (ou par défaut si disponible).
          */
-        if (!is_null($language) && $this->checkCode($language) && $this->isRegistered($language)) {
+        if (!is_null($language) && parent::checkCode($language) && $this->isRegistered($language)) {
             $this->setLanguage($language);
         } else {
             $this->getUserLanguages();
