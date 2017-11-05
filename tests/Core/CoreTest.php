@@ -61,7 +61,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
             // Donnée inexistante
             ['The language code "aa-AA" is not registered in "languages.xml"', true, 'aa-AA'],
             // Code incorrecte
-            ['Argument supplied "fra-FRA" is not valide. It must be like this xx-XX. Argument "fra-FRA" is skipped.', true, 'fra-FRA']
+            ['Argument supplied "fra-FRA" is not valid. It must be like this xx-XX. Argument "fra-FRA" is skipped.', true, 'fra-FRA']
         ];
     }
 

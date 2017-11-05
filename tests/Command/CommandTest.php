@@ -25,7 +25,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array $cleanseExcluded Fichier et Dossier à exclure du nettoyage.
      */
-    protected static $cleanseExcluded = [".", ".."];
+    protected static $cleanseExcluded = [".", "..", "makeCLItxt"];
 
 
 

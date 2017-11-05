@@ -43,7 +43,7 @@ class Core
      * ll = Lang Code ISO 639-1
      * CC = Country Code ISO 3166-1
      */
-    const LANG_CODE_PATTERN = '#^[a-z]{2}-[A-Z]{2}#';
+    const LANG_CODE_PATTERN = '#^[a-z]{2}-[A-Z]{2}$#';
 
     /**
      * Fichier de contrôle d'intégrité des clés de textes.
@@ -194,35 +194,32 @@ class Core
 
         /** Parcourir les arguments, les contrôler et vérifier l'existance */
         foreach (func_get_args() as $key => $value) {
-            /** Contole */
-            if (self::checkCode($value)) {
-                /** Découpage */
-                @list($code,$name) = explode(":", $value);
+            /** Procéder au découpage de l'argument Découpage */
+            @list($code,$name) = explode(":", $value);
 
-                if (is_null($firstLang)) $firstLang = $code;
-                if (is_null($name)) $name = $code;
+            if (!self::checkCode($code)) throw new \Exception(
+                sprintf('Argument supplied "%1$s" is not valid.' .
+                    'It must be like this xx-XX:Name.' .
+                    'Argument "%1$s" is skipped.'
+                    , $value
+                )
+            );
 
-                if (!$this->isRegistered($code)) {
-                    list($lang,$country) = explode("-", $code);
+            if (is_null($firstLang)) $firstLang = $code;
+            if (is_null($name)) $name = $code;
 
-                    $new_lang = $xml->addChild("language", $name);
-                    $new_lang->addAttribute('LANG-CODE', $lang);
-                    $new_lang->addAttribute('COUNTRY_CODE', $country);
-                    $new_lang->addAttribute('LANG', $code);
-                } else {
-                    throw new \Exception(
-                        sprintf(
-                            'The language "%s" with code "%s" already registered in "%s"',
-                            $name, $code, self::XML_CONFIG_FILE
-                        )
-                    );
-                }
+            if (!$this->isRegistered($code)) {
+                list($lang,$country) = explode("-", $code);
+
+                $new_lang = $xml->addChild("language", $name);
+                $new_lang->addAttribute('LANG-CODE', $lang);
+                $new_lang->addAttribute('COUNTRY_CODE', $country);
+                $new_lang->addAttribute('LANG', $code);
             } else {
                 throw new \Exception(
-                    sprintf('Argument supplied "%1$s" is not valide.' .
-                        'It must be like this xx-XX:Name.' .
-                        'Argument "%1$s" is skipped.'
-                        , $value
+                    sprintf(
+                        'The language "%s" with code "%s" already registered in "%s"',
+                        $name, $code, self::XML_CONFIG_FILE
                     )
                 );
             }
@@ -243,7 +240,7 @@ class Core
                 !file_exists($this->workingDirectory . '/' . $firstLang)
                 || !is_dir($this->workingDirectory . '/' . $firstLang)
             ) mkdir($this->workingDirectory . '/' . $firstLang);
-            
+
             if (
                 !file_exists($this->workingDirectory . '/' . $firstLang . '/generic.xml')
                 || !is_file($this->workingDirectory . '/' . $firstLang . '/generic.xml')
@@ -536,7 +533,7 @@ class Core
             } else {
                 throw new \Exception(
                     sprintf(
-                        'Argument supplied "%1$s" is not valide. ' .
+                        'Argument supplied "%1$s" is not valid. ' .
                         'It must be like this xx-XX. ' .
                         'Argument "%1$s" is skipped.',
                         $code

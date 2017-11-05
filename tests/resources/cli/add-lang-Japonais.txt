@@ -1,1 +1,1 @@
-[ [38;5;196mERROR[0m ] :: Argument supplied "Japonais" is not valide.It must be like this xx-XX:Name.Argument "Japonais" is skipped.
+[ [38;5;196mERROR[0m ] :: Argument supplied "Japonais" is not valid.It must be like this xx-XX:Name.Argument "Japonais" is skipped.
