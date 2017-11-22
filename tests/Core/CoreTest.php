@@ -319,11 +319,276 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * DUMMY
+     * Test l'exception de la méthode deploy lorsque la langue de référence n'a aucun fichier.
+     * @author Neoblaster
+     */
+    public function testDeployEmptyLanguage()
+    {
+        self::$compiler->setRefLanguage("en-EN");
+
+        $this->expectException("Exception");
+        $this->expectExceptionMessage("There is no folder name 'en-EN' to deploy.");
+
+        self::$compiler->deploy();
+    }
+
+    /**
+     * Contrôle de la bonne maintenance des langues.
      * @author Neoblaster
      */
     public function testDeploy()
     {
+        /**
+         * Initialisation du tests
+         */
+        # Test de déploiement sur les langues suivantes.
+        $ref = 'fr-FR';
+        $langs = ["en-EN", "de-DE"];
+        $keyToManipulate = "KEY_TEXT_ADD_BY_TEST";
+        $textToInsert = "TEXT ADD BY TEST";
+        $textUpdated = "TEXT EDIT BY TEST";
+
+        # Utilisation de la langue FR comme langue de référence
+        self::$compiler->setRefLanguage($ref);
+
+        # Création d'une ressource supplémentaire pour tester la récursivité
+        mkdir(self::$testWorkingDir . "/$ref/path/to/sub/folder", 0777, true);
+        copy(
+            self::$testWorkingDir . "/$ref/generic.xml",
+            self::$testWorkingDir . "/$ref/path/to/sub/folder/generic.xml"
+        );
+
+
+
+        /**
+         * testDeploy#1 :: Création des langues inistantes.
+         */
+
+        # Controler que les dossiers des langues enregistrées n'existe pas (non déployée)
+        foreach ($langs as $lang) {
+            $this->assertEquals(false, file_exists(self::$testWorkingDir . "/$lang"));
+        }
+
+        self::$compiler->deploy();
+
+        # Controler que le déploiement à bien fonctionné
+        foreach ($langs as $lang) {
+            $this->assertEquals(true, file_exists(self::$testWorkingDir . "/$lang"));
+        }
+
+
+
+        /**
+         * testDeploy#2 :: Ajout de clés.
+         */
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        $newKey = $generic->addChild("resource", $textToInsert);
+        $newKey->addAttribute("KEY", $keyToManipulate);
+        $newKey->addAttribute("SST", "true");
+        $newKey->addAttribute("CST", "false");
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+
+        # Contrôler l'absence de la clé KEY_TEXT_ADD_BY_TEST
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+            $keyFound = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $keyFound = true;
+                    break;
+                }
+            }
+
+            $this->assertEquals(false, $keyFound);
+        }
+
+        self::$compiler->deploy();
+
+        # Contrôler la présence de la clé KEY_TEXT_ADD_BY_TEST suite au déploiement
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+            $keyFound = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $keyFound = true;
+                    break;
+                }
+            }
+
+            //$this->assertEquals(true, $keyFound);
+        }
+
+
+
+        /**
+         * testDeploy#3 :: Mise à jour de clés existantes.
+         */
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        for ($r = 0; $r < count($generic->resource); $r++) {
+            if (strval($generic->resource[$r]->attributes()->KEY) === $keyToManipulate) {
+                $generic->resource[$r] = $textUpdated;
+                break;
+            }
+        }
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+
+        # Contrôler que la valeur n'à pas été mise à jour
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+
+            $assertDone = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $this->assertEquals($textToInsert, strval($resource));
+                    $assertDone = true;
+                    break;
+                }
+            }
+
+            $this->assertEquals(true, $assertDone);
+        }
+
+        self::$compiler->deploy();
+
+        # Contrôler que la valeur a été mise à jour
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+
+            $assertDone = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $this->assertEquals($textUpdated, strval($resource));
+                    $assertDone = true;
+                    break;
+                }
+            }
+
+            $this->assertEquals(true, $assertDone);
+        }
+
+
+
+        /**
+         * testDeploy#4 :: Suppression de clés retirées.
+         */
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        for ($r = 0; $r < count($generic->resource); $r++) {
+            if (strval($generic->resource[$r]->attributes()->KEY) === $keyToManipulate) {
+                unset($generic->resource[$r]);
+                break;
+            }
+        }
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+
+        # Contrôler que la clé n'à pas été supprimée.
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+
+            $keyFound = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $keyFound = true;
+                    break;
+                }
+            }
+
+            $this->assertEquals(true, $keyFound);
+        }
+
+        self::$compiler->deploy();
+
+        # Contrôler que la clé a été supprimée.
+        foreach ($langs as $lang) {
+            $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . "/$lang/generic.xml"));
+
+            $keyFound = false;
+
+            foreach ($generic as $index => $resource) {
+                if (strval($resource->attributes()->KEY) === $keyToManipulate){
+                    $keyFound = true;
+                    break;
+                }
+            }
+
+            $this->assertEquals(false, $keyFound);
+        }
+
+
+
+        /**
+         * testDeploy#5 :: Changement de référence :: Tester l'attribut TIR existant et passant à vrai.
+         */
+        self::$compiler->setRefLanguage("en-EN");
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/en-EN/generic.xml'));
+        $nodeWithAttTIR = $generic->addChild('resource', "SIMULATE");
+        $nodeWithAttTIR->addAttribute("KEY", "SIMULATE");
+        $nodeWithAttTIR->addAttribute("SST", "true");
+        $nodeWithAttTIR->addAttribute("CST", "false");
+        $nodeWithAttTIR->addAttribute("TIR", "false");
+        Core::saveXml($generic, self::$testWorkingDir . '/en-EN/generic.xml');
+
+        self::$compiler->deploy();
+
+        # Check dans la langue fr-FR que l'attribut est présent et vaut vrai
+        self::$compiler->setRefLanguage("en-EN");
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+
+        foreach ($generic as $index => $resource) {
+            if (strval($resource->attributes()->KEY === "SIMULATE")) {
+                $this->assertEquals("true", strval($resource->attributes()->TIR));
+            }
+        }
+
+
+
+        /**
+         * Nettoyage
+         */
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        for ($r = 0; $r < count($generic->resource); $r++) {
+            if (strval($generic->resource[$r]->attributes()->KEY) === "SIMULATE") {
+                unset($generic->resource[$r]);
+                break;
+            }
+        }
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+    }
+
+    /**
+     * Contrôle de la sécurisation de clé contre les interventions manuelles.
+     * @author Neoblaster
+     */
+    public function testDeployExceptionKeyAlreadyUsed()
+    {
+        # Ajouter deux ressources ayant la même clé.
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        $resourceA = $generic->addChild("resource", "KEY_ONE");
+        $resourceA->addAttribute("KEY", "resource_key");
+        $resourceB = $generic->addChild("resource", "KEY_TWO_DUPLICATED");
+        $resourceB->addAttribute("KEY", "resource_key");
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+
+        # Le deploiement doit échouer
+        $this->expectException("\Exception");
+
+        self::$compiler->setRefLanguage("fr-FR");
+        self::$compiler->deploy();
+    }
+
+    /**
+     * Contrôle de la sécurisation de clé contre les interventions manuelles.
+     * @author Neoblaster
+     */
+    public function testDeployExceptionInvalideXMLFile()
+    {
+        file_put_contents(self::$testWorkingDir . '/fr-FR/invalid.xml', "INVALID_XML_STRING");
+
+        $this->expectException("\Exception");
         self::$compiler->deploy();
     }
 

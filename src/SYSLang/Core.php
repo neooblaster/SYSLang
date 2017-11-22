@@ -10,7 +10,10 @@
  * @package   Index
  *
  * @TODO : [P1] Reconstituer le système d'Import / Export.
- * @TODO : [P2] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
+ * @TODO : [P2] Utiliser le "default-language" comme package de reférence pour compile.
+ * @TODO : [P3] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
+ * @TODO : [P4] Ajouter un system de backup en cas d'erreur de l'utilisateur.
+ * @TODO : [P5] Ajouter un attribut LANG dans resources pour identifier tout de suite la langue du fichier xml visualiser.
  */
 
 namespace SYSLang;
@@ -44,6 +47,11 @@ class Core
      * CC = Country Code ISO 3166-1
      */
     const LANG_CODE_PATTERN = '#^[a-z]{2}-[A-Z]{2}$#';
+
+    /**
+     * Modèle représentant un nom de fichier de langue.
+     */
+    const LANG_FILE_PATTERN = '/[a-zA-Z-_.]+\.(?i)xml/';
 
     /**
      * Fichier de contrôle d'intégrité des clés de textes.
@@ -99,15 +107,20 @@ class Core
     protected $iniSXEResources = [];
 
     /**
-     * @var \SimpleXMLElement $MD5Report Instannce du rappor de contrpole MD5.
+     * @var \SimpleXMLElement $MD5Report Instance du rappor de contrpole MD5.
      */
     protected $MD5Report = null;
+
+    /**
+     * @var null $MD5ReportLang L'ensemble des empruntes de texte pour la langue de référence.
+     */
+    protected $MD5ReportLang = null;
 
     /**
      * @var array $refPackageKeys Sauvegarde de toutes les clés existantes dans le package pour avertir
      * le user en cas de doublon.
      */
-    protected $refPackageKeys = [];
+    protected $refLanguageKeys = [];
 
     /**
      * @var array $registredLanguages Liste des langues disponibles.
@@ -289,7 +302,37 @@ class Core
 
     public function deploy()
     {
+        /** Identifier la langue de référence */
+        $refLanguage = ($this->refLanguage) ?: $this->defaultLanguage;
+        $refLanguagePath = $this->workingDirectory . '/' . $refLanguage;
+        $MD5ReportPath = $this->workingDirectory . '/' . self::MD5_FILE_NAME;
 
+        /** Contrôler la disponibilité de la langue de référence */
+        if (!file_exists($refLanguagePath) && !is_dir($refLanguage)) throw new \Exception(
+            sprintf("There is no folder name '%s' to deploy.", $refLanguage)
+        );
+
+        /** Générer le fichier de rapport MD5 s'il n'existe pas */
+        if (!file_exists($MD5ReportPath)) {
+            file_put_contents($MD5ReportPath, self::XML_HEADER);
+            file_put_contents($MD5ReportPath, "<packs>" . PHP_EOL, FILE_APPEND);
+            file_put_contents($MD5ReportPath, "</packs>" . PHP_EOL, FILE_APPEND);
+        }
+
+        /** Récupération du rapport */
+        $this->MD5Report = self::SXEOverhaul(file_get_contents($MD5ReportPath));
+
+        /** Récupération des empruntes SHA1 des clés pour la langue de référence */
+        # Si inexistant, alors créer l'entrée
+        if (!isset($this->MD5Report->$refLanguage)) $this->MD5Report->addChild($refLanguage);
+
+        $this->MD5ReportLang = $this->MD5Report->$refLanguage;
+
+        $this->processLang();
+
+        /** Sauvegarde du rapport MD5 */
+        self::saveXml($this->MD5Report, $MD5ReportPath);
+        return true;
     }
 
     /**
@@ -356,6 +399,267 @@ class Core
             }
             return true;
         }
+    }
+
+    protected function processLang($folderPath = null)
+    {
+        /** @var string $refLangFullPath Chemin vers le (sous-)dossier à traiter */
+        $refLangFullPath = $this->workingDirectory . '/' . $this->refLanguage;
+        $refLangFullPath .= ($folderPath) ?: '';
+
+        /** Lecture du dossier */
+        $folder = scandir($refLangFullPath);
+
+        /** Traitement du dossier */
+        foreach ($folder as $fkey => $file) {
+            /** Ignorer les fichiers qui commencent pas un . */
+            if (preg_match("/^\./", $file)) continue;
+
+            /** Si c'est un dossier, alors le traiter par récursivité */
+            if (is_dir($refLangFullPath . '/' . $file)) {
+                $this->processLang($folderPath . '/' .$file);
+            } else {
+                /** Si ce n'est pas un fichier XML */
+                if (!preg_match(self::LANG_FILE_PATTERN, $file)) continue;
+
+                try {
+                    /**
+                     * PHASE PREPARATOIRE :: TRAITEMENT DES EMPRUNTES MD5
+                     */
+                    $resources = self::SXEOverhaul(file_get_contents($refLangFullPath . '/' . $file));
+
+                    /** Lister les clés de la langue de référence */
+                    $refLangKeys = [];
+                    $refLangKeysValues = [];
+                    $index = 0;
+
+                    foreach ($resources as $resKey => $resValue) {
+                        /** Si la clé n'existe pas, l'ajouter */
+                        $key = strval($resValue->attributes()->KEY);
+                        $sKey = "K_$key";
+
+                        /** Celle-ci doit être unique */
+                        if (!array_key_exists($sKey, $refLangKeys)) {
+                            $refLangKeys[$sKey] = $index;
+                            $refLangKeysValues[$sKey] = $resValue;
+                        } else {
+                            throw new \Exception(
+                                sprintf(
+                                    'The Key "%s" in "%s" is already used',
+                                    $key, $folderPath . '/' . $file
+                                )
+                            );
+                        }
+
+                        /** Enregistrement centrale */
+                        if (!array_key_exists($sKey, $this->refLanguageKeys)) {
+                            $this->refLanguageKeys[$sKey] = [];
+                            $this->refLanguageKeys[$sKey][] = $file;
+                        } else {
+                            //throw new \Exception(
+                            //trigger_error(
+                            //    sprintf(
+                            //        'The key "%s" in "%s" s already used in file(s) : %s [Ref Language : %s]',
+                            //        $key, $folderPath . '/' . $file,
+                            //        implode(",", $this->refLanguageKeys[$sKey]),
+                            //        $this->refLanguage
+                            //    )
+                            //    , E_USER_WARNING
+                            //);
+                            //$this->refLanguageKeys[$sKey][] = $file;
+                        }
+
+                        $index++;
+                    }
+
+
+                    /** Récupérer le rapport MD5 du fichier en cours de traitement */
+                    $MD5FileName = preg_replace("#\/#", '-', $folderPath . '/' . $file);
+                    $MD5FileName = "file$MD5FileName";
+
+                    if (!isset($this->MD5ReportLang->$MD5FileName)) {
+                        $this->MD5ReportLang->addChild($MD5FileName);
+                    }
+                    $MD5ReportFile = $this->MD5ReportLang->$MD5FileName;
+
+                    $MD5ReportFileKeys = [];
+                    $MD5ReportFileKeysValues = [];
+                    $index = 0;
+
+                    /** Lister les clés connue et le MD5 - Elle dispose déjà du suffixe de sécurisation S_ */
+                    foreach ($MD5ReportFile->hash as $rfKey => $rfValue) {
+                        $srfKey = strval($rfValue->attributes()->KEY);
+
+                        $MD5ReportFileKeys[$srfKey] = $index;
+                        $MD5ReportFileKeysValues[$srfKey] = $rfValue;
+
+                        $index++;
+                    }
+
+
+                    /** Contrôler les MD5 des fichiers connu */
+                    $keysToControl = array_intersect_key($refLangKeys, $MD5ReportFileKeys);
+                    $keysToUpdate = [];
+
+                    foreach ($keysToControl as $cKey => $cValue) {
+                        // @TODO: prévoir la gestion des clés personnalisées
+                        $refLangCSTValue = strval($refLangKeysValues[$cKey]->attributes()->CST);
+                        $refLangSSTValue = strval($refLangKeysValues[$cKey]->attributes()->SST);
+                        $refLangValue = strval($refLangKeysValues[$cKey]);
+
+                        $refLangValueMD5 = md5("$refLangCSTValue::$refLangSSTValue::$refLangValue");
+
+                        if ($refLangValueMD5 !== strval($MD5ReportFileKeys[$cKey])) {
+                            $keysToUpdate[$cKey] = $cValue;
+                        }
+                    }
+
+
+
+                    /**
+                     * PHASE DE TRAITEMENT :: DEPLOIEMENT
+                     */
+                    foreach ($this->registredLanguages["KEYS"] as $code => $name) {
+                        /** La langue ne peut se mettre à jour elle même */
+                        if ($code === $this->refLanguage) continue;
+
+                        /** Traitement de l'emplacement de destination */
+                        $targetPath = $this->workingDirectory . '/' . $code;
+                        $targetPath .= ($folderPath) ?: '';
+                        $targetPathFile = $targetPath . '/' . $file;
+
+                        if (!file_exists($targetPath)) mkdir($targetPath, 0775, true);
+                        if (!file_exists($targetPathFile)) {
+                            file_put_contents($targetPathFile, self::XML_HEADER . PHP_EOL);
+                            file_put_contents($targetPathFile, '<resources>' . PHP_EOL, FILE_APPEND);
+                            file_put_contents($targetPathFile, '</resources>' . PHP_EOL, FILE_APPEND);
+                        }
+
+                        /** Traitement du fichier */
+                        $targetXMLRes = self::SXEOverhaul(file_get_contents($targetPathFile));
+                        $targetKeys = [];
+                        $targetKeysValues = [];
+                        $index = 0;
+
+                        /** Lister les clées présentes dans le fichier */
+                        foreach ($targetXMLRes as $tXMLResKey => $tXMLResValue) {
+                            $tKey = strval($tXMLResValue->attributes()->KEY);
+                            $stKey = "K_$tKey";
+
+                            $targetKeys[$stKey] = $index;
+                            $targetKeysValues[$stKey] = $tXMLResValue;
+
+                            $index++;
+                        }
+
+                        /** Référencement des changements */
+                        // Clées qui ont été ajoutées.
+                        // Clées qui ont été modifiéess.
+                        // Clées qui ont été supprimées.
+                        $newsKeys = array_diff_key($refLangKeys, $targetKeys);
+                        $updatedKeys = array_intersect_key($targetKeys, $keysToUpdate);
+                        $deletedKeys = array_diff_key($targetKeys, $refLangKeys);
+
+                        /** Mise à jour du fichier */
+                        // Ajout des clées.
+                        foreach ($newsKeys as $nKey => $nVal) {
+                            $nodeToCopy = $refLangKeysValues[$nKey];
+                            $nodeToAdd = $targetXMLRes->addChild('resource', strval($nodeToCopy));
+
+                            foreach ($nodeToCopy->attributes() as $attKey => $attValue) {
+                                $nodeToAdd->addAttribute(strval($attKey), strval($attValue));
+                            }
+
+                            $attributes = $nodeToAdd->attributes();
+
+                            if (isset($attributes["TIR"])) {
+                                $nodeToAdd->attributes()->TIR = "true";
+                            } else {
+                                $nodeToAdd->addAttribute("TIR", "true");
+                            }
+                        }
+                        // Mise à jour des clées.
+                        foreach ($updatedKeys as $uKey => $uVal) {
+                            $targetIndex = $targetKeys[$uKey];
+
+                            // @TODO: prévoir la gestion des clés personnalisées
+                            $nodeSrc = $refLangKeysValues[$uKey];
+
+                            $newValue = strval($nodeSrc);
+                            $newSSTAtt = strval($nodeSrc->attributes()->SST);
+                            $newCSTAtt = strval($nodeSrc->attributes()->CST);
+
+                            $targetXMLRes->resource[$targetIndex]->attributes()->SST = $newSSTAtt;
+                            $targetXMLRes->resource[$targetIndex]->attributes()->CST = $newCSTAtt;
+                            $targetXMLRes->resource[$targetIndex]->attributes()->TIR = "true";
+                            $targetXMLRes->resource[$targetIndex] = $newValue;
+                        }
+
+                        // Suppression des clées.
+                        foreach (array_reverse($deletedKeys) as $dKey => $dVal) {
+                            unset($targetXMLRes->resource[$dVal]);
+                        }
+
+                        /** Enregistrement des modifications */
+                        self::saveXml($targetXMLRes, $targetPathFile);
+                    }
+
+
+                    /**
+                     * PHASE DE FINALISATION :: SAUVEGARDE DES EMPRUNTES POUR LA LANGUE TRAITEE
+                     */
+                    // Empruntes à ajouter.
+                    // Empruntes à modifiées.
+                    // Empruntes à supprimées.
+                    $hashesToInsert = array_diff_key($refLangKeys, $MD5ReportFileKeys);
+                    $hashesToUpdate = $keysToUpdate;
+                    $hashesToDelete = array_diff_key($MD5ReportFileKeys, $refLangKeys);
+
+                    foreach ($hashesToInsert as $hiKey => $hiValue) {
+                        $refLangKeysValuesSST = strval($refLangKeysValues[$hiKey]->attributes()->SST);
+                        $refLangKeysValuesCST = strval($refLangKeysValues[$hiKey]->attributes()->CST);
+                        $refLangKeysValuesVal = strval($refLangKeysValues[$hiKey]);
+
+                        $hash = md5($refLangKeysValuesSST . '::'
+                            . $refLangKeysValuesCST . '::'
+                            . $refLangKeysValuesVal
+                        );
+
+                        $hashNodeToAdd = $MD5ReportFile->addChild('hash', $hash);
+                        $hashNodeToAdd->addAttribute('KEY', $hiKey);
+                    }
+
+                    foreach ($hashesToUpdate as $huKey => $huValue) {
+                        $refLangKeysValuesSST = strval($refLangKeysValues[$huKey]->attributes()->SST);
+                        $refLangKeysValuesCST = strval($refLangKeysValues[$huKey]->attributes()->CST);
+                        $refLangKeysValuesVal = strval($refLangKeysValues[$huKey]);
+
+                        $hash = md5($refLangKeysValuesSST . '::'
+                            . $refLangKeysValuesCST . '::'
+                            . $refLangKeysValuesVal
+                        );
+
+                        $nodeIndex = $MD5ReportFileKeys[$huKey];
+                        $MD5ReportFile->hash[$nodeIndex] = $hash;
+                    }
+
+                    foreach (array_reverse($hashesToDelete) as $hdKey => $hdValue) {
+                        $nodeIndex = $MD5ReportFileKeys[$hdKey];
+                        unset($MD5ReportFile->hash[$nodeIndex]);
+                    }
+                } catch (\Exception $e) {
+                    throw new \Exception(
+                        sprintf('The XML file "%s" in "%s" can not be parse : %s',
+                            $file,
+                            $folderPath .'/' . $file,
+                            $e->getMessage()
+                        )
+                    );
+                }
+            }
+        } // END_FOREACH_READ_FOLDER
+
+        return true;
     }
 
     /**

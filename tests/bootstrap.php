@@ -95,4 +95,46 @@ trait initializer
         }
     }
 
+    /**
+     * Genère une liste de fichier, dossier et sous-dossier.
+     *
+     * @param string $path      Emplacement racine à parcourir.
+     * @param bool $recursively Lecture recursive.
+     *
+     * @return array|bool
+     */
+    protected static function listFolderFile($path, $recursively = false)
+    {
+        static $recursiveLevel = 0;
+        static $list = [];
+
+        $folder = scandir($path);
+
+        foreach ($folder as $key => $file) {
+            if (preg_match("/^[.]{1,2}$/", $file)) continue;
+
+            $filePath = $path . '/' . $file;
+
+            if (is_dir($filePath)) {
+                if ($recursively) {
+                    $recursiveLevel++;
+                    self::listFolderFile($filePath, $recursively);
+                } else {
+                    $list[] = ($recursiveLevel > 0) ? $filePath : $file;
+                }
+            } else {
+                $list[] = ($recursiveLevel > 0) ? $filePath : $file;
+            }
+        }
+
+        if ($recursiveLevel > 0) {
+            $recursiveLevel--;
+            return true;
+        } else {
+            $return = $list;
+            $list = [];
+            return $return;
+        }
+    }
+
 }
