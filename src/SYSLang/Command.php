@@ -53,6 +53,17 @@ class Command
         'separator' => ',',
     ];
 
+    const OPTIONS = [
+        'colors' => [
+            'color_err' => '196',
+            'color_in' => '220',
+            'color_suc' => '76',
+            'color_war' => '208',
+            'color_txt' => '221',
+        ],
+        'separator' => ',',
+    ];
+
     /**
      * @var bool|resource $psdtout Pointeur vers la ressource de sortie standard.
      */
@@ -120,7 +131,7 @@ class Command
 
         // Processus d'enregistrement d'une langue au registre
         if (array_key_exists("add-languages", $options)) {
-            $languages = explode($this->options['separator'], $options["add-languages"]);
+            $languages = explode(self::OPTIONS['separator'], $options["add-languages"]);
             $languages = array_map(function($el){
                 return trim($el);
             }, $languages);
@@ -150,7 +161,7 @@ class Command
         ) {
             // Options à valeur obligatoire, null ne doit jamais se produire.
             $languages = @($options["remove-languages"]) ?: @($options["remove-langs"]) ?: null;
-            $languages = explode($this->options['separator'], $languages);
+            $languages = explode(self::OPTIONS['separator'], $languages);
             $languages = array_map(function($el) {
                 return trim($el);
             }, $languages);
@@ -187,7 +198,7 @@ class Command
      */
     protected function help($level = 0)
     {
-        $separator = $this->options['separator'];
+        $separator = self::OPTIONS['separator'];
         $name = $this->cmdName;
 
         $man = <<<HELP
@@ -243,7 +254,7 @@ HELP;
      */
     protected function highlight($message)
     {
-        $color_in = $this->options['colors']['color_in'];
+        $color_in = self::OPTIONS['colors']['color_in'];
 
         // A tous ceux qui n'ont pas de couleur spécifiée, alors saisir la couleur par défaut
         $message = preg_replace("/(?<!>)(%[a-zA-Z0-9])/", "$color_in>$1", $message);
@@ -266,8 +277,8 @@ HELP;
     protected function stderr($message, $args, $level = 1)
     {
         // Connexion aux variables globales
-        $color_err = $this->options['colors']['color_err'];
-        $color_war = $this->options['colors']['color_war'];
+        $color_err = self::OPTIONS['colors']['color_err'];
+        $color_war = self::OPTIONS['colors']['color_war'];
 
         // Traitement en fonction du niveau d'erreur
         $level_str = ($level) ? "ERROR" : "WARNING";
@@ -289,7 +300,7 @@ HELP;
      */
     protected function stdout($message, $args)
     {
-        $options = $this->options;
+        $options = self::OPTIONS;
 
         if (!isset($options["silent"])) {
             $message = $this->highlight($message);
