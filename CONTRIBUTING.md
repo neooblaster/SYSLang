@@ -1,6 +1,35 @@
 # Guide de contribution
 
 
+## Présentation des branches
+
+Pour cloisonner au maximum les développements, j'ai créé une branche par classe ou bloc fonctionnel principaux.
+
+* ``master`` branche principale servant aux release.
+* ``Autoloader`` pour le fichier `src/SYSLang/Autoloader.php`.
+* ``Settings`` pour le fichier `src/SYSLang/Setting.php`.
+* ``Core`` pour le fichier `src/SYSLang/Core.php`.
+* ``SYSLang`` pour le fichier `src/SYSLang/SYSLang.php`.
+* ``Command`` pour le fichier `src/SYSLang/Command.php`.
+
+
+Ci-dessous une représentation graphique montrant la hierachie fonctionnelle mettant en avant les impactes.
+Elle est très proche du modèle utilisation et extension de classe PHP.
+
+```
+master
+ \ Autoloader           :: Automatisation de tout les classes du moteur.
+    \ Settings          :: Système de configuration pour le moteur. Utilisé par Core.
+       \ Core           :: Noyaux du moteur
+         |-- SYSLang    :: Extend Core - Version SAPI FPM
+         |-- Command    :: Extend Core - Version SAPI CLI
+```
+
+Une modification d'une branche parent doit être patchée aux branches "enfants" en rebasant.
+
+
+
+
 ## Présentation de l'environnement.
 
 

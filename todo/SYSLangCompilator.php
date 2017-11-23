@@ -4,6 +4,7 @@ use SYSLang\SYSLang;
 class SYSLangCompilator extends SYSLang
 {
     /**
+<<<<<<< Updated upstream
      * @var \SimpleXMLElement $_MD5_package_report Focus sur le rapport MD5 correspondant au package de référence
      */
 	protected $_MD5_package_report = null;
@@ -38,6 +39,7 @@ class SYSLangCompilator extends SYSLang
 	public function compile($packages=null){
                 /** #2. Lister les packages à compiler **/
                 //$packages_to_compile = Array();
+
 
                 /** Si $package n'est pas null, alors lister les package de destination **/
                 if($packages !== null){

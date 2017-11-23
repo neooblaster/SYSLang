@@ -1,7 +1,15 @@
 # Moteur de langue SYSLang
 
+#### Etats GitLab Grenoble
 [![build status](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/build.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
 [![coverage report](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/coverage.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
+
+#### Etats GitLab Perso
+
+[![build status](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/build.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
+[![coverage report](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/coverage.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
+
+
 
 
 ## SYSLang :: Interface CLI
@@ -148,7 +156,7 @@ Avant d'effectuer des opérations avec le moteur sous **PHP**, il y à deux faç
 * Soit en utilisant l'espace de nom global.
 
 Dans l'ensemble de la documentation '***sous PHP***', j'utiliserais la variable 
-``$compiler`` étant l'instanciation de la classe `Compiler` en suivant l'une de ces 
+``$core`` étant l'instanciation de la classe `Core` en suivant l'une de ces 
 deux méthodes. Les résultats étant évidemment le même en terme d'utilisation.
 
 * Instanciation dans l'espace de nom `SYSLang\Compiler`:
