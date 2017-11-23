@@ -25,6 +25,33 @@ use InvalidArgumentException;
 class Command
 {
     /**
+     * Liste des différentes options utilisée dans la classe Command.
+     */
+    const OPTIONS = [
+        'colors' => [
+            'color_err' => '196',
+            'color_in' => '220',
+            'color_suc' => '76',
+            'color_war' => '208',
+            'color_txt' => '221',
+        ],
+        'separator' => ',',
+        'shortopt' => "h",
+        "longopt" => [
+            "add-languages:",
+            "default",
+            "directory:",
+            "dir:",
+            "help",
+            "install",
+            "remove-languages:",
+            "remove-langs:",
+            "set-default-lang:",
+            "silent",
+        ]
+    ];
+
+    /**
      * @var string $workdir Dossier de travail
      */
     protected $workdir = null;
@@ -38,31 +65,6 @@ class Command
      * @var array $argv
      */
     protected $argv = null;
-
-    /**
-     * @var array $options
-     */
-    protected $options = [
-        'colors' => [
-            'color_err' => '196',
-            'color_in' => '220',
-            'color_suc' => '76',
-            'color_war' => '208',
-            'color_txt' => '221',
-        ],
-        'separator' => ',',
-    ];
-
-    const OPTIONS = [
-        'colors' => [
-            'color_err' => '196',
-            'color_in' => '220',
-            'color_suc' => '76',
-            'color_war' => '208',
-            'color_txt' => '221',
-        ],
-        'separator' => ',',
-    ];
 
     /**
      * @var bool|resource $psdtout Pointeur vers la ressource de sortie standard.
