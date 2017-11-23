@@ -9,29 +9,20 @@
  *      - sudo ln -s /path/to/projet/src/SYSLang/command_index.php /usr/local/bin/SYSLang
  *
  * @author    marvin255 from GitHub, Adjust Nicolas DUPRE
- * @release   23/10/2017
+ * @release   23/11/2017
  * @version   2.0.0-beta1
  * @package   Index
  */
 
+use SYSLang\Command;
+
 require_once(__DIR__ . '/SYSLang/Autoloader.php');
 
 $options = getopt(
-    'h',
-    [
-        "add-languages:",
-        "default",
-        "directory:",
-        "dir:",
-        "help",
-        "install",
-        "remove-languages:",
-        "remove-langs:",
-        "set-default-lang:",
-        "silent",
-    ]
+    Command::OPTIONS['shortopt'],
+    Command::OPTIONS['longopt']
 );
 
 $commandName = basename($_SERVER['SCRIPT_NAME']);
 
-(new \SYSLang\Command($_SERVER["PWD"], $options, $commandName))->run();
+(new Command($_SERVER["PWD"], $options, $commandName))->run();

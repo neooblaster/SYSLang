@@ -142,6 +142,32 @@ Il est impossible de définir une langue non enregistrée comme langue par défa
 
 
 
+### Mise à jour des langues enregistrées
+
+Lors des évolutions, les fichiers de langue sont amenés à évoluer.
+Certain texte peut avoir changé, il peut y avoir eu des ajouts et même des suppressions.
+Plus il y a de langues enregistrées, plus la maintenance devient impossible manuellement.
+
+Pour répondre à ces besoins, le moteur SYSLang dispose de fonctionnalités permettant cette
+maintenance.
+
+L'option qui permet cette maintenance est ``--deploy``. Cette maintenance sera effectuée
+en se référant à la langue par défaut définie dans le fichier de configuration ``languages.xml``.
+
+```bash
+SYSLang --deploy
+```
+
+Si la langue définie par défaut, n'est pas la langue de référence pour vos développements,
+il est possible de spécifier la langue de référence à l'aide de l'option ``--from xx-XX``.
+
+Par exemple, votre application définie l'anglais comme langue par défaut, mais que vous faites vos
+développements via la langue française, il faudra donc maintenir l'ensemble des langues 
+enregistrées via la commande suivante :
+
+```bash
+SYSLang --deploy --from fr-FR
+```
 
 
 

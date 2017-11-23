@@ -1,0 +1,1 @@
+[ [38;5;196mERROR[0m ] :: The requested language code "en-EN" is not registered.

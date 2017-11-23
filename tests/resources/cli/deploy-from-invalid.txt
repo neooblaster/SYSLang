@@ -1,0 +1,1 @@
+[ [38;5;196mERROR[0m ] :: The language code "invalid" provided is not valid. It must be like xx-XX.
