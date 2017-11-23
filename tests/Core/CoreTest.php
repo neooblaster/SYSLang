@@ -593,6 +593,50 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Suite aux tests consécutif, il faut vérifier si la langue par défaut est utilisée lorsqu'aucune langue
+     * n'est définie comme langue de référence.
+     */
+    public function testDeployFromDefaultLanguage()
+    {
+
+        $languages = Core::SXEOverhaul(
+            file_get_contents(self::$testWorkingDir . '/' . Core::XML_CONFIG_FILE)
+        );
+
+        $defaultLang = strval($languages->attributes()->default);
+
+        $core = new Core(self::$testWorkingDir);
+        $rcore = new ReflectionObject($core);
+        $refLang = $rcore->getProperty("refLanguage");
+        $refLang->setAccessible(true);
+        $defLang = $rcore->getProperty("defaultLanguage");
+        $defLang->setAccessible(true);
+
+        # Etats initiaux
+        $this->assertEquals($defaultLang, $defLang->getValue($core));
+        $this->assertEquals(null, $refLang->getValue($core));
+
+        # Deploiement :: en-EN >> fr-FR
+        $core->deploy();
+
+        # Vérifier que refLanguage n'est plus null et vaut la langue par défault
+        $this->assertEquals($defaultLang, $refLang->getValue($core));
+
+
+        /**
+         * Nettoyage
+         */
+        $generic = Core::SXEOverhaul(file_get_contents(self::$testWorkingDir . '/fr-FR/generic.xml'));
+        for ($r = 0; $r < count($generic->resource); $r++) {
+            if (strval($generic->resource[$r]->attributes()->KEY) === "SIMULATE") {
+                unset($generic->resource[$r]);
+                break;
+            }
+        }
+        Core::saveXml($generic, self::$testWorkingDir . '/fr-FR/generic.xml');
+    }
+
+    /**
      * DUMMY
      * @author Neoblaster
      */

@@ -300,10 +300,20 @@ class Core
         );
     }
 
+    /**
+     * Effectue la maintenance des langues enregistrée depuis la langue de référence donnée.
+     * Si la référence n'est pas définie, elle utilise la langue par défaut.
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
     public function deploy()
     {
-        /** Identifier la langue de référence */
-        $refLanguage = ($this->refLanguage) ?: $this->defaultLanguage;
+        /** Identifier la langue de référence. Si non définie, utiliser la langue par défaut */
+        if (is_null($this->refLanguage)) $this->setRefLanguage($this->defaultLanguage);
+
+        $refLanguage = $this->refLanguage;
         $refLanguagePath = $this->workingDirectory . '/' . $refLanguage;
         $MD5ReportPath = $this->workingDirectory . '/' . self::MD5_FILE_NAME;
 
