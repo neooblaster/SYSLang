@@ -31,5 +31,12 @@ SYSLang --set-default-lang jp-JP > ../resources/cli/set-def-lang-jpJP.txt 2>&1
 SYSLang --remove-languages en-EN > ../resources/cli/rem-lang-enEN.txt 2>&1
 SYSLang --remove-langs Japonais > ../resources/cli/rem-lang-Japonais.txt 2>&1
 
+# Deployer l'anglais
+SYSLang --deploy > ../resources/cli/deploy-from-def-fr.txt 2>&1
+SYSLang --add-languages en-EN:English
+SYSLang --deploy --from en-EN > ../resources/cli/deploy-from-en.txt 2>&1
+SYSLang --deploy --from xx-XX > ../resources/cli/deploy-from-xx.txt 2>&1
+SYSLang --deploy --from invalid > ../resources/cli/deploy-from-invalid.txt 2>&1
+
 # Nettoyage du dossier actuel pour jouer les tests phpunit
 ls -a | egrep -v "^\.+$|makeCLItxt|CommandTest" | xargs -r rm -r

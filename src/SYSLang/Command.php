@@ -40,8 +40,10 @@ class Command
         "longopt" => [
             "add-languages:",
             "default",
+            "deploy",
             "directory:",
             "dir:",
+            "from:",
             "help",
             "install",
             "remove-languages:",
@@ -187,6 +189,30 @@ class Command
                 $this->stdout("La langue par défaut est définie à %s.", [$options["set-default-lang"]]);
             } catch (Exception $e) {
                 $this->stderr($e->getMessage(), []);
+            }
+        }
+
+        // Processus de déploiement
+        if (array_key_exists("deploy", $options)) {
+            # Si l'option "from" est fournie, alors définir la langue de référence
+            if (array_key_exists("from", $options)) {
+                try {
+                    $compiler->setRefLanguage($options["from"]);
+                } catch (Exception $e) {
+                    $this->stderr($e->getMessage(), []);
+                    return false;
+                }
+            }
+
+            # Déploiement
+            try {
+                $compiler->deploy();
+                $refLanguage = $compiler->getRefLanguage();
+                $this->stdout("Le déploiment des clés à bien été effectué avec " .
+                    "succès depuis la langue de référence %s", [$refLanguage]);
+            } catch (Exception $e) {
+                $this->stderr($e->getMessage(), []);
+                return false;
             }
         }
     }

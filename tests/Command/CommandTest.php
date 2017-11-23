@@ -47,16 +47,19 @@ class CommandTest extends \PHPUnit_Framework_TestCase
      */
     public function commands()
     {
+        /**
+         * Test à lire de manière consécutive et dépendante l'une de l'autre.
+         */
         return [
-            // Affichage de l'aide.
+            // 1. Affichage de l'aide.
             [["h" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
             [["help" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
 
-            // Installations
+            // 2. Installations
             [["install" => null], file_get_contents(self::$testResPath . "/cli/install.txt"), false, null, null],
             [["install" => null], file_get_contents(self::$testResPath . "/cli/installed.txt"), false, null, null],
 
-            // Ajouter des langues
+            // 3. Ajouter des langues
             [
                 ["add-languages" => "fr-FR:Français"],
                 file_get_contents(self::$testResPath . "/cli/add-lang-frFR.txt"), false, null, null
@@ -70,7 +73,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
                 file_get_contents(self::$testResPath . "/cli/add-lang-Japonais.txt"), false, null, null
             ],
 
-            // Définir une langue par défault
+            // 4. Définir une langue par défault
             [
                 ["set-default-lang" => "fr-FR"],
                 file_get_contents(self::$testResPath . "/cli/set-def-lang-frFR.txt"), false, null, null
@@ -80,7 +83,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
                 file_get_contents(self::$testResPath . "/cli/set-def-lang-jpJP.txt"), false, null, null
             ],
 
-            // Supprimer une langue
+            // 5. Supprimer une langue
             [
                 ["remove-languages" => "en-EN"],
                 file_get_contents(self::$testResPath . "/cli/rem-lang-enEN.txt"), false, null, null
@@ -89,6 +92,32 @@ class CommandTest extends \PHPUnit_Framework_TestCase
                 ["remove-langs" => "Japonais"],
                 file_get_contents(self::$testResPath . "/cli/rem-lang-Japonais.txt"), false, null, null
             ],
+
+            // 6. Test du déploiement après ré-enregistrement de l'anglais.
+            [
+                ["add-languages" => "en-EN:English", "default" => null],
+                file_get_contents(self::$testResPath . "/cli/add-lang-enEN.txt"), false, null, null
+            ],
+            [
+                ["set-default-lang" => "fr-FR"],
+                file_get_contents(self::$testResPath . "/cli/set-def-lang-frFR.txt"), false, null, null
+            ],
+            [
+                ["deploy" => null],
+                file_get_contents(self::$testResPath . "/cli/deploy-from-def-fr.txt"), false, null, null
+            ],
+            [
+                ["deploy" => null, "from" => "en-EN"],
+                file_get_contents(self::$testResPath . "/cli/deploy-from-en.txt"), false, null, null
+            ],
+            [
+                ["deploy" => null, "from" => "xx-XX"],
+                file_get_contents(self::$testResPath . "/cli/deploy-from-xx.txt"), false, null, null
+            ],
+            [
+                ["deploy" => null, "from" => "invalid"],
+                file_get_contents(self::$testResPath . "/cli/deploy-from-invalid.txt"), false, null, null
+            ]
         ];
     }
 
