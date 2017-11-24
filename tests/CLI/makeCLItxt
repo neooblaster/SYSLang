@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# @author    Nicolas DUPRE
+# @release   24/11/2017
+#
+# Nettoyage des fichiers servant à la comparaison.
+cd ../resources/cli
+rm -r *
+cd -
+
+# Nettoyage du dossier actuel pour jouer les commandes.
+ls -a | egrep -v "^\.+$|makeCLItxt|CommandTest" | xargs -r rm -r
+
+# Aide
+SYSLang -h 2>&1 | tee ../resources/cli/help.txt
+
+# Installation
+SYSLang --install 2>&1 | tee ../resources/cli/install.txt
+SYSLang --install 2>&1 | tee ../resources/cli/installed.txt
+
+# Ajouter une langue
+SYSLang --add-languages fr-FR:Français 2>&1 |tee ../resources/cli/add-lang-frFR.txt
+SYSLang --add-languages en-EN:English --default 2>&1 |tee ../resources/cli/add-lang-enEN.txt
+SYSLang --add-languages Japonais 2>&1 |tee ../resources/cli/add-lang-Japonais.txt
+
+# Définir la langue par défault
+SYSLang --set-default-lang fr-FR 2>&1 |tee ../resources/cli/set-def-lang-frFR.txt
+SYSLang --set-default-lang jp-JP 2>&1 |tee ../resources/cli/set-def-lang-jpJP.txt
+
+# Supprimer une langue
+SYSLang --remove-languages en-EN 2>&1 |tee ../resources/cli/rem-lang-enEN.txt
+SYSLang --remove-langs Japonais 2>&1 |tee ../resources/cli/rem-lang-Japonais.txt
+
+# Deployer l'anglais
+SYSLang --add-languages en-EN:English 2>&1
+SYSLang --deploy 2>&1 |tee ../resources/cli/deploy-from-def-fr.txt
+SYSLang --deploy --from en-EN 2>&1 |tee ../resources/cli/deploy-from-en.txt
+SYSLang --deploy --from xx-XX 2>&1 |tee ../resources/cli/deploy-from-xx.txt
+SYSLang --deploy --from invalid 2>&1 |tee ../resources/cli/deploy-from-invalid.txt
+
+# Nettoyage du dossier actuel pour jouer les tests phpunit
+#ls -a | egrep -v "^\.+$|makeCLItxt|CommandTest" | xargs -r rm -r

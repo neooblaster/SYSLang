@@ -52,70 +52,70 @@ class CommandTest extends \PHPUnit_Framework_TestCase
          */
         return [
             // 1. Affichage de l'aide.
-            [["h" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
-            [["help" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
+            ["1.1.", ["h" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
+            ["1.2.", ["help" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
 
             // 2. Installations
-            [["install" => null], file_get_contents(self::$testResPath . "/cli/install.txt"), false, null, null],
-            [["install" => null], file_get_contents(self::$testResPath . "/cli/installed.txt"), false, null, null],
+            ["2.1.", ["install" => null], file_get_contents(self::$testResPath . "/cli/install.txt"), false, null, null],
+            ["2.2.", ["install" => null], file_get_contents(self::$testResPath . "/cli/installed.txt"), false, null, null],
 
             // 3. Ajouter des langues
             [
-                ["add-languages" => "fr-FR:Français"],
+                "3.1.", ["add-languages" => "fr-FR:Français"],
                 file_get_contents(self::$testResPath . "/cli/add-lang-frFR.txt"), false, null, null
             ],
             [
-                ["add-languages" => "en-EN:English", "default" => null],
+                "3.2.", ["add-languages" => "en-EN:English", "default" => null],
                 file_get_contents(self::$testResPath . "/cli/add-lang-enEN.txt"), false, null, null
             ],
             [
-                ["add-languages" => "Japonais"],
+                "3.3.", ["add-languages" => "Japonais"],
                 file_get_contents(self::$testResPath . "/cli/add-lang-Japonais.txt"), false, null, null
             ],
 
             // 4. Définir une langue par défault
             [
-                ["set-default-lang" => "fr-FR"],
+                "4.1.", ["set-default-lang" => "fr-FR"],
                 file_get_contents(self::$testResPath . "/cli/set-def-lang-frFR.txt"), false, null, null
             ],
             [
-                ["set-default-lang" => "jp-JP"],
+                "4.2.", ["set-default-lang" => "jp-JP"],
                 file_get_contents(self::$testResPath . "/cli/set-def-lang-jpJP.txt"), false, null, null
             ],
 
             // 5. Supprimer une langue
             [
-                ["remove-languages" => "en-EN"],
+                "5.1.", ["remove-languages" => "en-EN"],
                 file_get_contents(self::$testResPath . "/cli/rem-lang-enEN.txt"), false, null, null
             ],
             [
-                ["remove-langs" => "Japonais"],
+                "5.2.", ["remove-langs" => "Japonais"],
                 file_get_contents(self::$testResPath . "/cli/rem-lang-Japonais.txt"), false, null, null
             ],
 
             // 6. Test du déploiement après ré-enregistrement de l'anglais.
             [
-                ["add-languages" => "en-EN:English", "default" => null],
+                "6.1.", ["add-languages" => "en-EN:English", "default" => null],
                 file_get_contents(self::$testResPath . "/cli/add-lang-enEN.txt"), false, null, null
             ],
             [
-                ["set-default-lang" => "fr-FR"],
+                "6.2.", ["set-default-lang" => "fr-FR"],
                 file_get_contents(self::$testResPath . "/cli/set-def-lang-frFR.txt"), false, null, null
             ],
             [
-                ["deploy" => null],
+                "6.3.", ["deploy" => null],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-def-fr.txt"), false, null, null
             ],
             [
-                ["deploy" => null, "from" => "en-EN"],
+                "6.4.", ["deploy" => null, "from" => "en-EN"],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-en.txt"), false, null, null
             ],
             [
-                ["deploy" => null, "from" => "xx-XX"],
+                "6.5.", ["deploy" => null, "from" => "xx-XX"],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-xx.txt"), false, null, null
             ],
             [
-                ["deploy" => null, "from" => "invalid"],
+                "6.6.", ["deploy" => null, "from" => "invalid"],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-invalid.txt"), false, null, null
             ]
         ];
@@ -135,6 +135,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
      * @author Neoblaster
      */
     public function testCommands(
+        $dataSetId,
         $options,
         $outputMessage,
         $expectException,

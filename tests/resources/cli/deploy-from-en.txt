@@ -1,1 +1,1 @@
-[ [38;5;196mERROR[0m ] :: The requested language code "en-EN" is not registered.
+[ INFO ] :: Le déploiment des clés à bien été effectué avec succès depuis la langue de référence [38;5;220men-EN[0m
