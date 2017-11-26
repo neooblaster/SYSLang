@@ -226,7 +226,7 @@ class Core
 
                 $new_lang = $xml->addChild("language", $name);
                 $new_lang->addAttribute('LANG-CODE', $lang);
-                $new_lang->addAttribute('COUNTRY_CODE', $country);
+                $new_lang->addAttribute('COUNTRY-CODE', $country);
                 $new_lang->addAttribute('LANG', $code);
             } else {
                 throw new \Exception(
