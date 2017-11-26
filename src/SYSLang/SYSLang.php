@@ -116,7 +116,7 @@ class SYSLang extends Core
             while($file = readdir($dh)){
                 if (preg_match('/^\.{1,2}$/', $file)) continue;
 
-                $this->extract($dirname . '/' . $file, $output);
+                $this->extract($source . '/' . $file, $output);
             }
 
             closedir($dh);
