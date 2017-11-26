@@ -6,8 +6,8 @@
 
 #### Etats GitLab Perso
 
-[![build status](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/build.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
-[![coverage report](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/coverage.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
+[![pipeline status](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/badges/master/pipeline.svg)](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/commits/master)
+[![coverage report](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/badges/master/coverage.svg)](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/commits/master)
 
 
 
