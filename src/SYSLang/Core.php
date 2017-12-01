@@ -5,8 +5,8 @@
  * Noyaux principale du moteur SYSLang.
  *
  * @author    Nicolas DUPRE
- * @release   18/10/2017
- * @version   2.0.0-beta1
+ * @release   01/12/2017
+ * @version   2.0.0-alpha3
  * @package   Index
  *
  * @TODO : [P1] Reconstituer le système d'Import / Export.
@@ -85,26 +85,6 @@ class Core
      * @var string $importDirectoryPath Chemin vers le dossier d'importation.
      */
     protected $importDirectoryPath = null;
-
-    /**
-     * @var array $iniFilesCode Liste des codes correspondants aux fichiers XML de langue.
-     */
-    protected $iniFilesCode = [];
-
-    /**
-     * @var array $iniKeysCode Liste des codes correspondants aux clés de textes de langue.
-     */
-    protected $iniKeysCode = [];
-
-    /**
-     * @var array $iniTexts Liste des textes associés à leur clé codé.
-     */
-    protected $iniTexts = [];
-
-    /**
-     * @var array $iniSXEResources Liste des ressources SimpleXMLElement pour un traitement dans un ordre aleatoire.
-     */
-    protected $iniSXEResources = [];
 
     /**
      * @var \SimpleXMLElement $MD5Report Instance du rappor de contrpole MD5.
@@ -342,6 +322,94 @@ class Core
 
         /** Sauvegarde du rapport MD5 */
         self::saveXml($this->MD5Report, $MD5ReportPath);
+        return true;
+    }
+
+    /**
+     * Génère des fichiers INI pour se concentrer sur les textes sans se soucier des structures.
+     *
+     * @param bool $full Permet de n'extraire que les textes ayant pour attribut TIR valant vrai.
+     * (TIR = Translate Is Required)
+     *
+     * @return bool
+     */
+    public function export ($full = true)
+    {
+        $langToExport = $this->registredLanguages["KEYS"];
+
+        /**
+         * Prévoir un format fichier et un format ZIP
+         *
+         * Un fichier .ini par langue.
+         *  fr-FR.ini
+         *      fichier = code
+         *      key     = code
+         *
+         *
+         * Fichier :
+         * [HEADERS]
+         * 001 =
+         *
+         * [FILES]
+         * 001 = generic.xml
+         *
+         * [KEYS]
+         * 00001 = YOUR_KEY
+         *
+         * [TEXTS]
+         * xxx:yyy:zzzzzz = texte
+         *
+         */
+        foreach ($langToExport as $langCode => $langName) {
+            $iniCodes = [
+                "files" => [],
+                "keys" => [],
+                "texts" => []
+            ];
+
+            $this->parseToINI($iniCodes, $langCode, $full);
+
+            /**
+             * Ecriture des fichiers INI.
+             */
+            $iniFilePath = $this->exportDirectoryPath . "/$langCode.ini";
+
+            // Si le dossier n'existe pas, le créer
+            if (!file_exists($this->exportDirectoryPath)) {
+                mkdir($this->exportDirectoryPath, 0775, true);
+            }
+
+            // Enregistrement des entêtes.
+            file_put_contents($iniFilePath, "[HEADERS]");
+            file_put_contents($iniFilePath, PHP_EOL . "lang = $langCode", FILE_APPEND);
+
+            // Enregistrement des codes FILES
+            file_put_contents($iniFilePath, PHP_EOL . PHP_EOL . "[FILES]", FILE_APPEND);
+            foreach ($iniCodes['files'] as $fileKey => $fileCode) {
+                file_put_contents(
+                    $iniFilePath,
+                    PHP_EOL . sprintf("%03d = %s", $fileCode, $fileKey),
+                    FILE_APPEND
+                );
+            }
+
+            // Enregistrement des codes KEYS
+            file_put_contents($iniFilePath, PHP_EOL . PHP_EOL . "[KEYS]", FILE_APPEND);
+            foreach ($iniCodes['keys'] as $keyKey => $keyCode) {
+                file_put_contents(
+                    $iniFilePath,
+                    PHP_EOL . sprintf("%05d = %s", $keyCode, $keyKey),
+                    FILE_APPEND
+                );
+            }
+
+            // Enregistrement des codes TEXTS
+            file_put_contents($iniFilePath, PHP_EOL . PHP_EOL . "[TEXTS]", FILE_APPEND);
+            foreach ($iniCodes['texts'] as $idx => $text) {
+                file_put_contents($iniFilePath,PHP_EOL . $text,FILE_APPEND);
+            }
+        }
+        
         return true;
     }
 
@@ -790,6 +858,77 @@ class Core
             "KEYS" => $keys,
             "LIST" => $list
         ];
+
+        return true;
+    }
+
+    /**
+     * Analyse l'ensemble des fichiers de langues pour générer un ensemble de code fichier, clé et textes.
+     *
+     * @param array  $codes  Tableau de stockage des codes analysé et généré.
+     * @param string $lang   Code de langue à analyser.
+     * @param bool   $full   Si vaut vrai, alors l'ensemble des textes est exporté.
+     * @param null   $subdir Lorsqu'en récursivité, contient le chemin de sous-dossier en cours de traitement
+     *
+     * @return bool
+     */
+    protected function parseToINI (&$codes, $lang, $full, $subdir = null)
+    {
+        $langPath = $this->workingDirectory . '/' . $lang;
+        $fullPath = (is_null($subdir)) ? $langPath : $langPath . '/' . $subdir;
+
+        $dir = opendir($fullPath);
+
+        while ($file = readdir($dir)) {
+            if (preg_match("/^\.+$/", $file)) continue;
+
+            $filePath = (is_null($subdir)) ? $file : $subdir . '/' .$file ;
+
+            if (is_dir($fullPath . '/' . $file)) {
+                $this->parseToINI($codes, $lang, $full, $filePath);
+            } else {
+                if (!preg_match(self::LANG_FILE_PATTERN, $file)) continue;
+
+                /** Chercher l'existance du fichier en cours de lecture dans le registre code */
+                if (!array_key_exists($filePath, $codes['files'])) {
+                    $codes['files'][$filePath] = count($codes['files']);
+                }
+                $fileCode = $codes['files'][$filePath];
+
+                /** Ouverture du fichier XML */
+                $xml = self::SXEOverhaul(
+                    file_get_contents($fullPath . '/' . $file)
+                );
+
+                /** Lecture du fichier */
+                for ($r = 0; $r < count($xml->resource); $r++) {
+                    $resource = $xml->resource[$r];
+
+                    $tir = strtolower(strval($resource->attributes()->TIR));
+                    $tir = (is_null($tir) || $tir === 'true') ? true : false;
+
+                    if ($tir || $full) {
+                        $key = strval($resource->attributes()->KEY);
+                        $texte = strval($resource);
+
+                        /** Chercher l'existance de la clé en cour de lecture dans le registre code */
+                        if (!array_key_exists($key, $codes['keys'])) {
+                            $codes['keys'][$key] = count($codes['keys']);
+                        }
+
+                        $keyCode = $codes['keys'][$key];
+
+                        $entry = sprintf('%03d.%05d = %s', $fileCode, $keyCode, $texte);
+
+                        $codes['texts'][] = $entry;
+                    }
+                }
+
+                unset($xml);
+            }
+        }
+
+        closedir($dir);
 
         return true;
     }

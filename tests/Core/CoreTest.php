@@ -29,6 +29,16 @@ class CoreTest extends \PHPUnit_Framework_TestCase
      */
     protected static $testWorkingDir = 'tests/Core';
 
+    /**
+     * @var string $exportDir Dossier de dépôt des fichiers d'exportation INI.
+     */
+    protected static $exportDir = "exports";
+
+    /**
+     * @var string $importDir Dossier de dépôt des fichiers INI à importer.
+     */
+    protected static $importDir = "imports";
+
 
 
     /**
@@ -670,6 +680,40 @@ class CoreTest extends \PHPUnit_Framework_TestCase
         // <![CDATA ==> [[
         // ]]>      ==> ]]
         $this->assertEquals("[[::lt::h1::gt::Code HTML dans XML::lt::/h1::gt::]]", strval($sxeo->element[0]));
+    }
+
+    /**
+     * Vérifie que l'exportation sous forme INI s'effectue normalement.
+     *
+     * @author Neoblaster
+     */
+    public function testExport ()
+    {
+        /** Ne peux pas fonctionner si le fichier invalid.xml est présent */
+        unlink(self::$testWorkingDir . '/fr-FR/invalid.xml');
+
+        /** Exporter les fichiers dans l'environnement de test */
+        self::$compiler->setExportDirectory("exports");
+        self::$compiler->export();
+
+        /** Contrôler que le dossier d'exportation à bien été créé */
+        $this->fileExists(self::$testWorkingDir . '/' . self::$exportDir);
+
+        $exportDir = opendir(self::$testWorkingDir . '/' . self::$exportDir);
+
+        while ($file = readdir($exportDir)) {
+            if (preg_match("/^\.+$/", $file)) continue;
+
+            $generated = file_get_contents(self::$testWorkingDir . '/' . self::$exportDir . '/' .$file);
+
+            $this->assertRegExp("/[HEADERS]/", $generated);
+            $this->assertRegExp("/[FILES]/", $generated);
+            $this->assertRegExp("/[KEYS]/", $generated);
+            $this->assertRegExp("/[TEXTS]/", $generated);
+            $this->assertRegExp("/^[0-9]{3}\.[0-9]{5}\s=\s(.)+$/m", $generated);
+        }
+
+        closedir($exportDir);
     }
 
 
