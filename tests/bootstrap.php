@@ -71,8 +71,9 @@ trait initializer
                  */
                 if ($basename !== '.') {
                     // Création du (sous-)dossier cible
-                    mkdir($destPath . '/' . $basename, 0755);
                     $fullDestPath = $destPath . '/' . $basename;
+
+                    if (!file_exists($fullDestPath)) mkdir($fullDestPath, 0755);
                 }
 
                 // Lecture du dossier
