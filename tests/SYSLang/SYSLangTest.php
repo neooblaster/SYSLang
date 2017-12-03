@@ -57,7 +57,8 @@ class SYSLangTest extends \PHPUnit_Framework_TestCase
         /** Récupération de l'installation issue des tests du noyaux */
         self::recursiveCopy('tests/Core/languages.xml', self::$testWorkingDir);
         self::recursiveCopy('tests/Core/fr-FR', self::$testWorkingDir);
-        self::recursiveCopy('tests/resources/*', self::$testWorkingDir . '/fr-FR');
+        self::recursiveCopy('tests/resources/cst.xml', self::$testWorkingDir . '/fr-FR');
+        self::recursiveCopy('tests/resources/custom.xml', self::$testWorkingDir . '/fr-FR');
     }
 
 
