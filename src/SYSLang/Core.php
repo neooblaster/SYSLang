@@ -1063,9 +1063,10 @@ class Core
                 /** Lecture du fichier */
                 for ($r = 0; $r < count($xml->resource); $r++) {
                     $resource = $xml->resource[$r];
+                    $attr = $resource->attributes();
 
                     $tir = strtolower(strval($resource->attributes()->TIR));
-                    $tir = (is_null($tir) || $tir === 'true') ? true : false;
+                    $tir = (!isset($attr['TIR']) || $tir === 'true') ? true : false;
 
                     if ($tir || $full) {
                         $key = strval($resource->attributes()->KEY);
