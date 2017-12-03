@@ -8,8 +8,8 @@
  * Fournis le trait initializer contenant des méthodes d'entretient.
  *
  * @author    Nicolas DUPRE
- * @release   23/10/2017
- * @version   1.0.0
+ * @release   03/12/2017
+ * @version   1.1.0
  * @package   Index
  */
 
@@ -62,6 +62,14 @@ trait initializer
 
         if (!in_array($basename, $exclude)) {
             if (is_file($srcPath)) {
+                // L'emplacement cible est toujours un dossier
+                // Spécifier le slash final génère un double slash lorsqu'il est présent
+                // Toujours supprimer le dernier slash s'il existe dans $destPath
+                $destPath = preg_replace("#/$#", "", $destPath);
+
+                // Vérifier l'exsistance du dossier cible
+                if (!file_exists($destPath)) mkdir($destPath, 0755, true);
+
                 copy($srcPath, $destPath . '/' . $basename);
                 return true;
             } else if (is_dir($srcPath)) {
@@ -73,7 +81,7 @@ trait initializer
                     // Création du (sous-)dossier cible
                     $fullDestPath = $destPath . '/' . $basename;
 
-                    if (!file_exists($fullDestPath)) mkdir($fullDestPath, 0755);
+                    if (!file_exists($fullDestPath)) mkdir($fullDestPath, 0755, true);
                 }
 
                 // Lecture du dossier
