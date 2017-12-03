@@ -30,6 +30,11 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     protected static $testWorkingDir = 'tests/Core';
 
     /**
+     * @var string $testResPath Emplacement vers les ressources utilisées lors des tests.
+     */
+    protected static $testResPath = 'tests/resources/Core';
+
+    /**
      * @var string $exportDir Dossier de dépôt des fichiers d'exportation INI.
      */
     protected static $exportDir = "exports";
@@ -344,6 +349,14 @@ class CoreTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Contrôle de la bonne maintenance des langues.
+     *
+     * EN CAS DE MODIFICATION : En cas de modifications sur :
+     *  - Une clé
+     *  - Un texte
+     *  - Un fichier
+     * Le test import échouera, car les ressources ne seront plus à jour.
+     * CF testExport pour la marche à suivre.
+     *
      * @author Neoblaster
      */
     public function testDeploy()
@@ -647,21 +660,81 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * DUMMY
+     * Vérifie la bonne définition de l'emplacement pour l'exportation des fichiers.
+     *
      * @author Neoblaster
      */
     public function testSetExportDir()
     {
-        self::$compiler->setExportDirectory('');
+        $rcore = new ReflectionObject(self::$compiler);
+        $rExportDirectoryPath = $rcore->getProperty("exportDirectoryPath");
+        $rExportDirectoryPath->setAccessible("true");
+
+        // Contrôle de la définition par défaut
+        $this->assertEquals(
+            self::$testWorkingDir . '/exports',
+            $rExportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin relatif
+        self::$compiler->setExportDirectory("export");
+        $this->assertEquals(
+            self::$testWorkingDir . '/export',
+            $rExportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin absolu
+        self::$compiler->setExportDirectory("/export");
+        $this->assertEquals(
+            '/export',
+            $rExportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin pseudo-absolu
+        self::$compiler->setExportDirectory("/export", false);
+        $this->assertEquals(
+            $_SERVER["PWD"] . '/export',
+            $rExportDirectoryPath->getValue(self::$compiler)
+        );
     }
 
     /**
-     * DUMMY
+     * Vérifie la bonne définition de l'emplacement pour l'importation des fichiers.
+     *
      * @author Neoblaster
      */
     public function testSetImportDir()
     {
-        self::$compiler->setImportDirectory('');
+        $rcore = new ReflectionObject(self::$compiler);
+        $rImportDirectoryPath = $rcore->getProperty("importDirectoryPath");
+        $rImportDirectoryPath->setAccessible("true");
+
+        // Contrôle de la définition par défaut
+        $this->assertEquals(
+            self::$testWorkingDir . '/imports',
+            $rImportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin relatif
+        self::$compiler->setImportDirectory("import");
+        $this->assertEquals(
+            self::$testWorkingDir . '/import',
+            $rImportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin absolu
+        self::$compiler->setImportDirectory("/import");
+        $this->assertEquals(
+            '/import',
+            $rImportDirectoryPath->getValue(self::$compiler)
+        );
+
+        // Contrôle d'un chemin pseudo-absolu
+        self::$compiler->setImportDirectory("/import", false);
+        $this->assertEquals(
+            $_SERVER["PWD"] . '/import',
+            $rImportDirectoryPath->getValue(self::$compiler)
+        );
     }
 
     /**
@@ -685,6 +758,10 @@ class CoreTest extends \PHPUnit_Framework_TestCase
     /**
      * Vérifie que l'exportation sous forme INI s'effectue normalement.
      *
+     * EN CAS DE MODIFICATION : Copiez les fichiers exportés dans le dossier de ressources "Core/toImport"
+     * et faites des modifications vallant pour une traduction.*
+     * CF testImport pour la marche à suivre
+     *
      * @author Neoblaster
      */
     public function testExport ()
@@ -693,7 +770,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase
         unlink(self::$testWorkingDir . '/fr-FR/invalid.xml');
 
         /** Exporter les fichiers dans l'environnement de test */
-        self::$compiler->setExportDirectory("exports");
+        self::$compiler->setExportDirectory(self::$exportDir);
         self::$compiler->export();
 
         /** Contrôler que le dossier d'exportation à bien été créé */
@@ -714,6 +791,141 @@ class CoreTest extends \PHPUnit_Framework_TestCase
         }
 
         closedir($exportDir);
+    }
+
+    /**
+     * Met à jour les fichiers de langue à l'aide des fichier ini.
+     *
+     * EN CAS DE MODIFICATION : Si des modifications ont eu lieu dans testDeploy et/ou testExport
+     * Après l'execution des tests, il faudra mettre à jour les différents pack de langues
+     * du dossier ressource "Core/imported"
+     *
+     * @author Neoblaster
+     */
+    public function testImport()
+    {
+        // "Charger" les ressources sources.
+        self::recursiveCopy(
+            self::$testResPath . '/import/src/*',
+            self::$testResPath . '/import/default/imports/'
+        );
+        self::recursiveCopy(
+            self::$testResPath . '/import/src/*',
+            self::$testResPath . '/import/finalize/imports/'
+        );
+        self::recursiveCopy(
+            self::$testResPath . '/import/src/*',
+            self::$testResPath . '/import/preserve/imports/'
+        );
+
+
+
+        // Test d'importation par défaut.
+        self::$compiler->setImportDirectory('/' . self::$testResPath . '/import/default/imports', false);
+        self::$compiler->import();
+        // Le mode par défaut ne finalize pas, donc ne détruit rien.
+        $this->assertEquals(
+            ["de-DE.ini", "en-EN.ini", "fr-FR.ini"],
+            self::listFolderFile(self::$testResPath . '/import/default/imports')
+        );
+        /**
+         * Décommenter pour effectuer une mise à jour des ressources.
+         */
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/fr-FR',
+//            self::$testResPath . '/import/default/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/en-EN',
+//            self::$testResPath . '/import/default/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/de-DE',
+//            self::$testResPath . '/import/default/results'
+//        );
+
+
+
+        // Test d'importation avec finalisation.
+        self::$compiler->setImportDirectory('/' . self::$testResPath . '/import/finalize/imports', false);
+        self::$compiler->import(true);
+        // Sans preservation, les fichiers sont supprimés.
+        $this->assertEquals(
+            [],
+            self::listFolderFile(self::$testResPath . '/import/finalize/imports')
+        );
+        /**
+         * Décommenter pour effectuer une mise à jour des ressources.
+         */
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/fr-FR',
+//            self::$testResPath . '/import/finalize/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/en-EN',
+//            self::$testResPath . '/import/finalize/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/de-DE',
+//            self::$testResPath . '/import/finalize/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/fr-FR',
+//            self::$testResPath . '/import/preserve/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/en-EN',
+//            self::$testResPath . '/import/preserve/results'
+//        );
+//        self::recursiveCopy(
+//            self::$testWorkingDir . '/de-DE',
+//            self::$testResPath . '/import/preserve/results'
+//        );
+
+
+
+        // Test d'importation avec finalisation.
+        self::$compiler->setImportDirectory('/' . self::$testResPath . '/import/preserve/imports', false);
+        self::$compiler->import(true, true);
+        // La préservation doit bien avoir eu lieu.
+        $this->assertEquals(
+            ["de-DE.ini", "en-EN.ini", "fr-FR.ini"],
+            self::listFolderFile(self::$testResPath . '/import/preserve/imports')
+        );
+    }
+
+    /**
+     * Met à jour les fichiers de langue à l'aide des fichier ini.
+     *
+     * @author Neoblaster
+     */
+    public function testImportExceptionFolderNotExist()
+    {
+        self::$compiler->setImportDirectory("import");
+
+        $this->expectException("Exception");
+        $this->expectExceptionMessage(
+            sprintf("Import folder '%s' does not exist.", self::$testWorkingDir . '/import')
+        );
+
+        self::$compiler->import();
+    }
+
+    /**
+     * Met à jour les fichiers de langue à l'aide des fichier ini.
+     *
+     * @author Neoblaster
+     */
+    public function testImportExceptionInvalidFile()
+    {
+        self::$compiler->setImportDirectory('/' . self::$testResPath . '/import/invalid/imports', false);
+
+        $this->expectException("Exception");
+        $this->expectExceptionMessage(
+            sprintf("The file '%s' can not be imported.", 'invalid.ini')
+        );
+
+        self::$compiler->import();
     }
 
 

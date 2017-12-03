@@ -5,12 +5,10 @@
  * Noyaux principale du moteur SYSLang.
  *
  * @author    Nicolas DUPRE
- * @release   01/12/2017
+ * @release   02/12/2017
  * @version   2.0.0-alpha3
  * @package   Index
  *
- * @TODO : [P1] Reconstituer le système d'Import / Export.
- * @TODO : [P2] Utiliser le "default-language" comme package de reférence pour compile.
  * @TODO : [P3] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
  * @TODO : [P4] Ajouter un system de backup en cas d'erreur de l'utilisateur.
  * @TODO : [P5] Ajouter un attribut LANG dans resources pour identifier tout de suite la langue du fichier xml visualiser.
@@ -479,6 +477,15 @@ class Core
         }
     }
 
+    /**
+     * Procéde à la maintnance des ressources de langue XML.
+     *
+     * @param null|string $folderPath Méthode récursive permettant le traitement de sous-dossier.
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
     protected function processLang($folderPath = null)
     {
         /** @var string $refLangFullPath Chemin vers le (sous-)dossier à traiter */
@@ -751,6 +758,147 @@ class Core
     }
 
     /**
+     * Importe les textes des différents fichier INI validé présent dans le dossier d'importation
+     * spécifié.
+     *
+     * @param bool $finalize        Permet de finaliser l'import en mettant à jour l'attribut TIR
+     * pour les futures exportation différentielles.
+     * @param bool $preserveFile    Si finalise=true, permet de demander de concervé les fichiers.
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function import ($finalize = false, $preserveFile = false)
+    {
+        if (!file_exists($this->importDirectoryPath)) throw new \Exception(
+            sprintf("Import folder '%s' does not exist.", $this->importDirectoryPath)
+        );
+
+        $importDir = opendir($this->importDirectoryPath);
+        $tags = ["HEADERS", "FILES", "KEYS", "TEXTS"];
+
+        while ($file = readdir($importDir)) {
+            // Contrôle de fichier
+            $filePath = $this->importDirectoryPath . '/' . $file;
+
+            if (is_dir($filePath)) continue;
+
+            // Initialisation des données pour le fichier en cours de traitement.
+            $iniCodes = [
+                "files" => [],
+                "keys"  => [],
+                "texts" => [],
+                "sxe"   => []
+            ];
+
+            $iniFile = fopen($filePath, "r");
+            $tagsFound = array_fill_keys($tags, false);
+            $language = null;
+            $processing = null;
+
+            // Lecture du fichier.
+            while ($buffer = fgets($iniFile)) {
+                $tagFound = false;
+
+                // Recherche des balises
+                foreach ($tags as $tKey => $tag) {
+                    if (preg_match("/^\[$tag\]$/", $buffer)) {
+                        $processing = strtolower($tag);
+                        //$$processing = true;
+                        $tagFound = true;
+                        $tagsFound[$tag] = true;
+                        break;
+                    }
+                }
+
+                if ($tagFound || preg_match("/^\s*$/", $buffer)) continue;
+
+                // Découpage du buffer.
+                list($key, $value) = preg_split("/\s*=\s*/", $buffer, 2);
+                $value = trim($value);
+
+                // Traitement selon l'ensemble en cours de traitement.
+                switch ($processing) {
+                    // Traitement des données de l'entête.
+                    case "headers":
+                        // Recherche de la langue correspondante.
+                        if ($key === 'lang') $language = $value;
+                        break;
+
+                    case "files":
+                    case "keys":
+                    case "texts":
+                        $iniCodes[$processing][$key] = $value;
+                        break;
+                }
+            }
+
+            // Fermeture du fichier
+            fclose($iniFile);
+
+            /**
+             * Mise à jour du fichier de langue correspondant
+             * si les données collectées sont consistentes.
+             */
+            if (in_array(false, $tagsFound) ||  is_null($language))  throw new \Exception(
+                sprintf("The file '%s' can not be imported.", $file)
+            );
+
+            // Ouverture des fichiers concernés
+            foreach ($iniCodes['files'] as $fKey => $file) {
+                $sxePath = $this->workingDirectory . "/$language/$file";
+
+                $iniCodes['sxe'][$fKey] = [
+                    "path" => $sxePath,
+                    "sxe" => self::SXEOverhaul(
+                        file_get_contents($sxePath)
+                    ),
+                    "indexs" => []
+                ];
+
+                // Indexation des clés
+                $index = 0;
+                foreach ($iniCodes['sxe'][$fKey]['sxe'] as $rKey => $resource) {
+                    $sxeKey = strval($resource->attributes()->KEY);
+                    $iniCodes['sxe'][$fKey]['indexs'][$sxeKey] = $index;
+                    $index++;
+                }
+            }
+
+            // Procéder à l'importation à proprement parler.
+            foreach ($iniCodes['texts'] as $tKey => $text) {
+                // Retrouver le fichier et la clé correspondant au texte.
+                list($fileCode, $keyCode) = preg_split("/\./", $tKey);
+
+                // Rechercher l'index pour effectuer la mise à jour
+                $index = $iniCodes['sxe'][$fileCode]['indexs'][$iniCodes['keys'][$keyCode]];
+
+                // Mise à jour de la ressource correspondante
+                $iniCodes['sxe'][$fileCode]['sxe']->resource[$index] = $text;
+                if ($finalize) {
+                    $iniCodes['sxe'][$fileCode]['sxe']->resource[$index]->attributes()->TIR = "false";
+                }
+            }
+
+            // Enregistrement des modifications
+            foreach ($iniCodes['sxe'] as $sKey => $sxe) {
+                self::saveXml($sxe["sxe"], $sxe["path"]);
+            }
+
+            // Une fois l'ensemble du process effectué, supprimer la ressource source
+            // Uniquement si finalize avec non préservation
+            if ($finalize && !$preserveFile) {
+                unlink($filePath);
+            }
+        }
+
+        closedir($importDir);
+
+        return true;
+    }
+
+    /**
      * Install le fichier de configuration dans le dossier spécifié.
      */
     public function install()
@@ -774,6 +922,18 @@ class Core
         }
 
         return false;
+    }
+
+    /**
+     * Détermine si le chemin donné est de nature absolue ou relative.
+     *
+     * @param string $path Chaine représentant un chemin.
+     *
+     * @return bool
+     */
+    protected function isAbsolute ($path)
+    {
+        return preg_match("/^\//", $path);
     }
 
     /**
@@ -1098,11 +1258,21 @@ class Core
 
     /**
      * Définie le dossier d'export des fichiers INI.
+     *
      * @param string $directory Dossier cible pour les exportations de fichiers.
+     * @param bool   $fullAbsolute  Chemin complétement absolu, depuis la racine système /
+     * Si vaut false, alors c'est partiellement absolu depuis le CWD (__DIR__)
+     *
      * @return bool
      */
-    public function setExportDirectory($directory)
+    public function setExportDirectory($directory, $fullAbsolute = true)
     {
+        if ($this->isAbsolute($directory)) {
+            if (!$fullAbsolute) $directory = $_SERVER["PWD"] . $directory;
+        } else {
+            $directory = $this->workingDirectory . '/' . $directory;
+        }
+
         $this->exportDirectoryPath = $directory;
         return true;
     }
@@ -1139,11 +1309,21 @@ class Core
 
     /**
      * Défini le dossier source d'importation des fichiers INI.
-     * @param string $directory Dossier source pour les importations de fichiers.
+     *
+     * @param string $directory     Dossier source pour les importations de fichiers.
+     * @param bool   $fullAbsolute  Chemin complétement absolu, depuis la racine système /
+     * Si vaut false, alors c'est partiellement absolu depuis le CWD (__DIR__)
+     *
      * @return bool
      */
-    public function setImportDirectory($directory)
+    public function setImportDirectory($directory, $fullAbsolute = true)
     {
+        if ($this->isAbsolute($directory)) {
+            if (!$fullAbsolute) $directory = $_SERVER["PWD"] . $directory;
+        } else {
+            $directory = $this->workingDirectory . '/' . $directory;
+        }
+
         $this->importDirectoryPath = $directory;
         return true;
     }
