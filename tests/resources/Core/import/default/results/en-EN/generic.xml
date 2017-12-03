@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="your_key_name_here" CST="false" SST="true" TIR="true">your_coresponding_text_here</resource>
+  <resource KEY="SIMULATE" SST="true" CST="false" TIR="false">SIMULATE</resource>
+</resources>

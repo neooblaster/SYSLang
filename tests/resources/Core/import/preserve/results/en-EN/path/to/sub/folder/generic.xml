@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource KEY="your_key_name_here" CST="false" SST="true" TIR="false">your_coresponding_text_here</resource>
+</resources>
