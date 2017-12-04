@@ -118,6 +118,7 @@ class Command
     public function run()
     {
         $options = $this->argv;
+        $showHelp = true;
 
         // Création du compilateur
         $directory = @($options["dir"]) ?: (@$options["directory"]) ?: $this->workdir;
@@ -126,8 +127,11 @@ class Command
         // Afficher l'aide si demandé et s'arrêté la$
         if (
             array_key_exists("h", $options)
-        ||  array_key_exists("help", $options)
-        ) $this->help();
+            || array_key_exists("help", $options)
+        ) {
+            $this->help();
+            return true;
+        }
 
         // Processus d'installation
         if (array_key_exists("install", $options)) {
@@ -137,6 +141,8 @@ class Command
             } else {
                $this->stderr("Le système de langue est déjà installé dans %s", [$directory], 0);
             }
+
+            $showHelp = false;
         }
 
         // Processus d'enregistrement d'une langue au registre
@@ -161,7 +167,10 @@ class Command
                 }
             } catch (\Exception $e) {
                 $this->stderr($e->getMessage());
+                return false;
             }
+
+            $showHelp = false;
         }
 
         // Processus de suppression de langue du registre
@@ -185,7 +194,10 @@ class Command
                 }, $languages);
             } catch (Exception $e) {
                 $this->stderr($e->getMessage());
+                return false;
             }
+
+            $showHelp = false;
         }
 
         // Configuration du pack de langue par défaut
@@ -195,7 +207,10 @@ class Command
                 $this->stdout("La langue par défaut est définie à %s.", [$options["set-default-lang"]]);
             } catch (Exception $e) {
                 $this->stderr($e->getMessage());
+                return false;
             }
+
+            $showHelp = false;
         }
 
         // Processus de déploiement
@@ -220,6 +235,8 @@ class Command
                 $this->stderr($e->getMessage());
                 return false;
             }
+
+            $showHelp = false;
         }
 
         // Processus d'exportation
@@ -249,7 +266,10 @@ class Command
                 $this->stdout("$message.", $args);
             } catch (Exception $e) {
                 $this->stderr($e->getMessage());
+                return false;
             }
+
+            $showHelp = false;
         }
 
         // Processus d'importation
@@ -291,7 +311,15 @@ class Command
                 $message = preg_replace("/'(.+)'/", "'%s'", $e->getMessage());
                 preg_match("/'(.+)'/", $e->getMessage(), $matches);
                 $this->stderr($message, [$matches[1]]);
+                return false;
             }
+
+            $showHelp = false;
+        }
+
+        // Si rien ne s'est passé, alors afficher l'aide par défaut
+        if ($showHelp) {
+            $this->help();
         }
     }
 

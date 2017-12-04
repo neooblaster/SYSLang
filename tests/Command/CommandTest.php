@@ -54,6 +54,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             // 1. Affichage de l'aide.
             ["1.1.", ["h" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
             ["1.2.", ["help" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
+            ["1.3.", [], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
 
             // 2. Installations
             ["2.1.", ["install" => null], file_get_contents(self::$testResPath . "/cli/install.txt"), false, null, null],
@@ -127,6 +128,10 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             [
                 "7.2.", ["export" => null, "complete" => null],
                 file_get_contents(self::$testResPath . "/cli/export-complete.txt"), false, null, null
+            ],
+            [
+                "7.3.", ["export" => null, "export-dir" => "ToTranslate"],
+                file_get_contents(self::$testResPath . "/cli/export-export-dir.txt"), false, null, null
             ],
 
             // 8. Importation

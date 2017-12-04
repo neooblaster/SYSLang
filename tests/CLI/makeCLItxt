@@ -41,6 +41,7 @@ SYSLang --deploy --from invalid 2>&1 |tee ../resources/cli/deploy-from-invalid.t
 # Procéder à l'exportation des fichiers
 SYSLang --export 2>&1 |tee ../resources/cli/export.txt
 SYSLang --export --complete 2>&1 |tee ../resources/cli/export-complete.txt
+SYSLang --export --export-dir ToTranslate 2>&1 |tee ../resources/cli/export-export-dir.txt
 
 # Procéder à l'importation des fichier
 SYSLang --import 2>&1 |tee ../resources/cli/import.txt
