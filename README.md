@@ -173,6 +173,167 @@ SYSLang --deploy --from fr-FR
 
 
 
+### Exportation des textes sous une forme simplifiée (INI).
+
+Pour simplifier l'operation de traduction, j'ai décidé de sortir les textes de leur structure **XML** et de
+les présenter plus simplement dans un fichier **.INI**.
+Les traducteurs n'ont plus qu'à se concentrer sur la traduction des textes qui se trouvent dans
+l'ensemble INI ``[TEXTS]``.
+
+Pour passer du format **XML** au format **INI**, j'ai donc créé l'option ``--export``.
+
+Si cette option est utilisée seule, l'exportation est effectuée dans le dossier ``exports`` là où le système
+est installé.
+
+```bash
+# Exemple
+# Système installé dans le dossier "Lang"
+cd Lang
+
+# Exportation Simple
+SYSLang --export
+
+# L'exportation s'est effectuée dans le dossier suivant : ./exports
+# Soit dans Lang/exports
+```
+
+**Important**: Seul les textes ayant besoin d'être traduit sont exportés.
+S'il n'y a aucune information concernant ce besoin de traduction, alors il sera exporté.
+
+
+Si vous souhaitez dans tous les cas tout exporter, alors il faut ajouter l'option ``--complete``.
+
+```bash
+# Tout extraire
+cd Lang
+SYSLang --export --complete
+```
+
+
+Il est possible de spécifier un dossier cible pour l'exportation à l'aide de l'option ``--export-dir``.
+Si vous utilisez un chemin relatif, celui-ci sera relatif par rapport à l'emplacement du système
+et non pas de l'endroit où vous vous trouvez.
+
+```bash
+# Exemple 1 : Commande dans le dossier où le système est installé
+cd Lang
+SYSLang --export --export-dir ExportINI
+# Les fichiers seront extrait dans Lang/ExportINI
+```
+
+```bash
+# Exemple 2 : Commande en spécifiant l'emplacement du système
+SYSLang --dir Lang --export --export-dir ExportINI
+# Vaut pour Lang/ExportINI
+# Et non pas pour ./ExportINI
+```
+
+Si vous spécifiez un chemin absolu, celui-ci partira donc comme prévu depuis l'emplacement root ``/``
+du système d'exploitation.
+
+```bash
+cd Lang
+SYSLang --export --export-dir /var/www/ini
+```
+
+
+
+
+### Importation des textes à partir de fichiers .INI.
+
+Une fois les traductions faites, il ne reste plus qu'à procéder à l'importation pour mettre à jour
+les différents fichiers **XML**.
+
+L'option pour effecuter cette importation est ``--import``.
+
+Si cette option est utilisée seule, l'importation est effectuée depuis le dossier ``imports`` là où le système
+est installé.
+
+```bash
+# Exemple
+# Système installé dans le dossier "Lang"
+cd Lang
+
+# Exportation Simple
+SYSLang --import
+
+# L'importation s'est effectuée depuis le dossier suivant : ./imports
+# Soit dans Lang/imports
+```
+
+
+Il est possible de spécifier un dossier source pour l'importation à l'aide de l'option ``--import-dir``.
+Si vous utilisez un chemin relatif, celui-ci sera relatif par rapport à l'emplacement du système
+et non pas de l'endroit où vous vous trouvez.
+
+```bash
+# Exemple 1 : Commande dans le dossier où le système est installé
+cd Lang
+SYSLang --import --import-dir INIToImport
+# Les fichiers seront chargé depuis Lang/INIToImport
+```
+
+```bash
+# Exemple 2 : Commande en spécifiant l'emplacement du système
+SYSLang --dir Lang --import --import-dir INIToImport
+# Vaut pour Lang/INIToImport
+# Et non pas pour ./INIToImport
+```
+
+Si vous spécifiez un chemin absolu, celui-ci partira donc comme prévu depuis l'emplacement root ``/``
+du système d'exploitation.
+
+```bash
+cd Lang
+SYSLang --import --import-dir /var/www/ini
+```
+
+**Important** : Par défaut, le système d'importation détruit les fichiers traités.
+
+Il est possible de demander au système de conserver ces fichiers via l'option ``--preserve-files``.
+
+```bash
+SYSLang --import --preserve-files
+```
+
+
+Le système de maintenance des textes de manière "**différentielle**".
+En effet, la maintenance des textes étant faite depuis une langue de référence,
+écraser les traductions existantes rajouterais du travail aux contributeurs.
+
+C'est pour cette raison que le système dispose d'un attribut indiquant s'il faut ou non effectuer
+une opération de traduction. Cet attribut est ``TIR`` pour `Translation Is Required`.
+
+Une opération de traduction est nécessaire si le texte a changé ou si un texte a été ajouté.
+
+Une fois que la traduction effectuée est importée, si le résultat est conforme aux attentes,
+alors il faut demander au système de finaliser cette importation.
+
+Ceci se fait à l'aide de l'option ``--finalize``. Cela aura pour effet de mettre les attributs
+``TIR`` à `false`.
+
+Ainsi les prochaines extractions **INI** contiendrons uniquement les textes ayant besoin d'être traduit.
+Je rappelle que le couple d'options ``--export --complete`` permet de tout extraire.
+
+Pour finaliser l'importation, il faut donc effectuer la commande suivante.
+
+```bash
+SYSLang --import --finalize
+```
+
+Pour le fun, une commande relativement complète.
+```bash
+# Je me trouve dans le dossier NGINX
+# Je veux faire l'importation avec finalisation
+# Tout en concervant mes fichiers
+# Qui sont dans un dossier précis "Translates"
+SYSLang --dir /var/www/app/lang --import --import-dir Translates --finalize --preserve-files
+```
+
+
+
+
+
 
 
 ## SYSLang :: Sous PHP

@@ -54,6 +54,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             // 1. Affichage de l'aide.
             ["1.1.", ["h" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
             ["1.2.", ["help" => null], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
+            ["1.3.", [], file_get_contents(self::$testResPath . "/cli/help.txt"), false, null, null],
 
             // 2. Installations
             ["2.1.", ["install" => null], file_get_contents(self::$testResPath . "/cli/install.txt"), false, null, null],
@@ -117,7 +118,39 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             [
                 "6.6.", ["deploy" => null, "from" => "invalid"],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-invalid.txt"), false, null, null
-            ]
+            ],
+
+            // 7. Exportation
+            [
+                "7.1.", ["export" => null],
+                file_get_contents(self::$testResPath . "/cli/export.txt"), false, null, null
+            ],
+            [
+                "7.2.", ["export" => null, "complete" => null],
+                file_get_contents(self::$testResPath . "/cli/export-complete.txt"), false, null, null
+            ],
+            [
+                "7.3.", ["export" => null, "export-dir" => "ToTranslate"],
+                file_get_contents(self::$testResPath . "/cli/export-export-dir.txt"), false, null, null
+            ],
+
+            // 8. Importation
+            [
+                "8.1.", ["import" => null],
+                file_get_contents(self::$testResPath . "/cli/import.txt"), false, null, null
+            ],
+            [
+                "8.2.", ["import" => null, "import-dir" => "exports"],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir.txt"), false, null, null
+            ],
+            [
+                "8.3.", ["import" => null, "import-dir" => "exports", "finalize" => null],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir-finalize.txt"), false, null, null
+            ],
+            [
+                "8.4.", ["import" => null, "import-dir" => "exports", "finalize" => null, "preserve-files" => null],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir-finalize-preserve.txt"), false, null, null
+            ],
         ];
     }
 

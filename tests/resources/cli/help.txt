@@ -6,33 +6,49 @@ Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
 
 0. Options transverses :
 
- --dir, --directory     Spécifie l'emplacement de travail.
-    -h, --help          Affiche la présente aide.
-        --silent        Masque les messages d'informations.
+--dir, --directory         Spécifie l'emplacement de travail.
+   -h, --help              Affiche la présente aide.
+       --silent            Masque les messages d'informations.
+       --preserve-files    Concerver les fichiers dans les cas suivants :
+                              - Suppression d'une langue du registre.
+                              - Importation avec finalisaation.
 
 1. Options d'installation :
 
-        --install       Installe le fichier de configuration languages.xml
-                        dans le dossier de travail défini.
-                        Defaut : ./
+        --install          Installe le fichier de configuration languages.xml
+                           dans le dossier de travail défini.
+                           Defaut : ./
 
 2. Options de configurations :
 
-        --add-languages     Ajoute la/les langue(s) spécifiée(s) au registre.
-                            Format : xx-XX:Name
-                            Séparateur : virgule (,)
+        --add-languages    Ajoute la/les langue(s) spécifiée(s) au registre.
+                           Format : xx-XX:Name
+                           Séparateur : virgule (,)
 
-        --default           Fait en sorte que la langue en cours d'ajout
-                            devienne également la langue par defaut.
-                            Si plusieurs valeur, alors c'est la première qui est
-                            retenue.
+        --default          Fait en sorte que la langue en cours d'ajout
+                           devienne également la langue par defaut.
+                           Si plusieurs valeur, alors c'est la première qui est
+                           retenue.
 
-        --remove-languages  Supprime la/les langue(s) spécifiée(s) du registre
-        --remove-langs      et supprime les fichiers associé
-                            Format : xx-XX
-                            Séparateur : virgule (,)
+        --remove-languages Supprime la/les langue(s) spécifiée(s) du registre
+        --remove-langs     et supprime les fichiers associés.
+                           Format : xx-XX
+                           Séparateur : virgule (,)
 
-        --preserve-files    Demande la concervation des fichiers lors d'une
-                            suppresion de langue.
+        --set-default-lang Rend la langue spécifiée par défaut.
+                           Format : xx-XX
 
-        --set-default-lang  Définit la langue par défaut.
+3. Options de maintenance :
+
+        --export           Procéde à l'exportation des donnés vers des
+                           fichiers .ini .
+        --export-dir       Spécifie le dossier cible de l'exportation.
+        --complete         Extrait l'intégralité des valeur au lieu
+                           de celle ayant besoin d'être traduite.
+
+        --import           Procéde à l'importation des donnés depuis les
+                           fichiers .ini .
+        --import-dir       Spécifie le dossier source pour l'importation.
+        --finalize         Finalise l'importation qui permettra de faire une
+                           exportation différentielle par la suite.
+
