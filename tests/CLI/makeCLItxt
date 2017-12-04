@@ -38,5 +38,15 @@ SYSLang --deploy --from en-EN 2>&1 |tee ../resources/cli/deploy-from-en.txt
 SYSLang --deploy --from xx-XX 2>&1 |tee ../resources/cli/deploy-from-xx.txt
 SYSLang --deploy --from invalid 2>&1 |tee ../resources/cli/deploy-from-invalid.txt
 
+# Procéder à l'exportation des fichiers
+SYSLang --export 2>&1 |tee ../resources/cli/export.txt
+SYSLang --export --complete 2>&1 |tee ../resources/cli/export-complete.txt
+
+# Procéder à l'importation des fichier
+SYSLang --import 2>&1 |tee ../resources/cli/import.txt
+SYSLang --import --import-dir exports 2>&1 |tee ../resources/cli/import-import-dir.txt
+SYSLang --import --import-dir exports --finalize 2>&1 |tee ../resources/cli/import-import-dir-finalize.txt
+SYSLang --import --import-dir exports --finalize --preserve-files 2>&1 |tee ../resources/cli/import-import-dir-finalize-preserve.txt
+
 # Nettoyage du dossier actuel pour jouer les tests phpunit
 #ls -a | egrep -v "^\.+$|makeCLItxt|CommandTest" | xargs -r rm -r

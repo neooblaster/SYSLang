@@ -10,8 +10,6 @@
  * @version   2.0.0-beta1
  * @package   Index
  *
- * @TODO : [P1] Reconstituer le système d'Import / Export.
- * @TODO : [P2] Créer un système d'alias pour les langues proche : en-US pointe vers en-EN.
  */
 
 namespace SYSLang;
@@ -34,18 +32,26 @@ class Command
             'color_suc' => '76',
             'color_war' => '208',
             'color_txt' => '221',
+            'color_kwd' => '39'
         ],
         'separator' => ',',
         'shortopt' => "h",
         "longopt" => [
             "add-languages:",
+            "complete",
             "default",
             "deploy",
             "directory:",
             "dir:",
+            "export",
+            "export-dir:",
+            "finalize",
             "from:",
             "help",
+            "import",
+            "import-dir:",
             "install",
+            "preserve-files",
             "remove-languages:",
             "remove-langs:",
             "set-default-lang:",
@@ -215,6 +221,78 @@ class Command
                 return false;
             }
         }
+
+        // Processus d'exportation
+        if (array_key_exists("export", $options)) {
+            try {
+                // Si le dossier cible est défini.
+                if (array_key_exists("export-dir", $options)) {
+                    $compiler->setExportDirectory($options["export-dir"]);
+                }
+
+                // Si l'option compléte est préssnte, alors faire un export complet.
+                $complete = (array_key_exists("complete", $options)) ?: false;
+
+                // Exportation
+                $compiler->export($complete);
+
+                // Affichage de la bonne exécution.
+                $args = [];
+                $scomplete = "";
+                if ($complete) {
+                    $scomplete = self::OPTIONS["colors"]["color_suc"] . ">%s ";
+                    $args[] = "compléte";
+                }
+                //$args[] = $compiler->getExportDirPath;
+                $message = "Exportation ${scomplete}effectuée avec succès";// dans %s
+
+                $this->stdout("$message.", $args);
+            } catch (Exception $e) {
+                $this->stderr($e->getMessage(), []);
+            }
+        }
+
+        // Processus d'importation
+        if (array_key_exists("import", $options)) {
+            try {
+                // Si le dossier source est défini.
+                if (array_key_exists("import-dir", $options)) {
+                    $compiler->setImportDirectory($options["import-dir"]);
+                }
+
+                $finalize = (array_key_exists("finalize", $options)) ?: false;
+                $preserve = (array_key_exists("preserve-files", $options)) ?: false;
+
+                // Importation
+                $compiler->import($finalize, $preserve);
+
+                // Affichage de la bonne exécution.
+                $args = [];
+                $sfinalize = "";
+                $spreserve = "";
+
+                if ($finalize) {
+                    $sfinalize = "avec " . self::OPTIONS["colors"]["color_suc"] . ">%s ";
+                    $args[] = "finalisation";
+                }
+
+                if ($preserve) {
+                    $spreserve = "avec " . self::OPTIONS["colors"]["color_suc"] . ">%s ";
+                    $args[] = "préservation";
+
+                    if ($finalize) $spreserve = "et $spreserve";
+                }
+
+                //$args[] = $compiler->getImportDirPath;
+                $message = "Importation ${sfinalize}${spreserve}effectuée avec succès";// dans %s
+
+                $this->stdout("$message.", $args);
+            } catch (Exception $e) {
+                $message = preg_replace("/'(.+)'/", "'%s'", $e->getMessage());
+                preg_match("/'(.+)'/", $e->getMessage(), $matches);
+                $this->stderr($message, [$matches[1]]);
+            }
+        }
     }
 
     /**
@@ -238,36 +316,52 @@ Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
 
 0. Options transverses :
 
- --dir, --directory     Spécifie l'emplacement de travail.
-    -h, --help          Affiche la présente aide.
-        --silent        Masque les messages d'informations.
+--dir, --directory         Spécifie l'emplacement de travail.
+   -h, --help              Affiche la présente aide.
+       --silent            Masque les messages d'informations.
+       --preserve-files    Concerver les fichiers dans les cas suivants :
+                              - Suppression d'une langue du registre.
+                              - Importation avec finalisaation.
 
 1. Options d'installation :
 
-        --install       Installe le fichier de configuration languages.xml
-                        dans le dossier de travail défini.
-                        Defaut : ./
+        --install          Installe le fichier de configuration languages.xml
+                           dans le dossier de travail défini.
+                           Defaut : ./
 
 2. Options de configurations :
 
-        --add-languages     Ajoute la/les langue(s) spécifiée(s) au registre.
-                            Format : xx-XX:Name
-                            Séparateur : virgule ($separator)
+        --add-languages    Ajoute la/les langue(s) spécifiée(s) au registre.
+                           Format : xx-XX:Name
+                           Séparateur : virgule ($separator)
 
-        --default           Fait en sorte que la langue en cours d'ajout
-                            devienne également la langue par defaut.
-                            Si plusieurs valeur, alors c'est la première qui est
-                            retenue.
+        --default          Fait en sorte que la langue en cours d'ajout
+                           devienne également la langue par defaut.
+                           Si plusieurs valeur, alors c'est la première qui est
+                           retenue.
 
-        --remove-languages  Supprime la/les langue(s) spécifiée(s) du registre
-        --remove-langs      et supprime les fichiers associé
-                            Format : xx-XX
-                            Séparateur : virgule ($separator)
+        --remove-languages Supprime la/les langue(s) spécifiée(s) du registre
+        --remove-langs     et supprime les fichiers associés.
+                           Format : xx-XX
+                           Séparateur : virgule ($separator)
 
-        --preserve-files    Demande la concervation des fichiers lors d'une
-                            suppresion de langue.
+        --set-default-lang Rend la langue spécifiée par défaut.
+                           Format : xx-XX
 
-        --set-default-lang  Définit la langue par défaut.
+3. Options de maintenance :
+
+        --export           Procéde à l'exportation des donnés vers des
+                           fichiers .ini .
+        --export-dir       Spécifie le dossier cible de l'exportation.
+        --complete         Extrait l'intégralité des valeur au lieu
+                           de celle ayant besoin d'être traduite.
+
+        --import           Procéde à l'importation des donnés depuis les
+                           fichiers .ini .
+        --import-dir       Spécifie le dossier source pour l'importation.
+        --finalize         Finalise l'importation qui permettra de faire une
+                           exportation différentielle par la suite.
+
 HELP;
         fwrite($this->psdtout, $man . PHP_EOL);
         if ($level) die($level);

@@ -117,7 +117,35 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             [
                 "6.6.", ["deploy" => null, "from" => "invalid"],
                 file_get_contents(self::$testResPath . "/cli/deploy-from-invalid.txt"), false, null, null
-            ]
+            ],
+
+            // 7. Exportation
+            [
+                "7.1.", ["export" => null],
+                file_get_contents(self::$testResPath . "/cli/export.txt"), false, null, null
+            ],
+            [
+                "7.2.", ["export" => null, "complete" => null],
+                file_get_contents(self::$testResPath . "/cli/export-complete.txt"), false, null, null
+            ],
+
+            // 8. Importation
+            [
+                "8.1.", ["import" => null],
+                file_get_contents(self::$testResPath . "/cli/import.txt"), false, null, null
+            ],
+            [
+                "8.2.", ["import" => null, "import-dir" => "exports"],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir.txt"), false, null, null
+            ],
+            [
+                "8.3.", ["import" => null, "import-dir" => "exports", "finalize" => null],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir-finalize.txt"), false, null, null
+            ],
+            [
+                "8.4.", ["import" => null, "import-dir" => "exports", "finalize" => null, "preserve-files" => null],
+                file_get_contents(self::$testResPath . "/cli/import-import-dir-finalize-preserve.txt"), false, null, null
+            ],
         ];
     }
 
