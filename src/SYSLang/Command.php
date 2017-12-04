@@ -160,7 +160,7 @@ class Command
                     $this->stdout("La langue par défaut est définie à %s.", [$languages[0]]);
                 }
             } catch (\Exception $e) {
-                $this->stderr($e->getMessage(), []);
+                $this->stderr($e->getMessage());
             }
         }
 
@@ -184,7 +184,7 @@ class Command
                     $this->stdout("Suppression de langue %s effectué avec succès.", [$el]);
                 }, $languages);
             } catch (Exception $e) {
-                $this->stderr($e->getMessage(), []);
+                $this->stderr($e->getMessage());
             }
         }
 
@@ -194,7 +194,7 @@ class Command
                 $compiler->setDefaultLanguage($options["set-default-lang"]);
                 $this->stdout("La langue par défaut est définie à %s.", [$options["set-default-lang"]]);
             } catch (Exception $e) {
-                $this->stderr($e->getMessage(), []);
+                $this->stderr($e->getMessage());
             }
         }
 
@@ -205,7 +205,7 @@ class Command
                 try {
                     $compiler->setRefLanguage($options["from"]);
                 } catch (Exception $e) {
-                    $this->stderr($e->getMessage(), []);
+                    $this->stderr($e->getMessage());
                     return false;
                 }
             }
@@ -217,7 +217,7 @@ class Command
                 $this->stdout("Le déploiment des clés à bien été effectué avec " .
                     "succès depuis la langue de référence %s", [$refLanguage]);
             } catch (Exception $e) {
-                $this->stderr($e->getMessage(), []);
+                $this->stderr($e->getMessage());
                 return false;
             }
         }
@@ -248,7 +248,7 @@ class Command
 
                 $this->stdout("$message.", $args);
             } catch (Exception $e) {
-                $this->stderr($e->getMessage(), []);
+                $this->stderr($e->getMessage());
             }
         }
 
@@ -396,7 +396,7 @@ HELP;
      *
      * @return void
      */
-    protected function stderr($message, $args, $level = 1)
+    protected function stderr($message, array $args = [], $level = 1)
     {
         // Connexion aux variables globales
         $color_err = self::OPTIONS['colors']['color_err'];
@@ -420,7 +420,7 @@ HELP;
      * @param string $message Message à afficher dans le STDOUT
      * @param array  $arg     Elements à introduire dans le message
      */
-    protected function stdout($message, $args)
+    protected function stdout($message, $args = [])
     {
         $options = self::OPTIONS;
 
