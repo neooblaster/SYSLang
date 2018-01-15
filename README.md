@@ -1,14 +1,39 @@
 # Moteur de langue SYSLang
 
-#### Etats GitLab Grenoble
+* Etats GitLab Grenoble
 
 [![pipeline status](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/badges/master/pipeline.svg)](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/commits/master)
 [![coverage report](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/badges/master/coverage.svg)](https://gitlab-gre.viseo.net/MCOScheduler/Engines/SYSLang/commits/master)
 
-#### Etats GitLab Perso
+* Etats GitLab Perso
 
 [![build status](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/build.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
 [![coverage report](http://gitlab.neoblaster.fr/Engines/SYSLang/badges/master/coverage.svg)](http://gitlab.neoblaster.fr/Engines/SYSLang/commits/master)
+
+
+## Sommaire
+
+[](BeginSummary)
+* [Sommaire](#sommaire)
+* [SYSLang :: Interface CLI](#syslang--interface-cli)
+    * [Options transversales](#options-transversales)
+        * [Installation](#installation)
+        * [Dossier de travail](#dossier-de-travail)
+        * [Mode silencieux](#mode-silencieux)
+    * [Installation de l'environnement](#installation-de-lenvironnement)
+    * [Enregistrer des nouvelles langues au registre](#enregistrer-des-nouvelles-langues-au-registre)
+    * [Supprimer des langues du registre](#supprimer-des-langues-du-registre)
+    * [Définir la langue par défaut](#d%c3%a9finir-la-langue-par-d%c3%a9faut)
+    * [Mise à jour des langues enregistrées](#mise-%c3%a0-jour-des-langues-enregistr%c3%a9es)
+    * [Exportation des textes sous une forme simplifiée (INI).](#exportation-des-textes-sous-une-forme-simplifi%c3%a9e-%28ini%29)
+    * [Importation des textes à partir de fichiers .INI.](#importation-des-textes-%c3%a0-partir-de-fichiers-ini)
+* [SYSLang :: Sous PHP](#syslang--sous-php)
+    * [Installation de l'environnement](#installation-de-lenvironnement)
+    * [Enregistrer des nouvelles langues au registre](#enregistrer-des-nouvelles-langues-au-registre)
+    * [Supprimer des langues du registre](#supprimer-des-langues-du-registre)
+    * [Définir la langue par défaut](#d%c3%a9finir-la-langue-par-d%c3%a9faut)
+
+[](EndSummary)
 
 
 
