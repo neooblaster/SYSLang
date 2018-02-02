@@ -1,0 +1,17 @@
+{
+    "name": "neooblaster/syslang",
+    "description": "A PHP language engine using XML files. It's made to provide data for my engine template",
+    "type": "library",
+    "keywords": ["SYSLang", "PHP", "language", "template"],
+    "licence": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Nicolas DUPRE",
+            "email": "neo-blaster@hotmail.fr",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    }
+}
