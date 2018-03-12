@@ -3,7 +3,7 @@
     "description": "A PHP language engine using XML files. It's made to provide data for my engine template",
     "type": "library",
     "keywords": ["SYSLang", "PHP", "language", "template"],
-    "licence": "GPL-3.0",
+    "licence": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Nicolas DUPRE",
@@ -13,5 +13,10 @@
     ],
     "require": {
         "php": ">=5.6"
+    },
+    "autoload": {
+        "psr-0": {
+            "SYSLang\\": "src/"
+        }
     }
 }
