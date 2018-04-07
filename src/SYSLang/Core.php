@@ -719,8 +719,8 @@ class Core
                         $refLangKeysValuesCST = strval($refLangKeysValues[$huKey]->attributes()->CST);
                         $refLangKeysValuesVal = strval($refLangKeysValues[$huKey]);
 
-                        $hash = md5($refLangKeysValuesSST . '::'
-                            . $refLangKeysValuesCST . '::'
+                        $hash = md5($refLangKeysValuesCST . '::'
+                            . $refLangKeysValuesSST . '::'
                             . $refLangKeysValuesVal
                         );
 
