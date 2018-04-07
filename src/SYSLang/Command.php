@@ -378,6 +378,11 @@ Permet la maintenance de l'instalaltion SYSLang en ligne de commande.
 
 3. Options de maintenance :
 
+        --deploy           Applique les modifications de la langue de référence
+                           (default) a tous les autres langues enregistrées.
+                           --from xx-XX permet d'explicitement dire quelle est
+                           la langue de référence.
+
         --export           Procéde à l'exportation des donnés vers des
                            fichiers .ini .
         --export-dir       Spécifie le dossier cible de l'exportation.
