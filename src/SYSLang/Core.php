@@ -594,7 +594,7 @@ class Core
 
                         $refLangValueMD5 = md5("$refLangCSTValue::$refLangSSTValue::$refLangValue");
 
-                        if ($refLangValueMD5 !== strval($MD5ReportFileKeys[$cKey])) {
+                        if ($refLangValueMD5 !== strval($MD5ReportFileKeysValues[$cKey])) {
                             $keysToUpdate[$cKey] = $cValue;
                         }
                     }
