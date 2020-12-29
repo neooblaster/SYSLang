@@ -23,6 +23,11 @@ class SYSLang extends Core
     protected $useLanguage = null;
 
     /**
+     * @var string $syslangKey  Clé pour Cookie ou Session.
+     */
+    protected $syslangKey = 'SYSLang_LANG';
+
+    /**
      * @var array $target Liste des attributs XML définissant une cible de sortie avec pour information le nom et
      * la fonction de traitement admettant trois arguments : $key et $val qui seront rattaché à $arr
      */
@@ -49,11 +54,27 @@ class SYSLang extends Core
 
         /**
          * SI    $language est valide et définie, vérifier sa disponibilité.
-         * SINON Définir la langue selon le système utilisateur (ou par défaut si disponible).
          */
         if (!is_null($language) && $this->checkCode($language) && $this->isRegistered($language)) {
             $this->setLanguage($language);
-        } else {
+        }
+        /**
+         * SINON SI Cookie (préférable aux sessions (car sessions utilise cookie)
+         *          mais si SESSION pas initalisé, risque de delta entre script
+         */
+        elseif (isset($_COOKIE) && isset($_COOKIE[$this->syslangKey])) {
+            $this->setLanguage($_COOKIE[$this->syslangKey]);
+        }
+        /**
+         * SINON SI Session
+         */
+        elseif (isset($_SESSION) && isset($_SESSION[$this->syslangKey]) && !is_null($_SESSION[$this->syslangKey])) {
+            $this->setLanguage($_SESSION[$this->syslangKey]);
+        }
+        /**
+         * SINON Définir la langue selon le système utilisateur (ou par défaut si disponible).
+         */
+        else {
             $this->getUserLanguages();
         }
     }
@@ -270,7 +291,11 @@ class SYSLang extends Core
             $this->getUserLanguages();
         } else {
             $this->useLanguage = $lang;
-            //setcookie('SYSLang_LANG', $lang, time()+365*24*60*60, '/');
+
+            setcookie($this->syslangKey, $lang, time()+365*24*60*60, '/');
+            if (isset($_SESSION)) {
+                $_SESSION[$this->syslangKey] = $lang;
+            }
         }
 
         return true;
