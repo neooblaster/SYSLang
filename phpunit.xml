@@ -5,15 +5,18 @@
         <testsuite name="Autoload">
             <directory suffix=".php">./tests/Autoload</directory>
         </testsuite>
+        <testsuite name="Setting">
+            <directory suffix=".php">./tests/Setting</directory>
+        </testsuite>
         <testsuite name="Core">
             <directory suffix=".php">./tests/Core</directory>
         </testsuite>
-        <testsuite name="SYSLang">
+       <!-- <testsuite name="SYSLang">
             <directory suffix=".php">./tests/SYSLang</directory>
         </testsuite>
         <testsuite name="CommandLine">
             <directory suffix=".php">./tests/Command</directory>
-        </testsuite>
+        </testsuite>-->
     </testsuites>
 
     <filter>
