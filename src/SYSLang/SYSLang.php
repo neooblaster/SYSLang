@@ -56,7 +56,6 @@ class SYSLang extends Core
          * SI    $language est valide et définie, vérifier sa disponibilité.
          */
         if (!is_null($language) && parent::checkCode($language) && $this->isRegistered($language)) {
-            error_log(">>>> language gave on construct");
             $this->setLanguage($language);
         }
         /**
@@ -64,21 +63,18 @@ class SYSLang extends Core
          *          mais si SESSION pas initalisé, risque de delta entre script
          */
         elseif (isset($_COOKIE) && isset($_COOKIE[$this->syslangKey])) {
-            error_log(">>>> elseif COOKIE");
             $this->setLanguage($_COOKIE[$this->syslangKey]);
         }
         /**
          * SINON SI Session
          */
         elseif (isset($_SESSION) && isset($_SESSION[$this->syslangKey]) && !is_null($_SESSION[$this->syslangKey])) {
-            error_log(">>>> elseif SESSIONS");
             $this->setLanguage($_SESSION[$this->syslangKey]);
         }
         /**
          * SINON Définir la langue selon le système utilisateur (ou par défaut si disponible).
          */
         else {
-            error_log(">>>> else USER LANGU");
             $this->getUserLanguages();
         }
     }
