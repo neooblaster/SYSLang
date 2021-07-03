@@ -5,11 +5,11 @@
  * Interface d'utilisation de SYSLang pour PHP.
  *
  * @author    Nicolas DUPRE
- * @release   18/10/2017
- * @version   2.0.0-beta1
+ * @release   04.07.2021
+ * @version   2.1.0
  * @package   Index
  *
- * @TODO : Faire les méthodes pour ajouter et supprimer les targets possible.
+ * @TODO : Faire les méthodes pour supprimer les targets possible.
  */
 
 namespace SYSLang;
@@ -118,6 +118,21 @@ class SYSLang extends Core
             "VAR_VALUE" => $val
         ];
         return true;
+    }
+
+    /**
+     * Function to set/edit existing Target
+     *
+     * @param string $targetAttribute  Attribute name in XML
+     * @param string $targetName       Name of property where text are store in getText()
+     * @param string $targetCallback   Function to process & dispatch text
+     */
+    public function setTarget ($targetAttribute, $targetName, $targetCallback)
+    {
+        $this->targets[$targetAttribute] = [
+            "name" => $targetName,
+            "callback" => $targetCallback
+        ];
     }
 
     /**
