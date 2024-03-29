@@ -5,6 +5,11 @@ Objet de la version ``2.0.0`` : Concevoir un coeur du moteur, une interface pour
 L'objectif est aussi de transformer le moteur en respectant les **standards PSR**.
 
 
+## 2.1.1 (2024-03-29)
+
+- [UPDATE] Fix deprecation php8.2 `Use of "self" in callables is deprecated in ... on line ...`.
+
+
 ## 2.0.x-alpha3 (2017-10-07)
 
 - [CHANGED] ``addLanguage`` devient ``addLanguages``, car admet un ou plusieurs code de langue.

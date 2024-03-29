@@ -5,8 +5,8 @@
  * Interface d'utilisation de SYSLang pour PHP.
  *
  * @author    Nicolas DUPRE
- * @release   04.07.2021
- * @version   2.1.0
+ * @release   29.03.2024
+ * @version   2.1.1
  * @package   Index
  *
  * @TODO : Faire les méthodes pour supprimer les targets possible.
@@ -34,11 +34,11 @@ class SYSLang extends Core
     protected $targets = [
         'SST' => [
             'name' => 'SERVER',
-            'callback' => 'self::sstCallback'
+            'callback' => 'SYSLang\SYSLang::sstCallback'
         ],
         'CST' => [
             'name' => 'CLIENT',
-            'callback' => 'self::cstCallback'
+            'callback' => 'SYSLang\SYSLang::cstCallback'
         ]
     ];
 
